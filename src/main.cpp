@@ -1,6 +1,6 @@
-#include "main.h"
+#include <main.h>
 #include <numeric> 
-#include "json.hpp"
+#include "drivetrain.hpp"
 
 
 
@@ -15,10 +15,8 @@ void initialize() {
 
 	pros::Motor center_right = pros::Motor(pros::v5::Device(5));
 	pros::Motor center_left = pros::Motor(pros::v5::Device(9));
-
 	pros::Motor upper_right = pros::Motor(pros::v5::Device(20));
 	pros::Motor upper_left = pros::Motor(pros::v5::Device(13));
-
 	
 }
 
@@ -43,6 +41,8 @@ void autonomous() {}
 float MAX_TURN_SPEED = 0.6f;
 float MAX_FORWARD_SPEED = 0.8f;
 
+
+DriveUtils::Drivetrain drive();
 
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
