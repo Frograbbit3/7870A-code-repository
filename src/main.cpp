@@ -1,4 +1,4 @@
-#include <main.h>
+#include "main.h"
 #include <numeric> 
 #include "drivetrain.hpp"
 
@@ -42,16 +42,12 @@ float MAX_TURN_SPEED = 0.6f;
 float MAX_FORWARD_SPEED = 0.8f;
 
 
-DriveUtils::Drivetrain drive();
+
 
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	std::vector<pros::Motor> leftMotors = {pros::Motor(3),pros::Motor(9),pros::Motor(12)};
-	std::vector<pros::Motor> rightMotors = {pros::Motor(10),pros::Motor(5),pros::Motor(20)};
-	pros::MotorGroup left_mg({3,9,12});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-	pros::MotorGroup right_mg({10,5,20});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6	
+	DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20});
 	int current_motor = 0;
-
 	double left_motor_real = 0.0f;
 	int telemetry_counter = 0;
 	while (true) {
@@ -65,24 +61,11 @@ void opcontrol() {
 
 
 		
-		if (abs(dir) < dead_zone && abs(turn) < dead_zone) {
-			//Start custom break
-
-		}else{
-			left_mg.move(dir - turn );                      // Sets left motor voltage
-			right_mg.move(dir + turn);   
+		if (abs(dir) > dead_zone || abs(turn) > dead_zone) {
+			drivetrain.setLeftVelocity(dir - turn );                      // Sets left motor voltage
+			drivetrain.setRightVelocity(dir + turn);
+			drivetrain.drive(DriveUtils::Direction::FORWARD);
 		}
-
-        telemetry_counter++;
-        if (telemetry_counter >= 10) { // every 200ms
-            telemetry_counter = 0;
-			current_motor = 0;
-			for (const pros::Motor motorObj : leftMotors) {
-				motorObj.set_gearing(pros::E_MOTOR_GEAR_600);
-				std::cout << "Current Motor: " << current_motor << ", Eff: " << motorObj.get_actual_velocity() << std::endl;
-				current_motor += 1;
-			}
-        }
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
  			MAX_FORWARD_SPEED = 1.0f;
 		}else{
