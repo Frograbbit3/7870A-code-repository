@@ -15,13 +15,14 @@ namespace DriveUtils {
     };
 
     class Drivetrain {
+        public:
+            MotorGroup leftMotors;
+            MotorGroup rightMotors;
         private:
             std::vector<int8_t> leftSide;
             std::vector<int8_t> rightSide;
             DriveUtils::MotorProperties leftProperties;
             DriveUtils::MotorProperties rightProperties;
-            MotorGroup leftMotors;
-            MotorGroup rightMotors;
 
             void internal_telementry_collector() {
                 float average_vel;
@@ -43,13 +44,32 @@ namespace DriveUtils {
                 }
             }
 
+            void drive_correction() {
+                float correction = 0.25f;
+                while (true) {
+                    if (leftProperties.actual_velocity != 0 && rightProperties.actual_velocity != 0) {
+                        if (rightProperties.actual_velocity > leftProperties.actual_velocity) {
+                            leftProperties.velocity = rightProperties.velocity + correction;
+                        }else{
+                            rightProperties.velocity = leftProperties.velocity + correction;
+                        }
+                    }
+                    pros::delay(20);
+                }
+            }
+
             static void task_helper_telementry(void *ptr) {
                 Drivetrain* self = static_cast<Drivetrain*>(ptr);
                 self->internal_telementry_collector();
             }
+            static void task_helper_drive_correction(void *ptr) {
+                Drivetrain* self = static_cast<Drivetrain*>(ptr);
+                self->drive_correction();
+            }
         public:
             Drivetrain(const std::vector<int8_t>& leftSide,const std::vector<int8_t>& rightSide): leftMotors(leftSide),rightMotors(rightSide){
                 pros::Task auto_drive(task_helper_telementry,(void*)this);
+                pros::Task auto_drive(task_helper_drive_correction,(void*)this);
             }
             void setLeftVelocity(int velocity) {
                 ///Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.
