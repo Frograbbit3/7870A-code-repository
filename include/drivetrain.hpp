@@ -47,7 +47,8 @@ namespace DriveUtils {
             void drive_correction() {
                 float correction = 0.02f;
                 while (true) {
-                    if (leftProperties.actual_velocity != 0 && rightProperties.actual_velocity != 0) {
+                    //only correct if both sides are driving
+                    if (leftProperties.is_driving && rightProperties.is_driving) {
                         if (rightProperties.actual_velocity > leftProperties.actual_velocity) {
                             leftProperties.velocity = rightProperties.velocity + correction;
                             rightProperties.velocity -= correction;
@@ -55,11 +56,14 @@ namespace DriveUtils {
                             rightProperties.velocity = leftProperties.velocity + correction;
                             leftProperties.velocity -= correction;
                         }
+                    }else{ //Process breaking as well; makes life easier.
+                        leftMotors.update();
+                        rightMotors.update();
                     }
                     pros::delay(20);
                 }
             }
-
+            
             static void task_helper_telementry(void *ptr) {
                 Drivetrain* self = static_cast<Drivetrain*>(ptr);
                 self->internal_telementry_collector();
