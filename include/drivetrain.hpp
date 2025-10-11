@@ -87,6 +87,11 @@ namespace DriveUtils {
                 int32_t result = (velocity * 12) / 100;
                 rightProperties.velocity = result * 1000;
             }
+
+            void stop() {
+                ///Breaks the robot. This is the same as calling DriveUtils::Drivetrain::Drive(DriveUtils::Direction::STOP)
+                this->drive(DriveUtils::Direction::STOP);
+            }
             void drive(DriveUtils::Direction direction) {
                 ///Moves the robot. Simple.
                 switch (direction)
