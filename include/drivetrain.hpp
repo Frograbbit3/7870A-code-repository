@@ -1,5 +1,5 @@
 #include "main.h"
-
+#include "modded.hpp"
 using pros::Motor;
 
 namespace DriveUtils {
@@ -11,6 +11,7 @@ namespace DriveUtils {
     struct MotorProperties {
         int velocity = 0; //in mV
         bool is_driving = false;
+        float actual_velocity = 0; // updated by internal_telementry_collector
     };
 
     class Drivetrain {
@@ -19,13 +20,28 @@ namespace DriveUtils {
             std::vector<int8_t> rightSide;
             DriveUtils::MotorProperties leftProperties;
             DriveUtils::MotorProperties rightProperties;
-            
-        public:
-            pros::MotorGroup leftMotors;
-            pros::MotorGroup rightMotors;
+            MotorGroup leftMotors;
+            MotorGroup rightMotors;
 
+            void internal_telementry_collector() {
+                float average_vel;
+                while (true) {
+                    for (pros::Motor &prt : leftMotors.group) {
+                        pros::Motor mtr (prt);
+                        average_vel += mtr.get_actual_velocity();
+                    }
+                    leftProperties.actual_velocity = average_vel / leftSide.size();
+                    pros::delay(250);
+                }
+            }
+
+            static void task_helper_telementry(void *ptr) {
+                Drivetrain* self = static_cast<Drivetrain*>(ptr);
+                self->internal_telementry_collector();
+            }
+        public:
             Drivetrain(const std::vector<int8_t>& leftSide,const std::vector<int8_t>& rightSide): leftMotors(leftSide),rightMotors(rightSide){
-                
+                pros::Task auto_drive(task_helper_telementry,(void*)this);
             }
             void setLeftVelocity(int velocity) {
                 ///Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.
