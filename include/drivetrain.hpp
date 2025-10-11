@@ -70,7 +70,7 @@ namespace DriveUtils {
             }
         public:
             Drivetrain(const std::vector<int8_t>& leftSide,const std::vector<int8_t>& rightSide): leftMotors(leftSide),rightMotors(rightSide){
-                pros::Task auto_drive(task_helper_telementry,(void*)this);
+                pros::Task telementry(task_helper_telementry,(void*)this);
                 pros::Task auto_drive(task_helper_drive_correction,(void*)this);
             }
             void setLeftVelocity(int velocity) {
