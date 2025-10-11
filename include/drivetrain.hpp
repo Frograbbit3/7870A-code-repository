@@ -45,13 +45,15 @@ namespace DriveUtils {
             }
 
             void drive_correction() {
-                float correction = 0.25f;
+                float correction = 0.02f;
                 while (true) {
                     if (leftProperties.actual_velocity != 0 && rightProperties.actual_velocity != 0) {
                         if (rightProperties.actual_velocity > leftProperties.actual_velocity) {
                             leftProperties.velocity = rightProperties.velocity + correction;
+                            rightProperties.velocity -= correction;
                         }else{
                             rightProperties.velocity = leftProperties.velocity + correction;
+                            leftProperties.velocity -= correction;
                         }
                     }
                     pros::delay(20);
