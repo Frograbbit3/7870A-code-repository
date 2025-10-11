@@ -9,7 +9,7 @@ class MotorGroup {
         std::vector<pros::Motor> group;
         std::vector<int8_t> ports;
         int stopped = 0;
-        int STOP_COOLDOWN = 1000; //in ms, the time to stop.
+        int STOP_COOLDOWN = 1000; //in ms, the time to stop. A higher value uses more battery but can feel better to drive.
         MotorGroup(const std::vector<int8_t>& ports) {
             for (int8_t port : ports) {
                 group.push_back(pros::Motor(port));
