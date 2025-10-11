@@ -79,13 +79,13 @@ namespace DriveUtils {
             }
             void setLeftVelocity(int velocity) {
                 ///Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.
-                int32_t result = (velocity * 12) / 100;
+                int32_t result = (velocity * 127) / 100;
                 leftProperties.velocity = result * 1000;
             }
             void setRightVelocity(int velocity) {
                 ///Sets the right velocity to a value between 0 - 100. Does this by attempting to set max voltage.
-                int32_t result = (velocity * 12) / 100;
-                rightProperties.velocity = result * 1000;
+                int32_t result = (velocity * 127) / 100;
+                rightProperties.velocity = result * 100;
             }
 
             void stop() {
