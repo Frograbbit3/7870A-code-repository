@@ -26,11 +26,19 @@ namespace DriveUtils {
             void internal_telementry_collector() {
                 float average_vel;
                 while (true) {
-                    for (pros::Motor &prt : leftMotors.group) {
-                        pros::Motor mtr (prt);
+                    // left side
+                    average_vel = 0.0f;
+                    for (pros::Motor &mtr : leftMotors.group) {
                         average_vel += mtr.get_actual_velocity();
                     }
-                    leftProperties.actual_velocity = average_vel / leftSide.size();
+                    leftProperties.actual_velocity = average_vel / leftMotors.group.size();
+
+                    //right side
+                    average_vel = 0.0f;
+                    for (pros::Motor &mtr : rightMotors.group) {
+                        average_vel += mtr.get_actual_velocity();
+                    }
+                    rightProperties.actual_velocity = average_vel / rightMotors.group.size();
                     pros::delay(250);
                 }
             }
