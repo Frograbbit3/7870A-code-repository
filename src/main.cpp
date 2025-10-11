@@ -62,7 +62,7 @@ void opcontrol() {
 
 		
 		if (abs(dir) > dead_zone || abs(turn) > dead_zone) {
-			drivetrain.setLeftVelocity(dir - turn );                      // Sets left motor voltage
+			drivetrain.setLeftVelocity(dir - turn);                      // Sets left motor voltage
 			drivetrain.setRightVelocity(dir + turn);
 			drivetrain.drive(DriveUtils::Direction::FORWARD);
 		}

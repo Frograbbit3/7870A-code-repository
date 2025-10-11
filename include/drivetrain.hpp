@@ -10,19 +10,22 @@ namespace DriveUtils {
     };
     struct MotorProperties {
         int velocity = 0; //in mV
+        bool is_driving = false;
     };
+
     class Drivetrain {
         private:
             std::vector<int8_t> leftSide;
             std::vector<int8_t> rightSide;
-            pros::MotorGroup leftMotors;
-            pros::MotorGroup rightMotors;
             DriveUtils::MotorProperties leftProperties;
             DriveUtils::MotorProperties rightProperties;
             
         public:
+            pros::MotorGroup leftMotors;
+            pros::MotorGroup rightMotors;
+
             Drivetrain(const std::vector<int8_t>& leftSide,const std::vector<int8_t>& rightSide): leftMotors(leftSide),rightMotors(rightSide){
-            
+                
             }
             void setLeftVelocity(int velocity) {
                 ///Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.
@@ -35,17 +38,25 @@ namespace DriveUtils {
                 rightProperties.velocity = result * 1000;
             }
             void drive(DriveUtils::Direction direction) {
+                ///Moves the robot. Simple.
                 switch (direction)
                 {
                     case DriveUtils::Direction::FORWARD:
                         leftMotors.move(leftProperties.velocity);
+                        rightMotors.move(rightProperties.velocity);
+                        leftProperties.is_driving = true;
+                        rightProperties.is_driving = true;
                         break;
                     case DriveUtils::Direction::REVERSE:
-                        rightMotors.move(rightProperties.velocity);
-                    
+                        leftMotors.move(leftProperties.velocity*-1);
+                        rightMotors.move(rightProperties.velocity*-1);
+                        leftProperties.is_driving = true;
+                        rightProperties.is_driving = true;
                     default:
-                        leftMotors.move(0);
-                        rightMotors.move(0);
+                        leftMotors.brake();
+                        rightMotors.brake();
+                        leftProperties.is_driving = false;
+                        rightProperties.is_driving = false;
                         break;
                 }
             }
