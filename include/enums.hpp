@@ -3,6 +3,11 @@ static inline double INCH_TO_MM(double inch) {return 25.4 * inch;}
 static inline double MM_TO_INCH(double mm) {return mm / 25.4;}
 namespace DrivetrainEnums
 {
+    struct MotorProperties {
+        double gearRatio = 1.0;
+        double wheelSize = 3.5;
+        double stopCooldown = 1.0;
+    };
     enum class Distance {
         INCHES = 1,
         MM = 0,

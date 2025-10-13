@@ -45,16 +45,18 @@ namespace DriveUtils {
             }
 
             void drive_correction() { //NOTE TO SELF! Correct this soon!
-                float correction = 0.02f;
+                float correction = 2.0;
+                double leftSideDifference = 0;
+                double rightSideDifference = 0;
                 while (true) {
                     //only correct if both sides are driving
                     if (leftProperties.is_driving && rightProperties.is_driving) {
-                        if (rightProperties.actual_velocity > leftProperties.actual_velocity) {
-                            leftProperties.velocity = rightProperties.velocity + correction;
-                            rightProperties.velocity -= correction;
-                        }else{
-                            rightProperties.velocity = leftProperties.velocity + correction;
-                            leftProperties.velocity -= correction;
+                        leftSideDifference = leftProperties.velocity - leftProperties.actual_velocity;
+                        rightSideDifference = rightProperties.velocity - rightProperties.actual_velocity;
+                        if (leftSideDifference - rightSideDifference > correction) {
+                            rightProperties.velocity = (leftSideDifference - rightSideDifference) * leftProperties.velocity;
+                        }else if (rightSideDifference - leftSideDifference > correction){
+                            leftProperties.velocity = (rightSideDifference - leftSideDifference) * rightProperties.velocity;
                         }
                     }else{ //Process breaking as well; makes life easier.
                         leftMotors.update();

@@ -2,12 +2,12 @@
 #include "enums.hpp"
 #define time pros::millis()
 class MotorGroup {
+    private:
+        int stopped = 0;
     public:
         std::vector<pros::Motor> group;
         std::vector<int8_t> ports;
-        double ratio=3.5; //Assuming inch wheels fn, change later.
-        int stopped = 0;
-        int STOP_COOLDOWN = 1000; //in ms, the time to stop. A higher value uses more battery but can feel better to drive.
+        DrivetrainEnums::MotorProperties properties;
         MotorGroup(const std::vector<int8_t>& ports) {
             for (int8_t port : ports) {
                 group.push_back(pros::Motor(port));
@@ -37,16 +37,16 @@ class MotorGroup {
             switch (dst)
             {
             case DrivetrainEnums::Distance::INCHES:
-                return M_PI*getWheelRotation()*ratio;            
+                return M_PI*getWheelRotation()*properties.wheelSize;            
             case DrivetrainEnums::Distance::MM:
-                return INCH_TO_MM(M_PI*getWheelRotation()*ratio);
+                return INCH_TO_MM(M_PI*getWheelRotation()*properties.wheelSize);
             case DrivetrainEnums::Distance::ROTATION:
                 return getWheelRotation();
             }
         }
         void update() {
             if (stopped > 0) {
-                if (time - stopped > STOP_COOLDOWN) {
+                if (time - stopped > properties.stopCooldown) {
                     for (pros::Motor& mtr: group) {
                         mtr.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
                     }
