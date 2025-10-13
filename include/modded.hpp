@@ -34,17 +34,14 @@ class MotorGroup {
         }
 
         double getDistance(DrivetrainEnums::Distance dst){
-            ///@brief DO NOT USE!
             switch (dst)
             {
             case DrivetrainEnums::Distance::INCHES:
-                return M_PI*getWheelRotation()*3.5;
-                break;
+                return M_PI*getWheelRotation()*ratio;            
             case DrivetrainEnums::Distance::MM:
-                return INCH_TO_MM(M_PI*getWheelRotation()*3.5);
-            default:
-                return 0.0f;
-                break;
+                return INCH_TO_MM(M_PI*getWheelRotation()*ratio);
+            case DrivetrainEnums::Distance::ROTATION:
+                return getWheelRotation();
             }
         }
         void update() {
