@@ -9,15 +9,21 @@
 DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20});
 
 void calibrate_drivetrain_button() {
-	pros::lcd::set_text(2, "Calibrating drivetrain, expect movement.");
-	drivetrain.calibrate(true);
+	pros::lcd::set_text(2, "Calibrating drivetrain.");
+	drivetrain.calibrate();
 	pros::lcd::set_text(2, "");
 }
 
+void test_drivetrain_button() {
+	pros::lcd::set_text(2, "Testing drivetrain. This may take a while.");
+	drivetrain.test();
+	pros::lcd::set_text(2, "");
+}
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Debug Menu");
 	pros::lcd::register_btn0_cb(calibrate_drivetrain_button);
+	pros::lcd::register_btn1_cb(test_drivetrain_button);
 	pros::Motor bottom_right = pros::Motor(pros::v5::Device(10));
 	pros::Motor bottom_left = pros::Motor(pros::v5::Device(3));
 
@@ -25,7 +31,7 @@ void initialize() {
 	pros::Motor center_left = pros::Motor(pros::v5::Device(9));
 	pros::Motor upper_right = pros::Motor(pros::v5::Device(20));
 	pros::Motor upper_left = pros::Motor(pros::v5::Device(13));
-	drivetrain.calibrate(false);
+	calibrate_drivetrain_button();
 	
 }
 

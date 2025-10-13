@@ -34,6 +34,7 @@ class MotorGroup {
         }
 
         double getDistance(DrivetrainEnums::Distance dst){
+            //@brief DO NOT USE!
             switch (dst)
             {
             case DrivetrainEnums::Distance::INCHES:

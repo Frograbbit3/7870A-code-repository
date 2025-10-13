@@ -1,5 +1,6 @@
 #include "main.h"
 #include "modded.hpp"
+#include "motor_testing.hpp"
 #include "enums.hpp"
 #include <math.h>
 
@@ -86,13 +87,24 @@ namespace DriveUtils {
                 pros::Task telementry(task_helper_telementry,(void*)this);
                 pros::Task auto_drive(task_helper_drive_correction,(void*)this);
             }
-            void calibrate(bool full) {
-                ///@brief Runs through a calibration of the DT, testing all motors and being sure they're ready. Blocking call. 
-                ///@param full Allows a **full** calibration which actually tests all motors. Very useful to find issues.
+            void calibrate() {
+                /*@brief  'Calibrates' the drivetrain. To test, run `DriveUtils::Drivetrain.test()`*/
                 calibrateMotors();
-                if (full) {
-                    
+            }
+            bool test() {
+                ///@brief Does a test of the drivetrain to confirm all motors are spinning and optimal. Can take a while.
+                calibrateMotors();
+                for (pros::Motor& mtr : leftMotors.group) {
+                    if (!testMotor(mtr)) {return false;}
                 }
+                pros::delay(50);
+                for (pros::Motor& mtr : rightMotors.group) {
+                    if (!testMotor(mtr)) {return false;}
+                }
+                pros::delay(50);
+                calibrateMotors();
+                return true;
+
             }
             void setLeftVelocity(int velocity) {
                 ///Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.
