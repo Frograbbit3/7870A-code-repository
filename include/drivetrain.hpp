@@ -1,13 +1,12 @@
 #include "main.h"
 #include "modded.hpp"
+#include "enums.hpp"
+#include <math.h>
+
+#define pi M_PI
 using pros::Motor;
 
 namespace DriveUtils {
-    enum class Direction {
-        FORWARD = 1,
-        REVERSE = -1,
-        STOP = 0 
-    };
     struct MotorProperties {
         int velocity = 0; //in mV
         bool is_driving = false;
@@ -44,7 +43,7 @@ namespace DriveUtils {
                 }
             }
 
-            void drive_correction() {
+            void drive_correction() { //NOTE TO SELF! Correct this soon!
                 float correction = 0.02f;
                 while (true) {
                     //only correct if both sides are driving
@@ -89,20 +88,20 @@ namespace DriveUtils {
             }
 
             void stop() {
-                ///Breaks the robot. This is the same as calling DriveUtils::Drivetrain::Drive(DriveUtils::Direction::STOP)
-                this->drive(DriveUtils::Direction::STOP);
+                ///Breaks the robot. This is the same as calling DriveUtils::Drivetrain::Drive(DrivetrainEnums::Direction::STOP)
+                this->drive(DrivetrainEnums::Direction::STOP);
             }
-            void drive(DriveUtils::Direction direction) {
+            void drive(DrivetrainEnums::Direction direction) {
                 ///Moves the robot. Simple.
                 switch (direction)
                 {
-                    case DriveUtils::Direction::FORWARD:
+                    case DrivetrainEnums::Direction::FORWARD:
                         leftMotors.move(leftProperties.velocity);
                         rightMotors.move(rightProperties.velocity);
                         leftProperties.is_driving = true;
                         rightProperties.is_driving = true;
                         break;
-                    case DriveUtils::Direction::REVERSE:
+                    case DrivetrainEnums::Direction::REVERSE:
                         leftMotors.move(leftProperties.velocity*-1);
                         rightMotors.move(rightProperties.velocity*-1);
                         leftProperties.is_driving = true;

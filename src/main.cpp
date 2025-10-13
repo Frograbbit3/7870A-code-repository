@@ -1,6 +1,7 @@
 #include "main.h"
 #include <numeric> 
 #include "drivetrain.hpp"
+#include "enums.hpp"
 
 
 
@@ -64,7 +65,7 @@ void opcontrol() {
 		if (abs(dir) > dead_zone || abs(turn) > dead_zone) {
 			drivetrain.setLeftVelocity(dir - turn);                      // Sets left motor voltage
 			drivetrain.setRightVelocity(dir + turn);
-			drivetrain.drive(DriveUtils::Direction::FORWARD);
+			drivetrain.drive(DrivetrainEnums::Direction::FORWARD);
 		}
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
  			MAX_FORWARD_SPEED = 1.0f;
