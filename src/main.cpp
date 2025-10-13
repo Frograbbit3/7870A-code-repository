@@ -6,11 +6,18 @@
 
 
 
+DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20});
+
+void calibrate_drivetrain_button() {
+	pros::lcd::set_text(2, "Calibrating drivetrain, expect movement.");
+	drivetrain.calibrate(true);
+	pros::lcd::set_text(2, "");
+}
 
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Drive");
-
+	pros::lcd::set_text(1, "Debug Menu");
+	pros::lcd::register_btn0_cb(calibrate_drivetrain_button);
 	pros::Motor bottom_right = pros::Motor(pros::v5::Device(10));
 	pros::Motor bottom_left = pros::Motor(pros::v5::Device(3));
 
@@ -18,24 +25,13 @@ void initialize() {
 	pros::Motor center_left = pros::Motor(pros::v5::Device(9));
 	pros::Motor upper_right = pros::Motor(pros::v5::Device(20));
 	pros::Motor upper_left = pros::Motor(pros::v5::Device(13));
+	drivetrain.calibrate(false);
 	
 }
 
 
-template <typename T>
-double average_velocity(const std::vector<T>& values) {
-    if (values.empty()) return 0.0;
-    double sum = std::accumulate(values.begin(), values.end(), 0.0);
-    return sum / static_cast<double>(values.size());
-}
-const char* double_to_char(double num) {
-    static std::string m; // static keeps it alive after function ends
-    m = std::to_string(num);
-    return m.c_str();
-}
 
 const float dead_zone = 0.1f;
-
 void disabled() {}
 void competition_initialize() {}
 void autonomous() {}
@@ -47,7 +43,6 @@ float MAX_FORWARD_SPEED = 0.8f;
 
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20});
 	int current_motor = 0;
 	double left_motor_real = 0.0f;
 	int telemetry_counter = 0;

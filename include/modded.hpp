@@ -28,7 +28,7 @@ class MotorGroup {
         double getWheelRotation() {
             double v = 0.0f;
             for (pros::Motor& mtr : group) {
-                v+=mtr.get_raw_position(nullptr);
+                v+=mtr.get_position();
             }
             return (v / group.size()/2);
         }
