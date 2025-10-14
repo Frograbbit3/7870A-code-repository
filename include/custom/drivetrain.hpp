@@ -1,3 +1,4 @@
+#pragma once
 #include "main.h"
 #include "modded.hpp"
 #include "motor_testing.hpp"

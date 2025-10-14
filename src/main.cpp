@@ -1,12 +1,13 @@
 #include "main.h"
 #include <numeric> 
-#include "drivetrain.hpp"
-#include "enums.hpp"
 
 
 
-
-DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20});
+/// @brief Variable init
+constexpr float dead_zone = 0.1f;
+constexpr float MAX_TURN_SPEED = 0.6f;
+constexpr float MAX_FORWARD_SPEED = 0.8f;
+DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20}); //put motor ports here
 
 void calibrate_drivetrain_button() {
 	pros::lcd::set_text(2, "Calibrating drivetrain.");
@@ -37,42 +38,22 @@ void initialize() {
 
 
 
-const float dead_zone = 0.1f;
+
 void disabled() {}
 void competition_initialize() {}
 void autonomous() {}
-float MAX_TURN_SPEED = 0.6f;
-float MAX_FORWARD_SPEED = 0.8f;
-
-
 
 
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	int current_motor = 0;
-	double left_motor_real = 0.0f;
-	int telemetry_counter = 0;
 	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
-
-		// Arcade control scheme
-		int dir = master.get_analog(ANALOG_RIGHT_X) * -MAX_TURN_SPEED;    // Gets amount forward/backward from left joystick
-		int turn = master.get_analog(ANALOG_LEFT_Y) * MAX_FORWARD_SPEED;  // Gets the turn left/right from right joystick
-
-
-		
+		int dir = master.get_analog(ANALOG_RIGHT_X) * -MAX_TURN_SPEED;   
+		int turn = master.get_analog(ANALOG_LEFT_Y) * MAX_FORWARD_SPEED;
 		if (abs(dir) > dead_zone || abs(turn) > dead_zone) {
-			drivetrain.setLeftVelocity(dir - turn);                      // Sets left motor voltage
+			drivetrain.setLeftVelocity(dir - turn); 
 			drivetrain.setRightVelocity(dir + turn);
 			drivetrain.drive(DrivetrainEnums::Direction::FORWARD);
 		}
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
- 			MAX_FORWARD_SPEED = 1.0f;
-		}else{
-			MAX_FORWARD_SPEED = 0.8f;
-		}
-		pros::delay(20);                               // Run for 20 ms then update
+		pros::delay(20);
 	}
 }

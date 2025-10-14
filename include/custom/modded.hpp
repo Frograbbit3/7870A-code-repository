@@ -1,3 +1,4 @@
+#pragma once
 #include "main.h"
 #include "enums.hpp"
 #define time pros::millis()
@@ -25,7 +26,7 @@ class MotorGroup {
                 stopped=time;
             }
         }
-        double getWheelRotation() {
+        double getRotation() {
             double v = 0.0f;
             for (pros::Motor& mtr : group) {
                 v+=mtr.get_position();
@@ -37,11 +38,11 @@ class MotorGroup {
             switch (dst)
             {
             case DrivetrainEnums::Distance::INCHES:
-                return M_PI*getWheelRotation()*properties.wheelSize;            
+                return M_PI*getRotation()*properties.wheelSize;            
             case DrivetrainEnums::Distance::MM:
-                return INCH_TO_MM(M_PI*getWheelRotation()*properties.wheelSize);
+                return INCH_TO_MM(M_PI*getRotation()*properties.wheelSize);
             case DrivetrainEnums::Distance::ROTATION:
-                return getWheelRotation();
+                return getRotation();
             }
         }
         void update() {

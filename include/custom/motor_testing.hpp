@@ -1,3 +1,4 @@
+#pragma once
 #include "main.h"
 
 bool testMotor(pros::Motor &mtr) {
