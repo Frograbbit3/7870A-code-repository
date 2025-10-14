@@ -5,11 +5,17 @@
 
 namespace ControllerLib
 {
+    enum class ControllerEnums
+    {
+        DRIVE_MODE_TANK = 1,
+        DRIVE_MODE_ARCADE = 2
+    };
+
     class ControlScheme {
         private:
             DriveUtils::Drivetrain& drive;
             pros::Controller& controller;
-            Controller::ControllerEnums& type;
+            ControllerLib::ControllerEnums& type;
             uint8_t leftVelocity;
             uint8_t rightVelocity;
 
@@ -23,7 +29,7 @@ namespace ControllerLib
             float MAX_FORWARD_SPEED = 0.8f;
             float DEADZONE = 0.1f;
         public:
-            ControlScheme(Controller::ControllerEnums typ, DriveUtils::Drivetrain& driveref, pros::Controller& controlleref)  : drive(driveref), controller(controlleref), type(typ) {}
+            ControlScheme(ControllerLib::ControllerEnums typ, DriveUtils::Drivetrain& driveref, pros::Controller& controlleref)  : drive(driveref), controller(controlleref), type(typ) {}
             void update() {
                 /*@brief main controller loop.*/
                 leftJoystickY = controller.get_analog(ANALOG_LEFT_Y);
@@ -32,12 +38,12 @@ namespace ControllerLib
                 rightJoystickX = controller.get_analog(ANALOG_RIGHT_X);
                 switch (type)
                 {
-                case Controller::ControllerEnums::DRIVE_MODE_ARCADE:
+                case ControllerLib::ControllerEnums::DRIVE_MODE_ARCADE:
                     leftVelocity = (rightJoystickX * -MAX_TURN_SPEED) - (leftJoystickY * MAX_FORWARD_SPEED);
                     rightVelocity = (rightJoystickX * -MAX_TURN_SPEED) + (leftJoystickY * MAX_FORWARD_SPEED);
                     break;
                 
-                case Controller::ControllerEnums::DRIVE_MODE_TANK:
+                case ControllerLib::ControllerEnums::DRIVE_MODE_TANK:
                     leftVelocity = leftJoystickY * MAX_FORWARD_SPEED;
                     rightVelocity = rightJoystickY * MAX_FORWARD_SPEED;
                 default:

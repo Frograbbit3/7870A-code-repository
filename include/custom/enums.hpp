@@ -21,10 +21,5 @@ namespace DrivetrainEnums
     };    
 } // namespace DrivetrainEnums
 
-namespace Controller {
-    enum class ControllerEnums
-    {
-        DRIVE_MODE_TANK = 1,
-        DRIVE_MODE_ARCADE = 2
-    };
-}
+
+

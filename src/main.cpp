@@ -10,7 +10,7 @@ constexpr float MAX_FORWARD_SPEED = 0.8f;
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20}); //put motor ports here
 ControllerLib::ControlScheme control(
-	Controller::ControllerEnums::DRIVE_MODE_ARCADE,
+	ControllerLib::ControllerEnums::DRIVE_MODE_ARCADE,
 	drivetrain,
 	master
 );
