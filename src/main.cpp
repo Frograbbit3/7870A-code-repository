@@ -7,7 +7,13 @@
 constexpr float dead_zone = 0.1f;
 constexpr float MAX_TURN_SPEED = 0.6f;
 constexpr float MAX_FORWARD_SPEED = 0.8f;
+pros::Controller master(pros::E_CONTROLLER_MASTER);
 DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20}); //put motor ports here
+ControllerLib::ControlScheme control(
+	Controller::ControllerEnums::DRIVE_MODE_ARCADE,
+	drivetrain,
+	master
+);
 
 void calibrate_drivetrain_button() {
 	pros::lcd::set_text(2, "Calibrating drivetrain.");
@@ -45,15 +51,8 @@ void autonomous() {}
 
 
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	while (true) {
-		int dir = master.get_analog(ANALOG_RIGHT_X) * -MAX_TURN_SPEED;   
-		int turn = master.get_analog(ANALOG_LEFT_Y) * MAX_FORWARD_SPEED;
-		if (abs(dir) > dead_zone || abs(turn) > dead_zone) {
-			drivetrain.setLeftVelocity(dir - turn); 
-			drivetrain.setRightVelocity(dir + turn);
-			drivetrain.drive(DrivetrainEnums::Direction::FORWARD);
-		}
+		control.update();
 		pros::delay(20);
 	}
 }
