@@ -1,6 +1,5 @@
 #include "main.h"
 #include <numeric> 
-#include "pros/apix.h"
 
 /// @brief Variable init
 pros::Controller master(pros::E_CONTROLLER_MASTER);
@@ -26,8 +25,16 @@ void a() {
 	std::cout << "just a" << std::endl;
 }
 
-void initialize() {
+void slider_event(lv_event_t * e) {
+	auto slider = lv_event_get_current_target_obj(e);
+	std::cout << (int)lv_slider_get_value(slider) << std::endl;
+}
 
+void initialize() {
+    lv_obj_t * slider = lv_slider_create(lv_screen_active());
+    lv_obj_center(slider);
+    lv_obj_add_event_cb(slider, slider_event, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_obj_set_style_anim_duration(slider, 2000, 0);
 	control.createMacro({DIGITAL_A, DIGITAL_B}, a_b);
 	control.createMacro({DIGITAL_A}, a);
 	control.createMacro({pros::E_CONTROLLER_DIGITAL_L1,pros::E_CONTROLLER_DIGITAL_L2,pros::E_CONTROLLER_DIGITAL_R1,pros::E_CONTROLLER_DIGITAL_L2}, on_triggers_hit);
@@ -45,6 +52,7 @@ void autonomous() {}
 void opcontrol() {
 	while (true) {
 		control.update();
+		UILib::update();
 		pros::delay(20);
 	}
 }
