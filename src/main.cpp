@@ -24,23 +24,18 @@ void a_b() {
 void a() {
 	std::cout << "just a" << std::endl;
 }
-
-void slider_event(lv_event_t * e) {
-	auto slider = lv_event_get_current_target_obj(e);
-	std::cout << (int)lv_slider_get_value(slider) << std::endl;
+UILib::Label lbl(100,100,"0");
+void slider_event(int val) {
+	lbl.change_text(std::to_string(val));
 }
-
 void initialize() {
-    lv_obj_t * slider = lv_slider_create(lv_screen_active());
-    lv_obj_center(slider);
-    lv_obj_add_event_cb(slider, slider_event, LV_EVENT_VALUE_CHANGED, NULL);
-    lv_obj_set_style_anim_duration(slider, 2000, 0);
+	auto slider = new UILib::Slider(0,0,0,100);
+	slider->on_move(slider_event);
 	control.createMacro({DIGITAL_A, DIGITAL_B}, a_b);
 	control.createMacro({DIGITAL_A}, a);
 	control.createMacro({pros::E_CONTROLLER_DIGITAL_L1,pros::E_CONTROLLER_DIGITAL_L2,pros::E_CONTROLLER_DIGITAL_R1,pros::E_CONTROLLER_DIGITAL_L2}, on_triggers_hit);
 	
 }
-
 
 
 
