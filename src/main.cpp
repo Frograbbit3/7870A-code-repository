@@ -1,7 +1,6 @@
 #include "main.h"
 #include <numeric> 
-
-
+#include "pros/apix.h"
 
 /// @brief Variable init
 pros::Controller master(pros::E_CONTROLLER_MASTER);
@@ -13,28 +12,24 @@ ControllerLib::ControlScheme control(
 );
 
 
+
+int count = 0;
 void on_triggers_hit() {
+	count++;
+	master.print(0,0,std::to_string(count).c_str());
+};
 
+void a_b() {
+	std::cout << "a+b hit" << std::endl;
+}
+void a() {
+	std::cout << "just a" << std::endl;
 }
 
-
-void calibrate_drivetrain_button() {
-	pros::lcd::set_text(2, "Calibrating drivetrain.");
-	drivetrain.calibrate();
-	pros::lcd::set_text(2, "");
-}
-
-void test_drivetrain_button() {
-	pros::lcd::set_text(2, "Testing drivetrain. This may take a while.");
-	drivetrain.test();
-	pros::lcd::set_text(2, "");
-}
 void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Debug Menu");
-	pros::lcd::register_btn0_cb(calibrate_drivetrain_button);
-	pros::lcd::register_btn1_cb(test_drivetrain_button);
-	calibrate_drivetrain_button();
+
+	control.createMacro({DIGITAL_A, DIGITAL_B}, a_b);
+	control.createMacro({DIGITAL_A}, a);
 	control.createMacro({pros::E_CONTROLLER_DIGITAL_L1,pros::E_CONTROLLER_DIGITAL_L2,pros::E_CONTROLLER_DIGITAL_R1,pros::E_CONTROLLER_DIGITAL_L2}, on_triggers_hit);
 	
 }
