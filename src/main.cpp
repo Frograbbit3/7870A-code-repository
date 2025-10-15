@@ -12,6 +12,10 @@ ControllerLib::ControlScheme control(
 	master
 );
 
+
+void on_triggers_hit() {
+	
+}
 void calibrate_drivetrain_button() {
 	pros::lcd::set_text(2, "Calibrating drivetrain.");
 	drivetrain.calibrate();
