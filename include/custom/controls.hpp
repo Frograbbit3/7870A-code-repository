@@ -87,7 +87,7 @@ namespace ControllerLib
                         if (pressed.size() == inputs.size()) {
                             keepGoing=true;
                             for (const pros::controller_digital_e_t& m : inputs) {
-                                if (!controller.get_digital_new_press(m) && keepGoing) {
+                                if (!controller.get_digital(m) && keepGoing) {
                                     keepGoing=false;
                                     continue;
                                 }
