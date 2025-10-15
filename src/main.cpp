@@ -14,8 +14,10 @@ ControllerLib::ControlScheme control(
 
 
 void on_triggers_hit() {
-	
+
 }
+
+
 void calibrate_drivetrain_button() {
 	pros::lcd::set_text(2, "Calibrating drivetrain.");
 	drivetrain.calibrate();
@@ -33,6 +35,7 @@ void initialize() {
 	pros::lcd::register_btn0_cb(calibrate_drivetrain_button);
 	pros::lcd::register_btn1_cb(test_drivetrain_button);
 	calibrate_drivetrain_button();
+	control.createMacro({pros::E_CONTROLLER_DIGITAL_L1,pros::E_CONTROLLER_DIGITAL_L2,pros::E_CONTROLLER_DIGITAL_R1,pros::E_CONTROLLER_DIGITAL_L2}, on_triggers_hit);
 	
 }
 

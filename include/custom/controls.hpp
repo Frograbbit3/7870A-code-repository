@@ -5,6 +5,10 @@
 #include <map>
 #include <vector>
 
+
+
+
+
 //random helper func
     std::vector<pros::controller_digital_e_t> __BUTTON_LIST = {
 	pros::E_CONTROLLER_DIGITAL_L1,
@@ -50,6 +54,7 @@ namespace ControllerLib
             uint8_t rightVelocity;
             std::map<std::vector<pros::controller_digital_e_t>, void (*)()> macros;
             std::vector<pros::controller_digital_e_t> pressed;
+            int lastPressedtime = pros::millis();
             //welcome to my amazing code
             int32_t leftJoystickY;
             int32_t leftJoystickX;
@@ -72,24 +77,29 @@ namespace ControllerLib
                 rightJoystickY = controller.get_analog(ANALOG_RIGHT_Y);
                 leftJoystickX = controller.get_analog(ANALOG_LEFT_X);
                 rightJoystickX = controller.get_analog(ANALOG_RIGHT_X);
-                for (const std::pair<const std::vector<pros::controller_digital_e_t>, void (*)()>& entry : macros) {
-                    const std::vector<pros::controller_digital_e_t>& inputs = entry.first;
-                    void (*macro_func)() = entry.second;
-                    pressed = getPressedButtons(controller);
-                    if (pressed.size() == inputs.size()) {
-                        keepGoing=true;
-                        for (const pros::controller_digital_e_t& m : inputs) {
-                            if (!controller.get_digital(m) && keepGoing) {
-                                keepGoing=false;
-                                continue;
+
+                ///MACRO SYSTEM
+                if (pros::millis() - lastPressedtime > 250) {
+                    for (const std::pair<const std::vector<pros::controller_digital_e_t>, void (*)()>& entry : macros) {
+                        const std::vector<pros::controller_digital_e_t>& inputs = entry.first;
+                        void (*macro_func)() = entry.second;
+                        pressed = getPressedButtons(controller);
+                        if (pressed.size() == inputs.size()) {
+                            keepGoing=true;
+                            for (const pros::controller_digital_e_t& m : inputs) {
+                                if (!controller.get_digital(m) && keepGoing) {
+                                    keepGoing=false;
+                                    continue;
+                                }
                             }
+                            if (keepGoing) {
+                                lastPressedtime=pros::millis();
+                                macro_func();
+                            } 
                         }
-                        if (keepGoing) { //successful keybind
-                            macro_func();
-                        } 
                     }
-                    //std::vector<std::string>, func()
                 }
+
                 switch (type)
                 {
                     case ControllerLib::ControllerEnums::DRIVE_MODE_ARCADE:
