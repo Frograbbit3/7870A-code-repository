@@ -4,9 +4,6 @@
 
 
 /// @brief Variable init
-constexpr float dead_zone = 0.1f;
-constexpr float MAX_TURN_SPEED = 0.6f;
-constexpr float MAX_FORWARD_SPEED = 0.8f;
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20}); //put motor ports here
 ControllerLib::ControlScheme control(
@@ -31,13 +28,6 @@ void initialize() {
 	pros::lcd::set_text(1, "Debug Menu");
 	pros::lcd::register_btn0_cb(calibrate_drivetrain_button);
 	pros::lcd::register_btn1_cb(test_drivetrain_button);
-	pros::Motor bottom_right = pros::Motor(pros::v5::Device(10));
-	pros::Motor bottom_left = pros::Motor(pros::v5::Device(3));
-
-	pros::Motor center_right = pros::Motor(pros::v5::Device(5));
-	pros::Motor center_left = pros::Motor(pros::v5::Device(9));
-	pros::Motor upper_right = pros::Motor(pros::v5::Device(20));
-	pros::Motor upper_left = pros::Motor(pros::v5::Device(13));
 	calibrate_drivetrain_button();
 	
 }

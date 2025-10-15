@@ -31,7 +31,7 @@ namespace ControllerLib
         public:
             ControlScheme(ControllerLib::ControllerEnums typ, DriveUtils::Drivetrain& driveref, pros::Controller& controlleref)  : drive(driveref), controller(controlleref), type(typ) {}
             void update() {
-                /*@brief main controller loop.*/
+                ///@brief main controller loop
                 leftJoystickY = controller.get_analog(ANALOG_LEFT_Y);
                 rightJoystickY = controller.get_analog(ANALOG_RIGHT_Y);
                 leftJoystickX = controller.get_analog(ANALOG_LEFT_X);
