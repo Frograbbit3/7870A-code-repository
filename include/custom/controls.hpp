@@ -29,7 +29,7 @@
 std::vector<pros::controller_digital_e_t> getPressedButtons(pros::Controller& control) {
     std::vector<pros::controller_digital_e_t> pressed = {};
     for (auto& m : __BUTTON_LIST) {
-        if (control.get_digital(m)) {
+        if (control.get_digital_new_press(m)) {
             pressed.emplace_back(m);
         }
     }
@@ -79,7 +79,7 @@ namespace ControllerLib
                 rightJoystickX = controller.get_analog(ANALOG_RIGHT_X);
 
                 ///MACRO SYSTEM
-                if (pros::millis() - lastPressedtime > 250) {
+                if (pros::millis() - lastPressedtime > 25) {
                     for (const std::pair<const std::vector<pros::controller_digital_e_t>, void (*)()>& entry : macros) {
                         const std::vector<pros::controller_digital_e_t>& inputs = entry.first;
                         void (*macro_func)() = entry.second;
@@ -87,7 +87,7 @@ namespace ControllerLib
                         if (pressed.size() == inputs.size()) {
                             keepGoing=true;
                             for (const pros::controller_digital_e_t& m : inputs) {
-                                if (!controller.get_digital(m) && keepGoing) {
+                                if (!controller.get_digital_new_press(m) && keepGoing) {
                                     keepGoing=false;
                                     continue;
                                 }
