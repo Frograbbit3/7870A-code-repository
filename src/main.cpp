@@ -24,11 +24,13 @@ void a_b() {
 void a() {
 	std::cout << "just a" << std::endl;
 }
+UILib::Screen main_win("Hello, world!", 60, 60);
 UILib::Label lbl(100,100,"0");
 void slider_event(int val) {
 	lbl.change_text(std::to_string(val));
 }
 void initialize() {
+	UILib::setActive(main_win);
 	auto slider = new UILib::Slider(0,0,0,100);
 	slider->on_move(slider_event);
 	control.createMacro({DIGITAL_A, DIGITAL_B}, a_b);

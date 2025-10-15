@@ -7,6 +7,20 @@
 #define lv_get_obj lv_event_get_current_target_obj
 namespace UILib {
     auto activeScreen = lv_screen_active();
+    class Screen {
+        private:
+            static void __PROCESS_CLOSE_BUTTON(lv_event_t * e) {
+                Screen* instance = (Screen*)lv_event_get_user_data(e);
+                lv_obj_delete(lv_event_get_current_target_obj(e));
+            }
+        public:
+            lv_obj_t * win = lv_win_create(activeScreen);
+            Screen(std::string title, int width, int height) {
+                lv_win_add_title(win, title.c_str());
+                lv_obj_t * close_btn = lv_win_add_button(win, LV_SYMBOL_CLOSE,64);           /*Add close button and use built-in close action*/
+                lv_add_event(close_btn,__PROCESS_CLOSE_BUTTON, LV_EVENT_CLICKED, NULL);
+            }
+    };
     class Slider {
         public:
             int value = 0;
@@ -52,12 +66,15 @@ namespace UILib {
                 value = msg;
                 lv_label_set_text(label, value.c_str());
             }
+
     }; 
 
-
-    
     void update() {
         lv_tick_inc(20);
         lv_timer_handler();
+    }
+
+    void setActive(UILib::Screen& scrn) {
+        activeScreen = lv_win_get_content(scrn.win);
     }
 }
