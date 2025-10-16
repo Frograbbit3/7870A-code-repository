@@ -11,31 +11,12 @@ ControllerLib::ControlScheme control(
 );
 
 
+void createMessageBox() {
+	UILib::MessageBox msg("Example", "This is an example message box.", UILib::MessageBoxType::OK_BOX);
+}
 
-int count = 0;
-void on_triggers_hit() {
-	count++;
-	master.print(0,0,std::to_string(count).c_str());
-};
-
-void a_b() {
-	std::cout << "a+b hit" << std::endl;
-}
-void a() {
-	std::cout << "just a" << std::endl;
-}
-UILib::Label lbl(10,-20,"0");
-UILib::Keyboard kb;
-void slider_event(int val) {
-	lbl.change_text(std::to_string(val));
-}
 void initialize() {
-	//auto slider = new UILib::Slider(0,0,0,100);
-	//slider->on_move(slider_event);
-	control.createMacro({DIGITAL_A, DIGITAL_B}, a_b);
-	control.createMacro({DIGITAL_A}, a);
-	control.createMacro({pros::E_CONTROLLER_DIGITAL_L1,pros::E_CONTROLLER_DIGITAL_L2,pros::E_CONTROLLER_DIGITAL_R1,pros::E_CONTROLLER_DIGITAL_L2}, on_triggers_hit);
-	
+	control.createMacro({DIGITAL_A, DIGITAL_L1}, createMessageBox);
 }
 
 

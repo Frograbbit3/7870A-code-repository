@@ -7,6 +7,11 @@
 #define lv_get_obj lv_event_get_current_target_obj
 namespace UILib {
     auto activeScreen = lv_screen_active();
+    enum class MessageBoxType {
+        OK_BOX=1,
+        YES_NO_BOX=2,
+        APPLY_CANCEL=3
+    };
     class Screen {
         private:
             static void __PROCESS_CLOSE_BUTTON(lv_event_t * e) {
@@ -18,21 +23,45 @@ namespace UILib {
             Screen(std::string title) {
                 lv_win_add_title(win, title.c_str());
                 lv_obj_t * close_btn = lv_win_add_button(win, LV_SYMBOL_CLOSE,64);           /*Add close button and use built-in close action*/
-                lv_add_event(close_btn,__PROCESS_CLOSE_BUTTON, LV_EVENT_CLICKED, NULL);
+                lv_add_event(close_btn,__PROCESS_CLOSE_BUTTON, LV_EVENT_CLICKED, this);
             }
     };
     class Keyboard {
         private:
             lv_obj_t* kb;    
             lv_obj_t* ta2;
-        
+            void (*on_key_press)() = nullptr;
+            static void __PROCESS_KEYBOARD_INPUTS(lv_event_t * e) {
+                Keyboard* instance = (Keyboard*)lv_event_get_user_data(e);
+                if (instance->on_key_press) {
+                    instance->on_key_press();
+                }
+            }
         public:
             Keyboard() {
                 kb = lv_keyboard_create(activeScreen);
                 ta2 = lv_textarea_create(activeScreen);
                 lv_obj_set_size(ta2, 0, 0);
                 lv_keyboard_set_textarea(kb, ta2);
+                lv_add_event(kb, __PROCESS_KEYBOARD_INPUTS, LV_EVENT_VALUE_CHANGED, this);
             }
+
+            std::string get_typed() {
+                std::string st = lv_textarea_get_text(ta2);
+                return st;
+            }
+
+            void onKeyPressed(void (*callback)()) {
+                on_key_press = callback;
+            }
+
+            void hide() {
+                lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
+            }
+            void show() {
+                lv_obj_remove_flag(kb, LV_OBJ_FLAG_HIDDEN);
+            }
+            
     };
     class Slider {
         public:
@@ -81,7 +110,33 @@ namespace UILib {
             }
 
     }; 
+    class MessageBox {
+        private:
+            MessageBoxType _type;
+            static void okay_button(lv_event_t* e) {
+                MessageBox* instance = (MessageBox*)lv_event_get_user_data(e);
+                lv_msgbox_close(instance->mbox);
+            }
 
+        public:
+            lv_obj_t* mbox = lv_msgbox_create(NULL);
+            MessageBox(std::string title, std::string message, UILib::MessageBoxType type) {
+                lv_msgbox_add_title(mbox, title.c_str());
+                lv_msgbox_add_text(mbox, message.c_str());
+                lv_msgbox_add_close_button(mbox);
+                switch (type)
+                {
+                case UILib::MessageBoxType::OK_BOX:
+                    lv_obj_t* ok_button;
+                    ok_button = lv_msgbox_add_footer_button(mbox, "Okay");
+                    lv_add_event(ok_button, okay_button, LV_EVENT_CLICKED, NULL);
+                    break;
+                
+                default:
+                    break;
+                }
+            }
+    };
     void update() {
         lv_tick_inc(20);
         lv_timer_handler();
