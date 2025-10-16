@@ -15,10 +15,23 @@ namespace UILib {
             }
         public:
             lv_obj_t * win = lv_win_create(activeScreen);
-            Screen(std::string title, int width, int height) {
+            Screen(std::string title) {
                 lv_win_add_title(win, title.c_str());
                 lv_obj_t * close_btn = lv_win_add_button(win, LV_SYMBOL_CLOSE,64);           /*Add close button and use built-in close action*/
                 lv_add_event(close_btn,__PROCESS_CLOSE_BUTTON, LV_EVENT_CLICKED, NULL);
+            }
+    };
+    class Keyboard {
+        private:
+            lv_obj_t* kb;    
+            lv_obj_t* ta2;
+        
+        public:
+            Keyboard() {
+                kb = lv_keyboard_create(activeScreen);
+                ta2 = lv_textarea_create(activeScreen);
+                lv_obj_set_size(ta2, 0, 0);
+                lv_keyboard_set_textarea(kb, ta2);
             }
     };
     class Slider {

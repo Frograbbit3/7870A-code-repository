@@ -20,11 +20,9 @@ extern "C" {
  *********************/
 #include "lvgl_private.h"
 #include "liblvgl/lv_init.h"
-
 #include "liblvgl/stdlib/lv_mem.h"
 #include "liblvgl/stdlib/lv_string.h"
 #include "liblvgl/stdlib/lv_sprintf.h"
-
 #include "liblvgl/misc/lv_log.h"
 #include "liblvgl/misc/lv_timer.h"
 #include "liblvgl/misc/lv_math.h"
@@ -34,19 +32,15 @@ extern "C" {
 #include "liblvgl/misc/lv_profiler_builtin.h"
 #include "liblvgl/misc/lv_rb.h"
 #include "liblvgl/misc/lv_utils.h"
-
 #include "liblvgl/tick/lv_tick.h"
-
 #include "liblvgl/core/lv_obj.h"
 #include "liblvgl/core/lv_group.h"
 #include "liblvgl/indev/lv_indev.h"
 #include "liblvgl/core/lv_refr.h"
 #include "liblvgl/display/lv_display.h"
-
 #include "liblvgl/font/lv_font.h"
 #include "liblvgl/font/lv_binfont_loader.h"
 #include "liblvgl/font/lv_font_fmt_txt.h"
-
 #include "liblvgl/widgets/animimage/lv_animimage.h"
 #include "liblvgl/widgets/arc/lv_arc.h"
 #include "liblvgl/widgets/bar/lv_bar.h"
@@ -79,7 +73,6 @@ extern "C" {
 #include "liblvgl/widgets/textarea/lv_textarea.h"
 #include "liblvgl/widgets/tileview/lv_tileview.h"
 #include "liblvgl/widgets/win/lv_win.h"
-
 #include "liblvgl/others/snapshot/lv_snapshot.h"
 #include "liblvgl/others/sysmon/lv_sysmon.h"
 #include "liblvgl/others/monkey/lv_monkey.h"
@@ -89,7 +82,6 @@ extern "C" {
 #include "liblvgl/others/observer/lv_observer.h"
 #include "liblvgl/others/ime/lv_ime_pinyin.h"
 #include "liblvgl/others/file_explorer/lv_file_explorer.h"
-
 #include "liblvgl/libs/barcode/lv_barcode.h"
 #include "liblvgl/libs/bin_decoder/lv_bin_decoder.h"
 #include "liblvgl/libs/bmp/lv_bmp.h"
@@ -105,22 +97,16 @@ extern "C" {
 #include "liblvgl/libs/rlottie/lv_rlottie.h"
 #include "liblvgl/libs/ffmpeg/lv_ffmpeg.h"
 #include "liblvgl/libs/tiny_ttf/lv_tiny_ttf.h"
-
 #include "liblvgl/layouts/lv_layout.h"
-
 #include "liblvgl/draw/lv_draw.h"
 #include "liblvgl/draw/lv_draw_buf.h"
 #include "liblvgl/draw/lv_draw_vector.h"
 #include "liblvgl/draw/sw/lv_draw_sw.h"
-
 #include "liblvgl/themes/lv_theme.h"
-
 #include "liblvgl/drivers/lv_drivers.h"
-
 // #include "liblvgl/lv_api_map_v8.h"
 #include "liblvgl/lv_api_map_v9_0.h"
 #include "liblvgl/lv_api_map_v9_1.h"
-
 #if LV_USE_PRIVATE_API
 #include "liblvgl/lvgl_private.h"
 #endif
