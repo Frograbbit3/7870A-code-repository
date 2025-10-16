@@ -11,12 +11,8 @@ ControllerLib::ControlScheme control(
 );
 
 
-void createMessageBox() {
-	UILib::MessageBox msg("Example", "This is an example message box.", UILib::MessageBoxType::OK_BOX);
-}
 
 void initialize() {
-	control.createMacro({DIGITAL_A, DIGITAL_L1}, createMessageBox);
 }
 
 

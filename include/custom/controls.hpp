@@ -111,7 +111,7 @@ namespace ControllerLib
             if (pros::millis() - lastPressedtime > 25)
             {
                 pressed = getPressedButtons(controller);
-                if (pressed.size() < 1)
+                if (pressed.size() <= 0)
                 {
                     //std::cout << "cleared" << std::endl;
                     is_held = false;

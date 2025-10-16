@@ -81,10 +81,10 @@ namespace UILib {
             Slider(int x, int y, int start, int end) {
                 lv_slider_set_mode(slider, LV_SLIDER_MODE_NORMAL);
                 lv_slider_set_range(slider, start, end);
+                lv_center(slider);
                 lv_obj_set_x(slider, x); // Fixed: using lv_obj_set_x instead of lv_obj_set_style_x
                 lv_obj_set_y(slider, y);
                 lv_add_event(slider, __PROCESS_SLIDER_STATIC, LV_EVENT_VALUE_CHANGED, this);
-                lv_center(slider);
             }
             
             void on_move(void (*callback)(int)) {
@@ -113,30 +113,35 @@ namespace UILib {
     class MessageBox {
         private:
             MessageBoxType _type;
-            static void okay_button(lv_event_t* e) {
-                MessageBox* instance = (MessageBox*)lv_event_get_user_data(e);
-                lv_msgbox_close(instance->mbox);
-            }
-
         public:
             lv_obj_t* mbox = lv_msgbox_create(NULL);
-            MessageBox(std::string title, std::string message, UILib::MessageBoxType type) {
+            MessageBox(std::string title, std::string message) {
                 lv_msgbox_add_title(mbox, title.c_str());
                 lv_msgbox_add_text(mbox, message.c_str());
                 lv_msgbox_add_close_button(mbox);
-                switch (type)
-                {
-                case UILib::MessageBoxType::OK_BOX:
-                    lv_obj_t* ok_button;
-                    ok_button = lv_msgbox_add_footer_button(mbox, "Okay");
-                    lv_add_event(ok_button, okay_button, LV_EVENT_CLICKED, NULL);
-                    break;
-                
-                default:
-                    break;
-                }
             }
+            
+
     };
+    class Bar {
+        private:
+            lv_obj_t* bar = lv_bar_create(activeScreen);
+            int value = 0;
+            
+        public:
+            Bar(int x, int y, int value = 0) {
+                lv_center(bar);
+                lv_obj_set_x(bar, x); // Fixed: using lv_obj_set_x instead of lv_obj_set_style_x
+                lv_obj_set_y(bar, y);
+                change_value(value);
+            }
+            
+            void change_value(int new_value) {
+                value = new_value;
+                lv_bar_set_value(bar,value, LV_ANIM_ON);
+            }
+
+    }; 
     void update() {
         lv_tick_inc(20);
         lv_timer_handler();
