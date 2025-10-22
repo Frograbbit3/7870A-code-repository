@@ -61,11 +61,11 @@ namespace DriveUtils
                         rightSideDifference = rightProperties.SET_VELOCITY - rightProperties.ACTUAL_VELOCITY;
                         if (leftSideDifference - rightSideDifference > correction)
                         {
-                            // rightProperties.SET_VELOCITY = (leftSideDifference - rightSideDifference) * leftProperties.SET_VELOCITY;
+                            rightProperties.SET_VELOCITY = (leftSideDifference - rightSideDifference) * leftProperties.SET_VELOCITY;
                         }
                         else if (rightSideDifference - leftSideDifference > correction)
                         {
-                            // leftProperties.SET_VELOCITY = (rightSideDifference - leftSideDifference) * rightProperties.SET_VELOCITY;
+                            leftProperties.SET_VELOCITY = (rightSideDifference - leftSideDifference) * rightProperties.SET_VELOCITY;
                         }
                     }
                     else
@@ -107,8 +107,8 @@ namespace DriveUtils
     public:
         Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide) : leftMotors(leftSide), rightMotors(rightSide)
         {
-            // pros::Task telementry(task_helper_telementry, (void *)this);
-            // pros::Task auto_drive(task_helper_drive_correction, (void *)this);
+            pros::Task telementry(task_helper_telementry, (void *)this);
+            pros::Task auto_drive(task_helper_drive_correction, (void *)this);
         }
         void calibrate()
         {

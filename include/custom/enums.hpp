@@ -13,7 +13,7 @@ namespace DrivetrainEnums
     };
 
     struct DrivetrainSettings {
-        bool AUTO_DRIVE_ENABLED = false;
+        bool AUTO_DRIVE_ENABLED = true;
     };
     
     struct MotorProperties {
@@ -54,7 +54,7 @@ namespace ControllerEnums
         float MAX_TURN_SPEED = 0.6f;
         float MAX_FORWARD_SPEED = 0.8f;
         float DEADZONE = 10.0f;
-        bool DRIVE_AUTO_CORRECTION = false;
+        bool DRIVE_AUTO_CORRECTION = true;
         bool ENABLED = true;
     };
 

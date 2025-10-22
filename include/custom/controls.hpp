@@ -184,8 +184,8 @@ namespace ControllerLib
             if (configuration.CONTROL_SCHEME == ARCADE_DRIVE)
             {
                 // Convert to int16_t to handle the multiplication properly
-                leftVelocity = static_cast<int16_t>(rightJoystickX * -configuration.MAX_TURN_SPEED) - static_cast<int16_t>(leftJoystickY * configuration.MAX_FORWARD_SPEED);
-                rightVelocity = static_cast<int16_t>(rightJoystickX * -configuration.MAX_TURN_SPEED) + static_cast<int16_t>(leftJoystickY * configuration.MAX_FORWARD_SPEED);
+                leftVelocity = static_cast<int16_t>(rightJoystickX * -configuration.MAX_TURN_SPEED) - static_cast<int16_t>(-leftJoystickY * configuration.MAX_FORWARD_SPEED);
+                rightVelocity = static_cast<int16_t>(rightJoystickX * -configuration.MAX_TURN_SPEED) + static_cast<int16_t>(-leftJoystickY * configuration.MAX_FORWARD_SPEED);
                 // Clamp values to valid range for uint8_t
                 leftVelocity = std::min(127, std::max(-127, static_cast<int>(leftVelocity)));
                 rightVelocity = std::min(127, std::max(-127, static_cast<int>(rightVelocity)));
