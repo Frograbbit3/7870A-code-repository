@@ -43,6 +43,7 @@
 #include "custom/drivetrain.hpp"
 #include "custom/controls.hpp"
 #include "custom/ui.hpp"
+#include "custom/enums.hpp"
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
  * Motor, you can use the namespace with the following commented out line.

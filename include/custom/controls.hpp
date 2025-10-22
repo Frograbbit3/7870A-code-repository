@@ -7,22 +7,8 @@
 #include <algorithm>  // For std::sort
 
 // random helper func
-std::vector<pros::controller_digital_e_t> __BUTTON_LIST = {
-    pros::E_CONTROLLER_DIGITAL_L1,
-    pros::E_CONTROLLER_DIGITAL_L2,
-    pros::E_CONTROLLER_DIGITAL_R1,
-    pros::E_CONTROLLER_DIGITAL_R2,
-    pros::E_CONTROLLER_DIGITAL_UP,
-    pros::E_CONTROLLER_DIGITAL_DOWN,
-    pros::E_CONTROLLER_DIGITAL_LEFT,
-    pros::E_CONTROLLER_DIGITAL_RIGHT,
-    pros::E_CONTROLLER_DIGITAL_X,
-    pros::E_CONTROLLER_DIGITAL_B,
-    pros::E_CONTROLLER_DIGITAL_Y,
-    pros::E_CONTROLLER_DIGITAL_A,
-    pros::E_CONTROLLER_DIGITAL_POWER};
 
-std::vector<pros::controller_digital_e_t> getPressedButtons(pros::Controller &control)
+inline std::vector<pros::controller_digital_e_t> getPressedButtons(pros::Controller &control)
 {
     std::vector<pros::controller_digital_e_t> pressed = {};
     for (auto &m : __BUTTON_LIST)
@@ -48,15 +34,22 @@ namespace ControllerLib
         bool hold = false;
         void* callable;
     };
+    struct ControllerSettings {
+        ControllerLib::ControllerEnums CONTROL_SCHEME;
+        float MAX_TURN_SPEED = 0.6f;
+        float MAX_FORWARD_SPEED = 0.8f;
+        float DEADZONE = 0.1f;
+    };
+
     class ControlScheme
     {
     private:
         DriveUtils::Drivetrain &drive;
         pros::Controller &controller;
-        ControllerLib::ControllerEnums &type;
+        std::vector<ControllerLib::ControllerMacro> macros;
         uint8_t leftVelocity;
         uint8_t rightVelocity;
-        std::vector<ControllerLib::ControllerMacro> macros;
+        
         std::vector<pros::controller_digital_e_t> pressed;
         std::vector<pros::controller_digital_e_t> last_pressed;
         int lastPressedtime = pros::millis();
@@ -84,10 +77,10 @@ namespace ControllerLib
         }
 
     public:
-        float MAX_TURN_SPEED = 0.6f;
-        float MAX_FORWARD_SPEED = 0.8f;
-        float DEADZONE = 0.1f;
-        ControlScheme(ControllerLib::ControllerEnums typ, DriveUtils::Drivetrain &driveref, pros::Controller &controlleref) : drive(driveref), controller(controlleref), type(typ) {}
+        ControllerLib::ControllerSettings configuration;
+        ControlScheme(ControllerLib::ControllerEnums typ, DriveUtils::Drivetrain &driveref, pros::Controller &controlleref) : drive(driveref), controller(controlleref) {
+            configuration.CONTROL_SCHEME = typ;
+        }
         void createMacro(const std::vector<pros::controller_digital_e_t> &keys, void (*func)(), bool hold=false)
         {
             ControllerMacro mac;
@@ -148,20 +141,20 @@ namespace ControllerLib
                 }
             }
 
-            switch (type)
+            switch (configuration.CONTROL_SCHEME)
             {
             case ControllerLib::ControllerEnums::DRIVE_MODE_ARCADE:
-                leftVelocity = (rightJoystickX * -MAX_TURN_SPEED) - (leftJoystickY * MAX_FORWARD_SPEED);
-                rightVelocity = (rightJoystickX * -MAX_TURN_SPEED) + (leftJoystickY * MAX_FORWARD_SPEED);
+                leftVelocity = (rightJoystickX * -configuration.MAX_TURN_SPEED) - (leftJoystickY * configuration.MAX_FORWARD_SPEED);
+                rightVelocity = (rightJoystickX * -configuration.MAX_TURN_SPEED) + (leftJoystickY * configuration.MAX_FORWARD_SPEED);
                 break;
 
             case ControllerLib::ControllerEnums::DRIVE_MODE_TANK:
-                leftVelocity = leftJoystickY * MAX_FORWARD_SPEED;
-                rightVelocity = rightJoystickY * MAX_FORWARD_SPEED;
+                leftVelocity = leftJoystickY * configuration.MAX_FORWARD_SPEED;
+                rightVelocity = rightJoystickY * configuration.MAX_FORWARD_SPEED;
             default:
                 break;
             }
-            if (abs(leftJoystickY) > DEADZONE || abs(rightJoystickY) > DEADZONE)
+            if (abs(leftJoystickY) > configuration.DEADZONE || abs(rightJoystickY) > configuration.DEADZONE)
             {
                 drive.setLeftVelocity((leftVelocity / 127.0f) * 100.0f);
                 drive.setRightVelocity((rightVelocity / 127.0f) * 100.0f);

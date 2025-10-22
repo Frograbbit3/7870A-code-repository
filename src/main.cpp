@@ -5,15 +5,15 @@
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 DriveUtils::Drivetrain drivetrain ({3,9,12}, {10,5,20}); //put motor ports here
 ControllerLib::ControlScheme control(
-	ControllerLib::ControllerEnums::DRIVE_MODE_ARCADE,
+	TANK_DRIVE,
 	drivetrain,
 	master
 );
 
 
 
-
 void initialize(){
+	control.configuration.CONTROL_SCHEME = ARCADE_DRIVE;
 }
 
 
