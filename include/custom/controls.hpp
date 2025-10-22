@@ -43,6 +43,11 @@ namespace ControllerLib
         DRIVE_MODE_ARCADE = 2
     };
 
+    struct ControllerMacro {
+        std::vector<pros::controller_digital_e_t> keybinds;
+        bool hold = false;
+        void* callable;
+    };
     class ControlScheme
     {
     private:
@@ -51,7 +56,7 @@ namespace ControllerLib
         ControllerLib::ControllerEnums &type;
         uint8_t leftVelocity;
         uint8_t rightVelocity;
-        std::map<std::vector<pros::controller_digital_e_t>, void (*)()> macros;
+        std::vector<ControllerLib::ControllerMacro> macros;
         std::vector<pros::controller_digital_e_t> pressed;
         std::vector<pros::controller_digital_e_t> last_pressed;
         int lastPressedtime = pros::millis();
@@ -64,25 +69,23 @@ namespace ControllerLib
 
         bool keepGoing = false;
 
-        void runMacro(const std::pair<const std::vector<pros::controller_digital_e_t>, void (*)()> &entry)
+        void runMacro(const ControllerLib::ControllerMacro macro)
         {
-            const std::vector<pros::controller_digital_e_t> &inputs = entry.first;
-            void (*macro_func)() = entry.second;
+            const std::vector<pros::controller_digital_e_t> &inputs = macro.keybinds;
+            void (*macro_func)() = reinterpret_cast<void (*)()>(macro.callable);
             //std::cout << pressed.size() << std::endl;
             for (const pros::controller_digital_e_t &m : inputs)
             {   
-                //std::cout << m << std::endl;
                 if (!controller.get_digital(m))
                 {
                     return;
                 }
             }
-               // std::cout << is_held << std::endl;
                 if (!is_held)
                 {
                     lastPressedtime = pros::millis();
                     std::cout << "h" << std::endl;
-                    is_held = true;
+                    if (!macro.hold) {is_held = true;}
                     macro_func();
                     return;
                 }
@@ -93,9 +96,13 @@ namespace ControllerLib
         float MAX_FORWARD_SPEED = 0.8f;
         float DEADZONE = 0.1f;
         ControlScheme(ControllerLib::ControllerEnums typ, DriveUtils::Drivetrain &driveref, pros::Controller &controlleref) : drive(driveref), controller(controlleref), type(typ) {}
-        void createMacro(const std::vector<pros::controller_digital_e_t> &keys, void (*func)())
+        void createMacro(const std::vector<pros::controller_digital_e_t> &keys, void (*func)(), bool hold=false)
         {
-            macros.emplace(keys, func);
+            ControllerMacro mac;
+            mac.callable = reinterpret_cast<void*>(func);
+            mac.hold = hold;
+            mac.keybinds = keys;
+            macros.push_back(mac);
         }
 
         void update()
@@ -119,19 +126,19 @@ namespace ControllerLib
                 }
                 else
                 {
-                    std::vector<std::pair<const std::vector<pros::controller_digital_e_t>, void (*)()>*> sorted_macros;
+                    std::vector<ControllerMacro*> sorted_macros;
                     for (auto& entry : macros) {
-                        sorted_macros.push_back(const_cast<std::pair<const std::vector<pros::controller_digital_e_t>, void (*)()>*>(&entry));
+                        sorted_macros.push_back(&entry);
                     }
                     
                     std::sort(sorted_macros.begin(), sorted_macros.end(), 
                         [](const auto* a, const auto* b) {
-                            return a->first.size() > b->first.size(); 
+                            return a->keybinds.size() > b->keybinds.size(); 
                         });
                     
                     for (const auto* entry_ptr : sorted_macros)
                     {
-                        if (entry_ptr->first.size() != last_pressed.size()) {
+                        if (entry_ptr->keybinds.size() != last_pressed.size()) {
                             runMacro(*entry_ptr);
                         }
                     }
