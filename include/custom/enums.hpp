@@ -1,6 +1,8 @@
 #pragma once
 inline double INCH_TO_MM(double inch) { return 25.4 * inch; }
 inline double MM_TO_INCH(double mm) { return mm / 25.4; }
+template <typename T>
+inline void print(T m) {std::cout << m << std::endl;}
 namespace DrivetrainEnums
 {
     struct WheelProperties
@@ -11,7 +13,7 @@ namespace DrivetrainEnums
     };
 
     struct DrivetrainSettings {
-        bool AUTO_DRIVE_ENABLED = true;
+        bool AUTO_DRIVE_ENABLED = false;
     };
     
     struct MotorProperties {
@@ -48,10 +50,10 @@ namespace ControllerEnums
 
     struct ControllerSettings
     {
-        ControllerDriveTypes CONTROL_SCHEME;
+        ControllerDriveTypes CONTROL_SCHEME = ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE;
         float MAX_TURN_SPEED = 0.6f;
         float MAX_FORWARD_SPEED = 0.8f;
-        float DEADZONE = 0.1f;
+        float DEADZONE = 10.0f;
         bool DRIVE_AUTO_CORRECTION = false;
         bool ENABLED = true;
     };

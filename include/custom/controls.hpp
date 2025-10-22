@@ -23,18 +23,19 @@ inline std::vector<pros::controller_digital_e_t> getPressedButtons(pros::Control
 
 namespace ControllerLib
 {
-    class Macro {
-        public:
-            std::vector<pros::controller_digital_e_t> MACRO_KEYS;
-            void (*ON_PRESSED)();
-            void (*ON_RELEASED)();
-            bool REGISTER_HOLD = false;
-            Macro(const std::vector<pros::controller_digital_e_t> &key_pressed, void (*press)(), void(*release)()=nullptr, bool hold=false) : 
-                MACRO_KEYS(key_pressed), 
-                ON_PRESSED(press), 
-                ON_RELEASED(release), 
-                REGISTER_HOLD(hold) 
-            {}
+    class Macro
+    {
+    public:
+        std::vector<pros::controller_digital_e_t> MACRO_KEYS;
+        void (*ON_PRESSED)();
+        void (*ON_RELEASED)();
+        bool REGISTER_HOLD = false;
+        Macro(const std::vector<pros::controller_digital_e_t> &key_pressed, void (*press)(), void (*release)() = nullptr, bool hold = false) : MACRO_KEYS(key_pressed),
+                                                                                                                                               ON_PRESSED(press),
+                                                                                                                                               ON_RELEASED(release),
+                                                                                                                                               REGISTER_HOLD(hold)
+        {
+        }
     };
 
     class ControlScheme
@@ -43,12 +44,12 @@ namespace ControllerLib
         DriveUtils::Drivetrain &drive;
         pros::Controller &controller;
         std::vector<ControllerLib::Macro> macros;
-        uint8_t leftVelocity;
-        uint8_t rightVelocity;
+        int16_t leftVelocity;
+        int16_t rightVelocity;
 
         std::vector<pros::controller_digital_e_t> pressed;
         std::vector<pros::controller_digital_e_t> last_pressed;
-        int lastPressedtime = pros::millis();
+        int lastPressedTime = pros::millis();
         bool is_held = true;
         // welcome to my amazing code
         int32_t leftJoystickY;
@@ -67,7 +68,7 @@ namespace ControllerLib
             // std::cout << pressed.size() << std::endl;
             if (!is_held && isMacroPressed(macro))
             {
-                lastPressedtime = pros::millis();
+                lastPressedTime = pros::millis();
                 if (!macro.REGISTER_HOLD)
                 {
                     is_held = true;
@@ -79,7 +80,7 @@ namespace ControllerLib
 
     public:
         ControllerEnums::ControllerSettings configuration;
-        ControlScheme(ControllerEnums::ControllerDriveTypes typ, DriveUtils::Drivetrain &driveref, pros::Controller &controlleref) : drive(driveref), controller(controlleref)
+        ControlScheme(ControllerEnums::ControllerDriveTypes typ, DriveUtils::Drivetrain &driveRef, pros::Controller &controllerRef) : drive(driveRef), controller(controllerRef)
         {
             configuration.CONTROL_SCHEME = typ;
         }
@@ -87,12 +88,17 @@ namespace ControllerLib
         {
             macros.push_back(mac);
         }
-        void vibrateController(std::string pattern) {
-            if (pattern.size() <= 8) {
+        void vibrateController(std::string pattern)
+        {
+            if (pattern.size() <= 8)
+            {
                 controller.rumble(pattern.c_str());
-            } else {
-                int loops = (int)ceil((float)pattern.size()/8.0f);
-                for (int i = 0; i < loops; i++) {
+            }
+            else
+            {
+                int loops = (int)ceil((float)pattern.size() / 8.0f);
+                for (int i = 0; i < loops; i++)
+                {
                     size_t start = i * 8;
                     size_t length = std::min<size_t>(8, pattern.size() - start);
                     std::string part = pattern.substr(start, length);
@@ -125,19 +131,25 @@ namespace ControllerLib
 
             /// Configuration processing
             drive.configuration.AUTO_DRIVE_ENABLED = configuration.DRIVE_AUTO_CORRECTION;
-            if (!configuration.ENABLED) {return;}
+            if (!configuration.ENABLED)
+            {
+                return;
+            }
             /// MACRO SYSTEM
             // std::cout << "." << std::endl;
-            if (pros::millis() - lastPressedtime > 25)
+            if (pros::millis() - lastPressedTime > 25)
             {
                 pressed = getPressedButtons(controller);
                 if (pressed.size() <= 0)
                 {
                     // std::cout << "cleared" << std::endl;
                     is_held = false;
-                    for (ControllerLib::Macro &mac : macros) {
-                        if (last_pressed == mac.MACRO_KEYS) {
-                            if (mac.ON_RELEASED != nullptr) {
+                    for (ControllerLib::Macro &mac : macros)
+                    {
+                        if (last_pressed == mac.MACRO_KEYS)
+                        {
+                            if (mac.ON_RELEASED != nullptr)
+                            {
                                 mac.ON_RELEASED();
                             }
                         }
@@ -146,7 +158,7 @@ namespace ControllerLib
                 }
                 else
                 {
-                    std::vector<ControllerLib::Macro*> sorted_macros;
+                    std::vector<ControllerLib::Macro *> sorted_macros;
                     for (auto &entry : macros)
                     {
                         sorted_macros.push_back(&entry);
@@ -167,30 +179,44 @@ namespace ControllerLib
                     }
                 }
             }
+            // print("going into controller scheme");
 
-            switch (configuration.CONTROL_SCHEME)
+            if (configuration.CONTROL_SCHEME == ARCADE_DRIVE)
             {
-            case ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE:
-                leftVelocity = (rightJoystickX * -configuration.MAX_TURN_SPEED) - (leftJoystickY * configuration.MAX_FORWARD_SPEED);
-                rightVelocity = (rightJoystickX * -configuration.MAX_TURN_SPEED) + (leftJoystickY * configuration.MAX_FORWARD_SPEED);
-                break;
+                // Convert to int16_t to handle the multiplication properly
+                leftVelocity = static_cast<int16_t>(rightJoystickX * -configuration.MAX_TURN_SPEED) - static_cast<int16_t>(leftJoystickY * configuration.MAX_FORWARD_SPEED);
+                rightVelocity = static_cast<int16_t>(rightJoystickX * -configuration.MAX_TURN_SPEED) + static_cast<int16_t>(leftJoystickY * configuration.MAX_FORWARD_SPEED);
+                // Clamp values to valid range for uint8_t
+                leftVelocity = std::min(127, std::max(-127, static_cast<int>(leftVelocity)));
+                rightVelocity = std::min(127, std::max(-127, static_cast<int>(rightVelocity)));
+                // print("arcade");
 
-            case ControllerEnums::ControllerDriveTypes::DRIVE_MODE_TANK:
-                leftVelocity = leftJoystickY * configuration.MAX_FORWARD_SPEED;
-                rightVelocity = rightJoystickY * configuration.MAX_FORWARD_SPEED;
-            default:
-                break;
+            }else if (configuration.CONTROL_SCHEME == TANK_DRIVE)
+                {
+                    leftVelocity = static_cast<int16_t>(leftJoystickY * configuration.MAX_FORWARD_SPEED);
+                    rightVelocity = static_cast<int16_t>(rightJoystickY * -configuration.MAX_FORWARD_SPEED);
+                    // Clamp values to valid range for uint8_t
+                    leftVelocity = std::min(127, std::max(-127, static_cast<int>(leftVelocity)));
+                    rightVelocity = std::min(127, std::max(-127, static_cast<int>(rightVelocity)));
+                }
+                // print(leftVelocity / 127.0f);
+                // std::cout << rightVelocity << std::endl;
+                
+                if (abs(leftJoystickY) > configuration.DEADZONE || abs(rightJoystickY) > configuration.DEADZONE ||abs(leftJoystickX) > configuration.DEADZONE || abs(rightJoystickX) > configuration.DEADZONE)
+                {
+                    // std::cout << "JOYSTICk!" << std::endl;
+                    // drive.setLeftVelocity((leftVelocity / 127.0f)*100.0f);
+                    // drive.setRightVelocity((rightVelocity / 127.0f)*100.0f);
+                    // drive.drive(DrivetrainEnums::Direction::FORWARD);
+                    drive.leftMotors.move(leftVelocity);
+                    drive.rightMotors.move(rightVelocity);
+                }
+                else
+                {
+                    leftVelocity = 0.0f;
+                    drive.leftMotors.move(0);
+                    drive.rightMotors.move(0);
+                }
             }
-            if (abs(leftJoystickY) > configuration.DEADZONE || abs(rightJoystickY) > configuration.DEADZONE)
-            {
-                drive.setLeftVelocity((leftVelocity / 127.0f) * 100.0f);
-                drive.setRightVelocity((rightVelocity / 127.0f) * 100.0f);
-                drive.drive(DrivetrainEnums::Direction::FORWARD);
-            }
-            else
-            {
-                drive.stop();
-            }
-        }
-    };
-} // namespace ControllerLib
+        };
+    } // namespace ControllerLib

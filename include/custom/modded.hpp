@@ -17,13 +17,13 @@ class MotorGroup {
         void move(int32_t voltage) {
             for (pros::Motor& mtr : group) {
                 mtr.move(voltage);
-                stopped=0;
             }
         }
         void brake() {
             for (pros::Motor& mtr : group) {
                 mtr.brake();
-                stopped=time;
+                mtr.move(0);
+                //stopped=time;
             }
         }
         double getRotation() {
