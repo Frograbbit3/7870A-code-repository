@@ -53,6 +53,7 @@ namespace ControllerEnums
         float MAX_FORWARD_SPEED = 0.8f;
         float DEADZONE = 0.1f;
         bool DRIVE_AUTO_CORRECTION = false;
+        bool ENABLED = true;
     };
     struct ControllerMacro
     {
