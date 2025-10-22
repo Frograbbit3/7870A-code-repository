@@ -8,7 +8,7 @@ class MotorGroup {
     public:
         std::vector<pros::Motor> group;
         std::vector<int8_t> ports;
-        DrivetrainEnums::MotorProperties properties;
+        DrivetrainEnums::WheelProperties properties;
         MotorGroup(const std::vector<int8_t>& ports) {
             for (int8_t port : ports) {
                 group.push_back(pros::Motor(port));
@@ -38,16 +38,16 @@ class MotorGroup {
             switch (dst)
             {
             case DrivetrainEnums::Distance::INCHES:
-                return M_PI*getRotation()*properties.wheelSize;            
+                return M_PI*getRotation()*properties.WHEEL_SIZE;            
             case DrivetrainEnums::Distance::MM:
-                return INCH_TO_MM(M_PI*getRotation()*properties.wheelSize);
+                return INCH_TO_MM(M_PI*getRotation()*properties.WHEEL_SIZE);
             case DrivetrainEnums::Distance::ROTATION:
                 return getRotation();
             }
         }
         void update() {
             if (stopped > 0) {
-                if (time - stopped > properties.stopCooldown) {
+                if (time - stopped > properties.STOP_COOLDOWN) {
                     for (pros::Motor& mtr: group) {
                         mtr.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
                     }

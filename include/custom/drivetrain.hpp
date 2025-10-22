@@ -4,26 +4,19 @@
 #include "motor_testing.hpp"
 #include "enums.hpp"
 #include <math.h>
-
 #define pi M_PI
-using pros::Motor;
 
 namespace DriveUtils {
-    struct MotorProperties {
-        int velocity = 0; //in mV
-        bool is_driving = false;
-        float actual_velocity = 0; // updated by internal_telementry_collector
-    };
-
     class Drivetrain {
         public:
             MotorGroup leftMotors;
             MotorGroup rightMotors;
+            DrivetrainEnums::DrivetrainSettings configuration;
         private:
             std::vector<int8_t> leftSide;
             std::vector<int8_t> rightSide;
-            DriveUtils::MotorProperties leftProperties;
-            DriveUtils::MotorProperties rightProperties;
+            DrivetrainEnums::MotorProperties leftProperties;
+            DrivetrainEnums::MotorProperties rightProperties;
 
             void internal_telementry_collector() {
                 float average_vel;
@@ -33,14 +26,14 @@ namespace DriveUtils {
                     for (pros::Motor &mtr : leftMotors.group) {
                         average_vel += mtr.get_actual_velocity();
                     }
-                    leftProperties.actual_velocity = average_vel / leftMotors.group.size();
+                    leftProperties.ACTUAL_VELOCITY = average_vel / leftMotors.group.size();
 
                     //right side
                     average_vel = 0.0f;
                     for (pros::Motor &mtr : rightMotors.group) {
                         average_vel += mtr.get_actual_velocity();
                     }
-                    rightProperties.actual_velocity = average_vel / rightMotors.group.size();
+                    rightProperties.ACTUAL_VELOCITY = average_vel / rightMotors.group.size();
                     pros::delay(250);
                 }
             }
@@ -50,14 +43,15 @@ namespace DriveUtils {
                 double leftSideDifference = 0;
                 double rightSideDifference = 0;
                 while (true) {
+                    if (configuration.AUTO_DRIVE_ENABLED) {continue;}
                     //only correct if both sides are driving
-                    if (leftProperties.is_driving && rightProperties.is_driving) {
-                        leftSideDifference = leftProperties.velocity - leftProperties.actual_velocity;
-                        rightSideDifference = rightProperties.velocity - rightProperties.actual_velocity;
+                    if (leftProperties.IS_DRIVING && rightProperties.IS_DRIVING) {
+                        leftSideDifference = leftProperties.SET_VELOCITY - leftProperties.ACTUAL_VELOCITY;
+                        rightSideDifference = rightProperties.SET_VELOCITY - rightProperties.ACTUAL_VELOCITY;
                         if (leftSideDifference - rightSideDifference > correction) {
-                            rightProperties.velocity = (leftSideDifference - rightSideDifference) * leftProperties.velocity;
+                            rightProperties.SET_VELOCITY = (leftSideDifference - rightSideDifference) * leftProperties.SET_VELOCITY;
                         }else if (rightSideDifference - leftSideDifference > correction){
-                            leftProperties.velocity = (rightSideDifference - leftSideDifference) * rightProperties.velocity;
+                            leftProperties.SET_VELOCITY = (rightSideDifference - leftSideDifference) * rightProperties.SET_VELOCITY;
                         }
                     }else{ //Process breaking as well; makes life easier.
                         leftMotors.update();
@@ -112,12 +106,12 @@ namespace DriveUtils {
             void setLeftVelocity(int velocity) {
                 ///Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.
                 int32_t result = (velocity * 127) / 100;
-                leftProperties.velocity = result * 1000;
+                leftProperties.SET_VELOCITY = result * 1000;
             }
             void setRightVelocity(int velocity) {
                 ///Sets the right velocity to a value between 0 - 100. Does this by attempting to set max voltage.
                 int32_t result = (velocity * 127) / 100;
-                rightProperties.velocity = result * 100;
+                rightProperties.SET_VELOCITY = result * 100;
             }
 
             void stop() {
@@ -129,21 +123,21 @@ namespace DriveUtils {
                 switch (direction)
                 {
                     case DrivetrainEnums::Direction::FORWARD:
-                        leftMotors.move(leftProperties.velocity);
-                        rightMotors.move(rightProperties.velocity);
-                        leftProperties.is_driving = true;
-                        rightProperties.is_driving = true;
+                        leftMotors.move(leftProperties.SET_VELOCITY);
+                        rightMotors.move(rightProperties.SET_VELOCITY);
+                        leftProperties.IS_DRIVING = true;
+                        rightProperties.IS_DRIVING = true;
                         break;
                     case DrivetrainEnums::Direction::REVERSE:
-                        leftMotors.move(leftProperties.velocity*-1);
-                        rightMotors.move(rightProperties.velocity*-1);
-                        leftProperties.is_driving = true;
-                        rightProperties.is_driving = true;
+                        leftMotors.move(leftProperties.SET_VELOCITY*-1);
+                        rightMotors.move(rightProperties.SET_VELOCITY*-1);
+                        leftProperties.IS_DRIVING = true;
+                        rightProperties.IS_DRIVING = true;
                     default:
                         leftMotors.brake();
                         rightMotors.brake();
-                        leftProperties.is_driving = false;
-                        rightProperties.is_driving = false;
+                        leftProperties.IS_DRIVING = false;
+                        rightProperties.IS_DRIVING = false;
                         break;
                 }
             }
