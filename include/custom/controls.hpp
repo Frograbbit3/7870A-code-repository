@@ -23,13 +23,26 @@ inline std::vector<pros::controller_digital_e_t> getPressedButtons(pros::Control
 
 namespace ControllerLib
 {
+    class Macro {
+        public:
+            std::vector<pros::controller_digital_e_t> MACRO_KEYS;
+            void (*ON_PRESSED)();
+            void (*ON_RELEASED)();
+            bool REGISTER_HOLD = false;
+            Macro(const std::vector<pros::controller_digital_e_t> &key_pressed, void (*press)(), void(*release)()=nullptr, bool hold=false) : 
+                MACRO_KEYS(key_pressed), 
+                ON_PRESSED(press), 
+                ON_RELEASED(release), 
+                REGISTER_HOLD(hold) 
+            {}
+    };
 
     class ControlScheme
     {
     private:
         DriveUtils::Drivetrain &drive;
         pros::Controller &controller;
-        std::vector<ControllerEnums::ControllerMacro> macros;
+        std::vector<ControllerLib::Macro> macros;
         uint8_t leftVelocity;
         uint8_t rightVelocity;
 
@@ -45,16 +58,17 @@ namespace ControllerLib
 
         bool keepGoing = false;
 
-        void runMacro(const ControllerEnums::ControllerMacro macro)
+        void runMacro(const ControllerLib::Macro macro)
         {
-            const std::vector<pros::controller_digital_e_t> &inputs = macro.keybinds;
-            void (*on_press)() = reinterpret_cast<void (*)()>(macro.on_press);
-            void (*on_release)() = reinterpret_cast<void (*)()>(macro.on_release);
+            const std::vector<pros::controller_digital_e_t> &inputs = macro.MACRO_KEYS;
+            // No need for reinterpret_cast since we changed the field types
+            void (*on_press)() = macro.ON_PRESSED;
+            void (*on_release)() = macro.ON_RELEASED;
             // std::cout << pressed.size() << std::endl;
             if (!is_held && isMacroPressed(macro))
             {
                 lastPressedtime = pros::millis();
-                if (!macro.hold)
+                if (!macro.REGISTER_HOLD)
                 {
                     is_held = true;
                 }
@@ -69,13 +83,8 @@ namespace ControllerLib
         {
             configuration.CONTROL_SCHEME = typ;
         }
-        void createMacro(const std::vector<pros::controller_digital_e_t> &keys, void (*on_press)(), void(*on_release)()=nullptr, bool hold = false)
+        void createMacro(ControllerLib::Macro mac)
         {
-            ControllerEnums::ControllerMacro mac;
-            mac.on_press = reinterpret_cast<void *>(on_press);
-            mac.on_release = reinterpret_cast<void *>(on_release);
-            mac.hold = hold;
-            mac.keybinds = keys;
             macros.push_back(mac);
         }
         void vibrateController(std::string pattern) {
@@ -91,13 +100,13 @@ namespace ControllerLib
                 }
             }
         }
-        bool isMacroPressed(const ControllerEnums::ControllerMacro &macro)
+        bool isMacroPressed(const ControllerLib::Macro &macro)
         {
-            if (getPressedButtons(controller).size() != macro.keybinds.size())
+            if (getPressedButtons(controller).size() != macro.MACRO_KEYS.size())
             {
                 return false;
             }
-            for (const pros::controller_digital_e_t &m : macro.keybinds)
+            for (const pros::controller_digital_e_t &m : macro.MACRO_KEYS)
             {
                 if (!controller.get_digital(m))
                 {
@@ -126,17 +135,18 @@ namespace ControllerLib
                 {
                     // std::cout << "cleared" << std::endl;
                     is_held = false;
-                    for (ControllerEnums::ControllerMacro &mac : macros) {
-                        if (last_pressed == mac.keybinds) {
-                            void (*on_release)() = reinterpret_cast<void (*)()>(mac.on_release);
-                            on_release();
+                    for (ControllerLib::Macro &mac : macros) {
+                        if (last_pressed == mac.MACRO_KEYS) {
+                            if (mac.ON_RELEASED != nullptr) {
+                                mac.ON_RELEASED();
+                            }
                         }
                     }
                     last_pressed.clear();
                 }
                 else
                 {
-                    std::vector<ControllerEnums::ControllerMacro *> sorted_macros;
+                    std::vector<ControllerLib::Macro*> sorted_macros;
                     for (auto &entry : macros)
                     {
                         sorted_macros.push_back(&entry);
@@ -145,12 +155,12 @@ namespace ControllerLib
                     std::sort(sorted_macros.begin(), sorted_macros.end(),
                               [](const auto *a, const auto *b)
                               {
-                                  return a->keybinds.size() > b->keybinds.size();
+                                  return a->MACRO_KEYS.size() > b->MACRO_KEYS.size();
                               });
 
                     for (const auto *entry_ptr : sorted_macros)
                     {
-                        if (entry_ptr->keybinds.size() != last_pressed.size())
+                        if (entry_ptr->MACRO_KEYS.size() != last_pressed.size())
                         {
                             runMacro(*entry_ptr);
                         }

@@ -55,13 +55,6 @@ namespace ControllerEnums
         bool DRIVE_AUTO_CORRECTION = false;
         bool ENABLED = true;
     };
-    struct ControllerMacro
-    {
-        std::vector<pros::controller_digital_e_t> keybinds;
-        bool hold = false;
-        void *on_press;
-        void *on_release;
-    };
 
     std::vector<pros::controller_digital_e_t> __BUTTON_LIST = {
         pros::E_CONTROLLER_DIGITAL_L1,

@@ -20,7 +20,8 @@ void on_a_released() {
 	std::cout << "a released" << std::endl;
 }
 void initialize(){
-	control.createMacro({DIGITAL_A}, on_a_pressed, on_a_released, true);
+	ControllerLib::Macro AMacro({pros::E_CONTROLLER_DIGITAL_A}, on_a_pressed, on_a_released, true);
+	control.createMacro(AMacro);
 }
 
 
