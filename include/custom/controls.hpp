@@ -74,17 +74,9 @@ namespace ControllerLib
             const std::vector<pros::controller_digital_e_t> &inputs = macro.keybinds;
             void (*macro_func)() = reinterpret_cast<void (*)()>(macro.callable);
             //std::cout << pressed.size() << std::endl;
-            for (const pros::controller_digital_e_t &m : inputs)
-            {   
-                if (!controller.get_digital(m))
-                {
-                    return;
-                }
-            }
-                if (!is_held)
+                if (!is_held && isMacroPressed(macro))
                 {
                     lastPressedtime = pros::millis();
-                    std::cout << "h" << std::endl;
                     if (!macro.hold) {is_held = true;}
                     macro_func();
                     return;
@@ -105,6 +97,17 @@ namespace ControllerLib
             macros.push_back(mac);
         }
 
+        bool isMacroPressed(const ControllerLib::ControllerMacro &macro) {
+            if (getPressedButtons(controller).size() != macro.keybinds.size()) {return false;}
+            for (const pros::controller_digital_e_t &m : macro.keybinds)
+            {   
+                if (!controller.get_digital(m))
+                {
+                    return false;
+                }
+            }
+            return true; 
+        }
         void update()
         {
             ///@brief main controller loop
