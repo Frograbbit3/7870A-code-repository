@@ -10,10 +10,11 @@ ControllerLib::ControlScheme control(
 	master
 );
 
-
-
+bool drawingEnabled = false;
+inline void enableDrawing() {FlappyBird::start();master.rumble("."); drawingEnabled=!drawingEnabled;}
 
 void initialize(){
+	control.createMacro({DIGITAL_A, DIGITAL_L1, DIGITAL_R1, DIGITAL_LEFT}, enableDrawing);
 }
 
 
@@ -25,6 +26,9 @@ void autonomous() {}
 
 void opcontrol() {
 	while (true) {
+		if (drawingEnabled) {
+			FlappyBird::update();
+		}
 		control.update();
 		UILib::update();
 		pros::delay(20);

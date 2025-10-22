@@ -12,6 +12,9 @@ namespace UILib {
         YES_NO_BOX=2,
         APPLY_CANCEL=3
     };
+    bool cursorEnabled = false;
+    int cursorX = 0;
+    int cursorY = 0;
     class Screen {
         private:
             static void __PROCESS_CLOSE_BUTTON(lv_event_t * e) {
