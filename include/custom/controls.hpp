@@ -48,7 +48,8 @@ namespace ControllerLib
         void runMacro(const ControllerEnums::ControllerMacro macro)
         {
             const std::vector<pros::controller_digital_e_t> &inputs = macro.keybinds;
-            void (*macro_func)() = reinterpret_cast<void (*)()>(macro.callable);
+            void (*on_press)() = reinterpret_cast<void (*)()>(macro.on_press);
+            void (*on_release)() = reinterpret_cast<void (*)()>(macro.on_release);
             // std::cout << pressed.size() << std::endl;
             if (!is_held && isMacroPressed(macro))
             {
@@ -57,7 +58,7 @@ namespace ControllerLib
                 {
                     is_held = true;
                 }
-                macro_func();
+                on_press();
                 return;
             }
         }
@@ -68,10 +69,11 @@ namespace ControllerLib
         {
             configuration.CONTROL_SCHEME = typ;
         }
-        void createMacro(const std::vector<pros::controller_digital_e_t> &keys, void (*func)(), bool hold = false)
+        void createMacro(const std::vector<pros::controller_digital_e_t> &keys, void (*on_press)(), void(*on_release)()=nullptr, bool hold = false)
         {
             ControllerEnums::ControllerMacro mac;
-            mac.callable = reinterpret_cast<void *>(func);
+            mac.on_press = reinterpret_cast<void *>(on_press);
+            mac.on_release = reinterpret_cast<void *>(on_release);
             mac.hold = hold;
             mac.keybinds = keys;
             macros.push_back(mac);
@@ -83,7 +85,7 @@ namespace ControllerLib
                 int loops = (int)ceil((float)pattern.size()/8.0f);
                 for (int i = 0; i < loops; i++) {
                     size_t start = i * 8;
-                    size_t length = std::min(8ul, pattern.size() - start);
+                    size_t length = std::min<size_t>(8, pattern.size() - start);
                     std::string part = pattern.substr(start, length);
                     controller.rumble(part.c_str());
                 }
@@ -124,6 +126,12 @@ namespace ControllerLib
                 {
                     // std::cout << "cleared" << std::endl;
                     is_held = false;
+                    for (ControllerEnums::ControllerMacro &mac : macros) {
+                        if (last_pressed == mac.keybinds) {
+                            void (*on_release)() = reinterpret_cast<void (*)()>(mac.on_release);
+                            on_release();
+                        }
+                    }
                     last_pressed.clear();
                 }
                 else

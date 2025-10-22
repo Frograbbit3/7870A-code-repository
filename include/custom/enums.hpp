@@ -59,7 +59,8 @@ namespace ControllerEnums
     {
         std::vector<pros::controller_digital_e_t> keybinds;
         bool hold = false;
-        void *callable;
+        void *on_press;
+        void *on_release;
     };
 
     std::vector<pros::controller_digital_e_t> __BUTTON_LIST = {

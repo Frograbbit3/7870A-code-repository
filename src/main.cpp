@@ -12,8 +12,15 @@ ControllerLib::ControlScheme control(
 
 
 
+void on_a_pressed() {
+	std::cout << "a pressed" << std::endl;
+}
+
+void on_a_released() {
+	std::cout << "a released" << std::endl;
+}
 void initialize(){
-	control.configuration.CONTROL_SCHEME = ARCADE_DRIVE;
+	control.createMacro({DIGITAL_A}, on_a_pressed, on_a_released, true);
 }
 
 
