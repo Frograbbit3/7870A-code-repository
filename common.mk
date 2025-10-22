@@ -248,6 +248,25 @@ $(COLD_ELF): $(COLD_LIBRARIES)
 $(HOT_BIN): $(HOT_ELF) $(COLD_BIN)
 	$(call test_output_2,Creating $@ for $(DEVICE) ,$(OBJCOPY) $< -O binary $@,$(DONE_STRING))
 
+# Lua embedding rules - convert .lua to .c files with embedded bytecode
+$(SRCDIR)/lua/%.lua.c: $(SRCDIR)/lua/%.lua
+	@echo "Embedding Lua file: $<"
+	@mkdir -p $(dir $@)
+	@echo '/* Auto-generated from $< */' > $@
+	@echo '#include <stddef.h>' >> $@
+	@basename=$$(basename $< .lua); \
+	varname=$$(echo $$basename | sed 's/[^a-zA-Z0-9_]/_/g'); \
+	echo "const unsigned char lua_$${varname}_bytecode[] = {" >> $@; \
+	luac -o - $< | od -An -tx1 -v | sed 's/ \([0-9a-f][0-9a-f]\)/0x\1,/g' | sed 's/^/    /' >> $@; \
+	echo "    0x00" >> $@; \
+	echo "};" >> $@; \
+	size=$$(luac -o - $< | wc -c); \
+	echo "const size_t lua_$${varname}_bytecode_size = $$size;" >> $@; \
+	echo "const char* lua_$${varname}_name = \"$$basename\";" >> $@
+
+.PHONY: generate-lua-c
+generate-lua-c: $(LUA_GEN_FILES)
+
 $(HOT_ELF): $(COLD_ELF) $(ELF_DEPS)
 	$(call _pros_ld_timestamp)
 	$(call test_output_2,Linking hot project with $(COLD_ELF) and $(ARCHIVE_TEXT_LIST) ,$(LD) -nostartfiles $(LDFLAGS) $(call wlprefix,-R $<) $(filter-out $<,$^) $(LDTIMEOBJ) $(LIBRARIES) $(call wlprefix,-T$(FWDIR)/v5-hot.ld $(LNK_FLAGS) -o $@),$(OK_STRING))

@@ -13,8 +13,8 @@ SRCDIR=$(ROOT)/src
 INCDIR=$(ROOT)/include
 
 WARNFLAGS+=
-EXTRA_CFLAGS=-O2
-EXTRA_CXXFLAGS=-O2
+EXTRA_CFLAGS=-O2 -DLUA_32BITS
+EXTRA_CXXFLAGS=-O2 -DLUA_32BITS
 
 # Set to 1 to enable hot/cold linking
 USE_PACKAGE:=1
@@ -38,6 +38,10 @@ EXCLUDE_SRC_FROM_LIB+=$(foreach file, $(SRCDIR)/main,$(foreach cext,$(CEXTS),$(f
 # whatever files you want here. This line is configured to add all header files
 # that are in the directory include/LIBNAME
 TEMPLATE_FILES=$(INCDIR)/$(LIBNAME)/*.h $(INCDIR)/$(LIBNAME)/*.hpp
+
+# Lua embedding - convert .lua files to .c files with embedded bytecode
+LUA_SRC_FILES=$(wildcard $(SRCDIR)/lua/*.lua)
+LUA_GEN_FILES=$(patsubst $(SRCDIR)/lua/%.lua,$(SRCDIR)/lua/%.lua.c,$(LUA_SRC_FILES))
 
 .DEFAULT_GOAL=quick
 
