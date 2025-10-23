@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include "enums.hpp"
+
 #define time pros::millis()
 class MotorGroup {
     private:

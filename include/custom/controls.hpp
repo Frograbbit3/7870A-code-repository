@@ -41,7 +41,7 @@ namespace ControllerLib
     class ControlScheme
     {
     private:
-        DriveUtils::Drivetrain &drive;
+        DrivetrainLib::Drivetrain &drive;
         pros::Controller &controller;
         std::vector<ControllerLib::Macro> macros;
         int16_t leftVelocity;
@@ -80,7 +80,7 @@ namespace ControllerLib
 
     public:
         ControllerEnums::ControllerSettings configuration;
-        ControlScheme(ControllerEnums::ControllerDriveTypes typ, DriveUtils::Drivetrain &driveRef, pros::Controller &controllerRef) : drive(driveRef), controller(controllerRef)
+        ControlScheme(ControllerEnums::ControllerDriveTypes typ, DrivetrainLib::Drivetrain &driveRef, pros::Controller &controllerRef) : drive(driveRef), controller(controllerRef)
         {
             configuration.CONTROL_SCHEME = typ;
         }

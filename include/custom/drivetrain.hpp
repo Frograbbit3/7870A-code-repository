@@ -6,7 +6,7 @@
 #include <math.h>
 #define pi M_PI
 
-namespace DriveUtils
+namespace DrivetrainLib
 {
     class Drivetrain
     {

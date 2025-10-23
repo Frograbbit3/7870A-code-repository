@@ -19,7 +19,7 @@ void autonomous() {}
 
 
 void opcontrol() {
-	DriveUtils::Drivetrain drivetrain ({-3,9,10}, {5,12,20}); //put motor ports here
+	DrivetrainLib::Drivetrain drivetrain ({-3,9,10}, {5,12,20}); //put motor ports here
 	ControllerLib::ControlScheme control(
 		ARCADE_DRIVE,
 		drivetrain,
