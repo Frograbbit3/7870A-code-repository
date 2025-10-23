@@ -141,14 +141,12 @@ namespace DrivetrainLib
         void setLeftVelocity(int velocity)
         {
             /// Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.
-            int32_t result = (velocity * 127) / 100;
-            leftProperties.SET_VELOCITY = result;
+            leftProperties.SET_VELOCITY = std::min(127, std::max(-127, velocity));
         }
         void setRightVelocity(int velocity)
         {
             /// Sets the right velocity to a value between 0 - 100. Does this by attempting to set max voltage.
-            int32_t result = (velocity * 127) / 100;
-            rightProperties.SET_VELOCITY = result;
+            rightProperties.SET_VELOCITY = std::min(127, std::max(-127, velocity));
         }
 
         void stop()

@@ -2,7 +2,7 @@
 inline double INCH_TO_MM(double inch) { return 25.4 * inch; }
 inline double MM_TO_INCH(double mm) { return mm / 25.4; }
 template <typename T>
-inline void print(T m) {std::cout << m << std::endl;}
+inline void print(T m) { std::cout << m << std::endl; }
 namespace DrivetrainEnums
 {
     struct WheelProperties
@@ -12,12 +12,14 @@ namespace DrivetrainEnums
         double STOP_COOLDOWN = 1.0;
     };
 
-    struct DrivetrainSettings {
+    struct DrivetrainSettings
+    {
         bool AUTO_DRIVE_ENABLED = true;
     };
-    
-    struct MotorProperties {
-        int SET_VELOCITY = 0; //in mV
+
+    struct MotorProperties
+    {
+        int SET_VELOCITY = 0; // in mV
         bool IS_DRIVING = false;
         float ACTUAL_VELOCITY = 0; // updated by internal_telementry_collector
     };
@@ -56,6 +58,7 @@ namespace ControllerEnums
         float DEADZONE = 10.0f;
         bool DRIVE_AUTO_CORRECTION = true;
         bool ENABLED = true;
+        bool MACROS_ENABLED = true;
     };
 
     std::vector<pros::controller_digital_e_t> __BUTTON_LIST = {
@@ -76,3 +79,6 @@ namespace ControllerEnums
 
 #define TANK_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_TANK
 #define ARCADE_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE
+#define DRIVE_FORWARD DrivetrainEnums::Direction::FORWARD
+#define DRIVE_REVERSE DrivetrainEnums::Direction::REVERSE
+#define DRIVE_STOP DrivetrainEnums::Direction::STOP
