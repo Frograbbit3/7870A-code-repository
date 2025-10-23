@@ -4,7 +4,7 @@
 #include "custom/drivetrain.hpp"
 #include <map>
 #include <vector>
-#include <algorithm> 
+#include <algorithm>
 inline std::vector<pros::controller_digital_e_t> getPressedButtons(pros::Controller &control)
 {
     std::vector<pros::controller_digital_e_t> pressed = {};
@@ -35,6 +35,13 @@ namespace ControllerLib
     };
     class ControlScheme
     {
+    public:
+        int32_t leftJoystickY;
+        int32_t leftJoystickX;
+        int32_t rightJoystickY;
+        int32_t rightJoystickX;
+        ControllerEnums::ControllerSettings configuration;
+
     private:
         DrivetrainLib::Drivetrain &drive;
         pros::Controller &controller;
@@ -45,10 +52,6 @@ namespace ControllerLib
         std::vector<pros::controller_digital_e_t> last_pressed;
         int lastPressedTime = pros::millis();
         bool is_held = true;
-        int32_t leftJoystickY;
-        int32_t leftJoystickX;
-        int32_t rightJoystickY;
-        int32_t rightJoystickX;
         bool keepGoing = false;
         void runMacro(const ControllerLib::Macro macro)
         {
@@ -66,13 +69,13 @@ namespace ControllerLib
                 return;
             }
         }
+
     public:
-        ControllerEnums::ControllerSettings configuration;
         ControlScheme(ControllerEnums::ControllerDriveTypes typ, DrivetrainLib::Drivetrain &driveRef, pros::Controller &controllerRef) : drive(driveRef), controller(controllerRef)
         {
             configuration.CONTROL_SCHEME = typ;
         }
-        void createMacro(ControllerLib::Macro mac)
+        inline void createMacro(ControllerLib::Macro mac)
         {
             macros.push_back(mac);
         }
@@ -96,7 +99,10 @@ namespace ControllerLib
         }
         bool isMacroPressed(const ControllerLib::Macro &macro)
         {
-            if (!configuration.MACROS_ENABLED) {return false;}
+            if (!configuration.MACROS_ENABLED)
+            {
+                return false;
+            }
             if (getPressedButtons(controller).size() != macro.MACRO_KEYS.size())
             {
                 return false;
@@ -186,4 +192,4 @@ namespace ControllerLib
             }
         }
     };
-} 
+}
