@@ -26,7 +26,7 @@ void opcontrol() {
 		master
 	);
 	while (true) {
-		//print("controller tick")
+		print(FileManagementLib::readFileText("files/hello.txt"));
 		//drivetrain.leftMotors.move(master.get_analog(ANALOG_LEFT_Y));
 		//drivetrain.rightMotors.move(master.get_analog(ANALOG_RIGHT_Y));
 		control.update();

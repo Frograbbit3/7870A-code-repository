@@ -42,6 +42,7 @@ def generateHeader(file: str) -> str:
 #main
 def main():
     graph: dict[str, list[str]] = generateGraph("files")
+    count: int = 0
     paths: list[str] = []
     cpp_mapping: dict[str, str] = {}
     header: list[str] = [
@@ -61,6 +62,8 @@ def main():
         for file in files:
             fileName: str = os.path.splitext(file)[0]
             h, varName = generateHeader(os.path.join(folder, file))
+            count+=1
+            print("Processing", os.path.join(folder, file), f"({count}/???)")
             #paths.append(os.path.join(folder, fileName+".h"))
             cpp_mapping[os.path.join(folder, file)] = varName
             header.append(h)
