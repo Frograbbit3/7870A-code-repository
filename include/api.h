@@ -76,7 +76,7 @@
 #include "pros/rtos.hpp"
 #include "pros/screen.hpp"
 #include "pros/vision.hpp"
-#include "files/main_files.h"
+
 #endif
 
 #endif  // _PROS_API_H_

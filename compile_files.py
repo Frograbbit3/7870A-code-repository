@@ -51,7 +51,7 @@ def main():
         "#include <stddef.h>",
         '#include "map"', 
         '#include "string"',
-        "\nstruct EMBEDDED_FILE_STRUCT {\n\tconst uint8_t* data;\n\tconst size_t size;\n};"
+        "\nstruct EMBEDDED_FILE_STRUCT {\n\tconst uint8_t* data = nullptr;\n\tconst size_t size = 0;\n};"
     ]
     if os.path.exists(os.path.join(include_folder, "files")):
         __import__("shutil").rmtree(os.path.join(include_folder, "files"))
