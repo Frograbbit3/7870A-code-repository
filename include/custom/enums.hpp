@@ -3,6 +3,8 @@ inline double INCH_TO_MM(double inch) { return 25.4 * inch; }
 inline double MM_TO_INCH(double mm) { return mm / 25.4; }
 template <typename T>
 inline void print(T m) { std::cout << m << std::endl; }
+
+#define __VERSION 1.0b
 namespace DrivetrainEnums
 {
     struct WheelProperties
