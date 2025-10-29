@@ -43,6 +43,7 @@ namespace ControllerLib
         ControllerEnums::ControllerSettings configuration;
 
     private:
+        int current_action;
         DrivetrainLib::Drivetrain &drive;
         pros::Controller &controller;
         std::vector<ControllerLib::Macro> macros;
@@ -130,38 +131,56 @@ namespace ControllerLib
             if (pros::millis() - lastPressedTime > 25 && configuration.MACROS_ENABLED)
             {
                 pressed = getPressedButtons(controller);
-                if (pressed.size() <= 0)
-                {
+                if (pressed.empty()) {
                     is_held = false;
-                    for (ControllerLib::Macro &mac : macros)
-                    {
-                        if (last_pressed == mac.MACRO_KEYS)
-                        {
-                            if (mac.ON_RELEASED != nullptr)
-                            {
-                                mac.ON_RELEASED();
+                    for (ControllerLib::Macro &mac : macros) {
+                        keepGoing = false;
+
+                        // Check if the last pressed keys match the macro's keys exactly
+                        if (last_pressed.size() == mac.MACRO_KEYS.size()) {
+                            keepGoing = true;
+                            for (size_t i = 0; i < mac.MACRO_KEYS.size(); i++) {
+                                if (last_pressed[i] != mac.MACRO_KEYS[i]) {
+                                    keepGoing = false;
+                                    break; // Exit early if there's a mismatch
+                                }
                             }
                         }
+
+                        if (keepGoing) {
+                            mac.ON_RELEASED(); // Trigger the release action
+                            last_pressed.clear(); // Clear only after release is handled
+                        }
                     }
-                    last_pressed.clear();
-                }
-                else
-                {
+                } else {
                     std::vector<ControllerLib::Macro *> sorted_macros;
-                    for (auto &entry : macros)
-                    {
+
+                    // Sort macros by the size of their MACRO_KEYS (longer macros first)
+                    for (auto &entry : macros) {
                         sorted_macros.push_back(&entry);
                     }
                     std::sort(sorted_macros.begin(), sorted_macros.end(),
-                              [](const auto *a, const auto *b)
-                              {
-                                  return a->MACRO_KEYS.size() > b->MACRO_KEYS.size();
-                              });
-                    for (const auto *entry_ptr : sorted_macros)
-                    {
-                        if (entry_ptr->MACRO_KEYS.size() != last_pressed.size())
-                        {
-                            runMacro(*entry_ptr);
+                            [](const auto *a, const auto *b) {
+                                return a->MACRO_KEYS.size() > b->MACRO_KEYS.size();
+                            });
+                    for (const auto *entry_ptr : sorted_macros) {
+                        // Check if the currently pressed keys match the macro's keys exactly
+                        if (pressed.size() == entry_ptr->MACRO_KEYS.size()) {
+                            bool match = true;
+
+                            // Check if all keys in MACRO_KEYS are in pressed
+                            for (const auto &key : entry_ptr->MACRO_KEYS) {
+                                if (std::find(pressed.begin(), pressed.end(), key) == pressed.end()) {
+                                    match = false;
+                                    break; // Exit early if a key is not found
+                                }
+                            }
+
+                            if (match) {
+                                last_pressed = entry_ptr->MACRO_KEYS; // Update last_pressed
+                                runMacro(*entry_ptr); // Trigger the macro
+                                break; // Exit after the first matching macro
+                            }
                         }
                     }
                 }

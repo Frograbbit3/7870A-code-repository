@@ -1,5 +1,4 @@
 #pragma once
-#include "pros/apix.h"
 #include "liblvgl/lvgl.h"
 
 #define lv_center lv_obj_center
