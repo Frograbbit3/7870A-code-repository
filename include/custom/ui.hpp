@@ -6,11 +6,6 @@
 #define lv_get_obj lv_event_get_current_target_obj
 namespace UILib {
     auto activeScreen = lv_screen_active();
-    enum class MessageBoxType {
-        OK_BOX=1,
-        YES_NO_BOX=2,
-        APPLY_CANCEL=3
-    };
     class Screen {
         private:
             static void __PROCESS_CLOSE_BUTTON(lv_event_t * e) {
@@ -22,55 +17,33 @@ namespace UILib {
             Screen(std::string title) {
                 lv_win_add_title(win, title.c_str());
                 lv_obj_t * close_btn = lv_win_add_button(win, LV_SYMBOL_CLOSE,64);           /*Add close button and use built-in close action*/
-                lv_add_event(close_btn,__PROCESS_CLOSE_BUTTON, LV_EVENT_CLICKED, this);
+                lv_add_event(close_btn,__PROCESS_CLOSE_BUTTON, LV_EVENT_CLICKED, NULL);
             }
     };
     class Keyboard {
         private:
             lv_obj_t* kb;    
             lv_obj_t* ta2;
-            void (*on_key_press)() = nullptr;
-            static void __PROCESS_KEYBOARD_INPUTS(lv_event_t * e) {
-                Keyboard* instance = (Keyboard*)lv_event_get_user_data(e);
-                if (instance->on_key_press) {
-                    instance->on_key_press();
-                }
-            }
+        
         public:
             Keyboard() {
                 kb = lv_keyboard_create(activeScreen);
                 ta2 = lv_textarea_create(activeScreen);
                 lv_obj_set_size(ta2, 0, 0);
                 lv_keyboard_set_textarea(kb, ta2);
-                lv_add_event(kb, __PROCESS_KEYBOARD_INPUTS, LV_EVENT_VALUE_CHANGED, this);
             }
-
-            std::string get_typed() {
-                std::string st = lv_textarea_get_text(ta2);
-                return st;
-            }
-
-            void onKeyPressed(void (*callback)()) {
-                on_key_press = callback;
-            }
-
-            void hide() {
-                lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN);
-            }
-            void show() {
-                lv_obj_remove_flag(kb, LV_OBJ_FLAG_HIDDEN);
-            }
-            
     };
     class Slider {
         public:
             int value = 0;
         private:
             lv_obj_t* slider = lv_slider_create(activeScreen);
+            lv_obj_t* label = lv_label_create(activeScreen);
             void (*move_events)(int) = nullptr;
             static void __PROCESS_SLIDER_STATIC(lv_event_t * e) {
                 Slider* instance = (Slider*)lv_event_get_user_data(e);
                 instance->value = lv_slider_get_value(lv_event_get_current_target_obj(e));
+                lv_label_set_text(instance->label,std::to_string(lv_slider_get_value(lv_event_get_current_target_obj(e))).c_str());
                 if (instance && instance->move_events) {
                     instance->move_events(instance->value);
                 }
@@ -80,10 +53,14 @@ namespace UILib {
             Slider(int x, int y, int start, int end) {
                 lv_slider_set_mode(slider, LV_SLIDER_MODE_NORMAL);
                 lv_slider_set_range(slider, start, end);
-                lv_center(slider);
                 lv_obj_set_x(slider, x); // Fixed: using lv_obj_set_x instead of lv_obj_set_style_x
                 lv_obj_set_y(slider, y);
+
+                lv_obj_set_x(label, x+100);
+                lv_obj_set_y(label, y+15);
+                lv_label_set_text(label, std::to_string(0).c_str());
                 lv_add_event(slider, __PROCESS_SLIDER_STATIC, LV_EVENT_VALUE_CHANGED, this);
+                lv_center(slider);
             }
             
             void on_move(void (*callback)(int)) {
@@ -109,38 +86,147 @@ namespace UILib {
             }
 
     }; 
-    class MessageBox {
-        private:
-            MessageBoxType _type;
-        public:
-            lv_obj_t* mbox = lv_msgbox_create(NULL);
-            MessageBox(std::string title, std::string message) {
-                lv_msgbox_add_title(mbox, title.c_str());
-                lv_msgbox_add_text(mbox, message.c_str());
-                lv_msgbox_add_close_button(mbox);
+    class Button {
+    private:
+        lv_obj_t* btn;
+        void (*on_click)() = nullptr;
+
+        static void __PROCESS_BUTTON_CLICK(lv_event_t* e) {
+            Button* instance = (Button*)lv_event_get_user_data(e);
+            if (instance->on_click) {
+                instance->on_click();
             }
-            
+        }
+
+    public:
+        Button(int x, int y, std::string label = "") {
+            btn = lv_obj_create(activeScreen); // Use lv_obj_create for generic objects
+            lv_obj_set_size(btn, 100, 50);     // Set size for the button
+            lv_obj_set_x(btn, x);
+            lv_obj_set_y(btn, y);
+            lv_center(btn);
+
+            if (!label.empty()) {
+                lv_obj_t* lbl = lv_label_create(btn);
+                lv_label_set_text(lbl, label.c_str());
+                lv_obj_center(lbl);
+            }
+
+            lv_add_event(btn, __PROCESS_BUTTON_CLICK, LV_EVENT_CLICKED, this);
+        }
+
+        void onClick(void (*callback)()) {
+            on_click = callback;
+        }
 
     };
-    class Bar {
-        private:
-            lv_obj_t* bar = lv_bar_create(activeScreen);
-            int value = 0;
-            
-        public:
-            Bar(int x, int y, int value = 0) {
-                lv_center(bar);
-                lv_obj_set_x(bar, x); // Fixed: using lv_obj_set_x instead of lv_obj_set_style_x
-                lv_obj_set_y(bar, y);
-                change_value(value);
-            }
-            
-            void change_value(int new_value) {
-                value = new_value;
-                lv_bar_set_value(bar,value, LV_ANIM_ON);
-            }
 
-    }; 
+    // Dropdown API
+    class Dropdown {
+    private:
+        lv_obj_t* dd;
+        void (*on_select)(int) = nullptr;
+
+        static void __PROCESS_DROPDOWN_SELECT(lv_event_t* e) {
+            Dropdown* instance = (Dropdown*)lv_event_get_user_data(e);
+            if (instance->on_select) {
+                int selected = lv_dropdown_get_selected(lv_event_get_current_target_obj(e));
+                instance->on_select(selected);
+            }
+        }
+
+    public:
+        Dropdown(int x, int y, std::vector<std::string> options) {
+            dd = lv_dropdown_create(activeScreen);
+            lv_obj_set_x(dd, x);
+            lv_obj_set_y(dd, y);
+
+            std::string option_str = "";
+            for (const auto& option : options) {
+                option_str += option + "\n";
+            }
+            lv_dropdown_set_options(dd, option_str.c_str());
+
+            lv_add_event(dd, __PROCESS_DROPDOWN_SELECT, LV_EVENT_VALUE_CHANGED, this);
+        }
+
+        void onSelect(void (*callback)(int)) {
+            on_select = callback;
+        }
+    };
+
+    // Checkbox API
+    class Checkbox {
+    private:
+        lv_obj_t* cb;
+        void (*on_toggle)(bool) = nullptr;
+
+        static void __PROCESS_CHECKBOX_TOGGLE(lv_event_t* e) {
+            Checkbox* instance = (Checkbox*)lv_event_get_user_data(e);
+            instance->checked = lv_obj_has_state(instance->cb, LV_STATE_CHECKED);
+            if (instance->on_toggle) {
+                // Update the `checked` property directly from the `cb` object
+                instance->on_toggle(instance->checked);
+            }
+        }
+
+    public:
+        bool checked;
+
+        Checkbox(int x, int y, std::string label) {
+            cb = lv_checkbox_create(activeScreen);
+            lv_obj_set_x(cb, x);
+            lv_obj_set_y(cb, y);
+            lv_checkbox_set_text(cb, label.c_str());
+
+            // Initialize the `checked` property
+            checked = lv_obj_has_state(cb, LV_STATE_CHECKED);
+
+            lv_add_event(cb, __PROCESS_CHECKBOX_TOGGLE, LV_EVENT_VALUE_CHANGED, this);
+        }
+
+        void onToggle(void (*callback)(bool)) {
+            on_toggle = callback;
+        }
+    };
+
+    // Roller API
+    class Roller {
+    private:
+        lv_obj_t* roller;
+        void (*on_select)(int) = nullptr;
+
+        static void __PROCESS_ROLLER_SELECT(lv_event_t* e) {
+            Roller* instance = (Roller*)lv_event_get_user_data(e);
+            if (instance->on_select) {
+                int selected = lv_roller_get_selected(lv_event_get_current_target_obj(e));
+                instance->on_select(selected);
+            }
+        }
+
+    public:
+        Roller(int x, int y, std::vector<std::string> options, int visible_rows = 3) {
+            roller = lv_roller_create(activeScreen);
+            lv_obj_set_x(roller, x);
+            lv_obj_set_y(roller, y);
+
+            std::string option_str = "";
+            for (const auto& option : options) {
+                option_str += option + "\n";
+            }
+            lv_roller_set_options(roller, option_str.c_str(), LV_ROLLER_MODE_NORMAL);
+            lv_roller_set_visible_row_count(roller, visible_rows);
+
+            lv_add_event(roller, __PROCESS_ROLLER_SELECT, LV_EVENT_VALUE_CHANGED, this);
+        }
+
+        void onSelect(void (*callback)(int)) {
+            on_select = callback;
+        }
+    };
+
+   
+
     void update() {
         lv_tick_inc(20);
         lv_timer_handler();
