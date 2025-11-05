@@ -11,7 +11,7 @@ private:
 
     struct Button;
     struct Joystick;
-    std::vector<Button *> buttons;
+    std::vector<Button *> btns;
 
     struct Joystick
     {
@@ -24,6 +24,7 @@ private:
         pros::controller_analog_e_t stickY;
         pros::Controller *control = nullptr;
 
+        Joystick() = default;
         Joystick(pros::Controller *ctrl,
                  pros::controller_analog_e_t stkX,
                  pros::controller_analog_e_t stkY)
@@ -89,13 +90,15 @@ private:
         std::function<void()> OnPressCallback = nullptr;
         std::function<void()> OnReleaseCallback = nullptr;
 
+        Button() = default; // Add this line
+
         Button(EmulatedController *parent_,
                pros::Controller *ctrl,
                pros::controller_digital_e_t btn)
             : button(btn), control(ctrl), parent(parent_)
         {
             if (parent)
-                parent->buttons.push_back(this);
+                parent->btns.push_back(this);
         }
 
         void update()
@@ -147,55 +150,78 @@ private:
     };
 
 public:
-    Joystick LeftJoystick;
-    Joystick RightJoystick;
+    struct
+    {
+        Button A;
+        Button B;
+        Button Y;
+        Button X;
+        Button Left;
+        Button Right;
+        Button Up;
+        Button Down;
+        Button L1;
+        Button L2;
+        Button R1;
+        Button R2;
+        Button Power;
+    } buttons;
 
-    Button A;
-    Button B;
-    Button Y;
-    Button X;
-    Button Left;
-    Button Right;
-    Button Up;
-    Button Down;
-    Button L1;
-    Button L2;
-    Button R1;
-    Button R2;
-    Button Power;
-
+    struct {
+        Joystick Left;
+        Joystick Right;
+    } joysticks;
+    double battery=100;
     bool enabled = true;
 
     EmulatedController(pros::Controller *ctrl)
-        : controller(ctrl), // i know it's so amazing
-          LeftJoystick(ctrl, pros::E_CONTROLLER_ANALOG_LEFT_X, pros::E_CONTROLLER_ANALOG_LEFT_Y),
-          RightJoystick(ctrl, pros::E_CONTROLLER_ANALOG_RIGHT_X, pros::E_CONTROLLER_ANALOG_RIGHT_Y),
-          A(this, ctrl, pros::E_CONTROLLER_DIGITAL_A),
-          B(this, ctrl, pros::E_CONTROLLER_DIGITAL_B),
-          Y(this, ctrl, pros::E_CONTROLLER_DIGITAL_Y),
-          X(this, ctrl, pros::E_CONTROLLER_DIGITAL_X),
-          Left(this, ctrl, pros::E_CONTROLLER_DIGITAL_LEFT),
-          Right(this, ctrl, pros::E_CONTROLLER_DIGITAL_RIGHT),
-          Up(this, ctrl, pros::E_CONTROLLER_DIGITAL_UP),
-          Down(this, ctrl, pros::E_CONTROLLER_DIGITAL_DOWN),
-          L1(this, ctrl, pros::E_CONTROLLER_DIGITAL_L1),
-          L2(this, ctrl, pros::E_CONTROLLER_DIGITAL_L2),
-          R1(this, ctrl, pros::E_CONTROLLER_DIGITAL_R1),
-          R2(this, ctrl, pros::E_CONTROLLER_DIGITAL_R2),
-          Power(this, ctrl, pros::E_CONTROLLER_DIGITAL_POWER)
+        : controller(ctrl)
     {
+        joysticks.Left = Joystick(ctrl, pros::E_CONTROLLER_ANALOG_LEFT_X, pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        joysticks.Right = Joystick(ctrl, pros::E_CONTROLLER_ANALOG_RIGHT_X, pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        buttons.A = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_A);
+        buttons.B = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_B);
+        buttons.Y = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_Y);
+        buttons.X = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_X);
+        buttons.Left = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_LEFT);
+        buttons.Right = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_RIGHT);
+        buttons.Up = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_UP);
+        buttons.Down = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_DOWN);
+        buttons.L1 = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_L1);
+        buttons.L2 = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_L2);
+        buttons.R1 = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_R1);
+        buttons.R2 = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_R2);
+        buttons.Power = Button(this, ctrl, pros::E_CONTROLLER_DIGITAL_POWER);
     }
-
+    void vibrate(std::string pattern)
+    {
+        if (pattern.size() <= 8)
+        {
+            controller->rumble(pattern.c_str());
+        }
+        else
+        {
+            int loops = (int)ceil((float)pattern.size() / 8.0f);
+            for (int i = 0; i < loops; i++)
+            {
+                size_t start = i * 8;
+                size_t length = std::min<size_t>(8, pattern.size() - start);
+                std::string part = pattern.substr(start, length);
+                controller->rumble(part.c_str());
+            }
+        }
+    }
     void update()
     {
-        LeftJoystick.update();
-        RightJoystick.update();
-        for (Button *b : buttons)
+        joysticks.Left.update();
+        joysticks.Right.update();
+        for (Button *b : btns)
         {
             if (b)
             {
                 b->update();
             }
         }
+        battery = static_cast<float>(controller->get_battery_level());
     }
 };

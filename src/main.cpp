@@ -48,11 +48,15 @@ void autonomous() {}
 
 void opcontrol() {
 	//new comment
-	//DrivetrainLib::Drivetrain drivetrain ({-3,9,10}, {5,12,20}); //put motor ports here
+	DrivetrainLib::Drivetrain drivetrain ({-3,9,10}, {5,12,20}); //put motor ports here
 	//ControllerLib::ControlScheme control(
 	//	ARCADE_DRIVE,
 	//	drivetrain,
 	//	master
+
+	EmulatedController control(&master);
+	
+
 	
 	ControllerLib::Macro AMacro({pros::E_CONTROLLER_DIGITAL_A}, on_a_pressed, on_a_released, true);
 	ControllerLib::Macro AMacro2({pros::E_CONTROLLER_DIGITAL_A, pros::E_CONTROLLER_DIGITAL_B}, on_ab_pressed, on_ab_released, false);
@@ -75,7 +79,5 @@ void opcontrol() {
 		
 		pros::delay(20);
 		UILib::update();
-
-		//I like skibidi toilet
 	}
 }

@@ -80,24 +80,6 @@ namespace ControllerLib
         {
             macros.push_back(mac);
         }
-        void vibrateController(std::string pattern)
-        {
-            if (pattern.size() <= 8)
-            {
-                controller.rumble(pattern.c_str());
-            }
-            else
-            {
-                int loops = (int)ceil((float)pattern.size() / 8.0f);
-                for (int i = 0; i < loops; i++)
-                {
-                    size_t start = i * 8;
-                    size_t length = std::min<size_t>(8, pattern.size() - start);
-                    std::string part = pattern.substr(start, length);
-                    controller.rumble(part.c_str());
-                }
-            }
-        }
         bool isMacroPressed(const ControllerLib::Macro &macro)
         {
             if (!configuration.MACROS_ENABLED)
