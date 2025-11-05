@@ -1,32 +1,22 @@
 #pragma once
+#include "custom/emulated_controller.hpp"
 #include "custom/modded.hpp"
 #include "custom/enums.hpp"
 #include "custom/drivetrain.hpp"
 #include <map>
 #include <vector>
 #include <algorithm>
-inline std::vector<pros::controller_digital_e_t> getPressedButtons(pros::Controller &control)
-{
-    std::vector<pros::controller_digital_e_t> pressed = {};
-    for (auto &m : ControllerEnums::__BUTTON_LIST)
-    {
-        if (control.get_digital(m))
-        {
-            pressed.emplace_back(m);
-        }
-    }
-    return pressed;
-}
+
 namespace ControllerLib
 {
     class Macro
     {
     public:
-        std::vector<pros::controller_digital_e_t> MACRO_KEYS;
+        std::vector<Button*> MACRO_KEYS;
         void (*ON_PRESSED)();
         void (*ON_RELEASED)();
         bool REGISTER_HOLD = false;
-        Macro(const std::vector<pros::controller_digital_e_t> &key_pressed, void (*press)(), void (*release)() = nullptr, bool hold = false) : MACRO_KEYS(key_pressed),
+        Macro(const std::vector<Button*> &key_pressed, void (*press)(), void (*release)() = nullptr, bool hold = false) : MACRO_KEYS(key_pressed),
                                                                                                                                                ON_PRESSED(press),
                                                                                                                                                ON_RELEASED(release),
                                                                                                                                                REGISTER_HOLD(hold)
@@ -36,27 +26,21 @@ namespace ControllerLib
     class ControlScheme
     {
     public:
-        int32_t leftJoystickY;
-        int32_t leftJoystickX;
-        int32_t rightJoystickY;
-        int32_t rightJoystickX;
         ControllerEnums::ControllerSettings configuration;
 
     private:
         int current_action;
         DrivetrainLib::Drivetrain &drive;
-        pros::Controller &controller;
+        ControllerLib::EmulatedController& controller;
         std::vector<ControllerLib::Macro> macros;
         int16_t leftVelocity;
         int16_t rightVelocity;
-        std::vector<pros::controller_digital_e_t> pressed;
-        std::vector<pros::controller_digital_e_t> last_pressed;
         int lastPressedTime = pros::millis();
         bool is_held = true;
         bool keepGoing = false;
-        void runMacro(const ControllerLib::Macro macro)
+        void runMacro(const ControllerLib::Macro& macro)
         {
-            const std::vector<pros::controller_digital_e_t> &inputs = macro.MACRO_KEYS;
+            const std::vector<Button*> &inputs = macro->MACRO_KEYS;
             void (*on_press)() = macro.ON_PRESSED;
             void (*on_release)() = macro.ON_RELEASED;
             if (!is_held && isMacroPressed(macro))

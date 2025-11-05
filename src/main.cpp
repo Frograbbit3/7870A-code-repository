@@ -54,7 +54,7 @@ void opcontrol() {
 	//	drivetrain,
 	//	master
 
-	EmulatedController control(&master);
+	ControllerLib::EmulatedController control(&master);
 	
 
 	
