@@ -16,6 +16,7 @@ namespace ControllerLib
         void (*ON_PRESSED)();
         void (*ON_RELEASED)();
         bool REGISTER_HOLD = false;
+        bool LAST_PRESSED = false;
         Macro(const std::vector<Button*> &key_pressed, void (*press)(), void (*release)() = nullptr, bool hold = false) : MACRO_KEYS(key_pressed),
                                                                                                                                                ON_PRESSED(press),
                                                                                                                                                ON_RELEASED(release),
@@ -38,15 +39,17 @@ namespace ControllerLib
         int lastPressedTime = pros::millis();
         bool is_held = true;
         bool keepGoing = false;
-        void runMacro(const ControllerLib::Macro& macro)
+        Joystick* RightJoystick;
+        Joystick* LeftJoystick;
+        void runMacro(const ControllerLib::Macro* macro)
         {
             const std::vector<Button*> &inputs = macro->MACRO_KEYS;
-            void (*on_press)() = macro.ON_PRESSED;
-            void (*on_release)() = macro.ON_RELEASED;
-            if (!is_held && isMacroPressed(macro))
+            void (*on_press)() = macro->ON_PRESSED;
+            void (*on_release)() = macro->ON_RELEASED;
+            if (!is_held && isMacroPressed(*macro))
             {
                 lastPressedTime = pros::millis();
-                if (!macro.REGISTER_HOLD)
+                if (!macro->REGISTER_HOLD)
                 {
                     is_held = true;
                 }
@@ -56,9 +59,11 @@ namespace ControllerLib
         }
 
     public:
-        ControlScheme(ControllerEnums::ControllerDriveTypes typ, DrivetrainLib::Drivetrain &driveRef, pros::Controller &controllerRef) : drive(driveRef), controller(controllerRef)
+        ControlScheme(ControllerEnums::ControllerDriveTypes typ, DrivetrainLib::Drivetrain &driveRef, EmulatedController &controllerRef) : drive(driveRef), controller(controllerRef)
         {
             configuration.CONTROL_SCHEME = typ;
+            LeftJoystick = &controller.joysticks.Left;
+            RightJoystick = &controller.joysticks.Right;
         }
         inline void createMacro(ControllerLib::Macro mac)
         {
@@ -70,102 +75,56 @@ namespace ControllerLib
             {
                 return false;
             }
-            if (getPressedButtons(controller).size() != macro.MACRO_KEYS.size())
+            for (const Button* m : macro.MACRO_KEYS)
             {
-                return false;
-            }
-            for (const pros::controller_digital_e_t &m : macro.MACRO_KEYS)
-            {
-                if (!controller.get_digital(m))
+                if (!m->pressed)
                 {
                     return false;
                 }
             }
             return true;
         }
-        void update()
-        {
-            leftJoystickY = controller.get_analog(ANALOG_LEFT_Y);
-            rightJoystickY = controller.get_analog(ANALOG_RIGHT_Y);
-            leftJoystickX = controller.get_analog(ANALOG_LEFT_X);
-            rightJoystickX = controller.get_analog(ANALOG_RIGHT_X);
+        void update(){
             drive.configuration.AUTO_DRIVE_ENABLED = configuration.DRIVE_AUTO_CORRECTION;
+            controller.update();
             if (!configuration.ENABLED)
-            {
                 return;
-            }
+
             if (pros::millis() - lastPressedTime > 25 && configuration.MACROS_ENABLED)
             {
-                pressed = getPressedButtons(controller);
-                if (pressed.empty()) {
-                    is_held = false;
-                    for (ControllerLib::Macro &mac : macros) {
-                        keepGoing = false;
-
-                        // Check if the last pressed keys match the macro's keys exactly
-                        if (last_pressed.size() == mac.MACRO_KEYS.size()) {
-                            keepGoing = true;
-                            for (size_t i = 0; i < mac.MACRO_KEYS.size(); i++) {
-                                if (last_pressed[i] != mac.MACRO_KEYS[i]) {
-                                    keepGoing = false;
-                                    break; // Exit early if there's a mismatch
-                                }
-                            }
-                        }
-
-                        if (keepGoing) {
-                            mac.ON_RELEASED(); // Trigger the release action
-                            last_pressed.clear(); // Clear only after release is handled
+                for (Macro &macro : macros) {
+                    int buttonCount = 0;
+                    for (const Button* button : macro.MACRO_KEYS) {
+                        if (button->pressed) {
+                            buttonCount++;
                         }
                     }
-                } else {
-                    std::vector<ControllerLib::Macro *> sorted_macros;
-
-                    // Sort macros by the size of their MACRO_KEYS (longer macros first)
-                    for (auto &entry : macros) {
-                        sorted_macros.push_back(&entry);
-                    }
-                    std::sort(sorted_macros.begin(), sorted_macros.end(),
-                            [](const auto *a, const auto *b) {
-                                return a->MACRO_KEYS.size() > b->MACRO_KEYS.size();
-                            });
-                    for (const auto *entry_ptr : sorted_macros) {
-                        // Check if the currently pressed keys match the macro's keys exactly
-                        if (pressed.size() == entry_ptr->MACRO_KEYS.size()) {
-                            bool match = true;
-
-                            // Check if all keys in MACRO_KEYS are in pressed
-                            for (const auto &key : entry_ptr->MACRO_KEYS) {
-                                if (std::find(pressed.begin(), pressed.end(), key) == pressed.end()) {
-                                    match = false;
-                                    break; // Exit early if a key is not found
-                                }
-                            }
-
-                            if (match) {
-                                last_pressed = entry_ptr->MACRO_KEYS; // Update last_pressed
-                                runMacro(*entry_ptr); // Trigger the macro
-                                break; // Exit after the first matching macro
-                            }
+                    if (buttonCount == macro.MACRO_KEYS.size() && (!macro.LAST_PRESSED || macro.REGISTER_HOLD)) {
+                        macro.LAST_PRESSED=true;
+                        runMacro(&macro);
+                    }else{
+                        macro.LAST_PRESSED = false;
+                        if (macro.ON_RELEASED) {
+                            macro.ON_RELEASED();
                         }
                     }
                 }
             }
             if (configuration.CONTROL_SCHEME == ARCADE_DRIVE)
             {
-                leftVelocity = static_cast<int16_t>(rightJoystickX * -configuration.MAX_TURN_SPEED) - static_cast<int16_t>(-leftJoystickY * configuration.MAX_FORWARD_SPEED);
-                rightVelocity = static_cast<int16_t>(rightJoystickX * -configuration.MAX_TURN_SPEED) + static_cast<int16_t>(-leftJoystickY * configuration.MAX_FORWARD_SPEED);
+                leftVelocity = static_cast<int16_t>(RightJoystick->X * -configuration.MAX_TURN_SPEED) - static_cast<int16_t>(-LeftJoystick->Y* configuration.MAX_FORWARD_SPEED);
+                rightVelocity = static_cast<int16_t>(RightJoystick->X * -configuration.MAX_TURN_SPEED) + static_cast<int16_t>(-LeftJoystick->Y * configuration.MAX_FORWARD_SPEED);
                 leftVelocity = std::min(127, std::max(-127, static_cast<int>(leftVelocity)));
                 rightVelocity = std::min(127, std::max(-127, static_cast<int>(rightVelocity)));
             }
             else if (configuration.CONTROL_SCHEME == TANK_DRIVE)
             {
-                leftVelocity = static_cast<int16_t>(leftJoystickY * configuration.MAX_FORWARD_SPEED);
-                rightVelocity = static_cast<int16_t>(rightJoystickY * -configuration.MAX_FORWARD_SPEED);
+                leftVelocity = static_cast<int16_t>(LeftJoystick->Y * configuration.MAX_FORWARD_SPEED);
+                rightVelocity = static_cast<int16_t>(RightJoystick->Y * -configuration.MAX_FORWARD_SPEED);
                 leftVelocity = std::min(127, std::max(-127, static_cast<int>(leftVelocity)));
                 rightVelocity = std::min(127, std::max(-127, static_cast<int>(rightVelocity)));
             }
-            if (abs(leftJoystickY) > configuration.DEADZONE || abs(rightJoystickY) > configuration.DEADZONE || abs(leftJoystickX) > configuration.DEADZONE || abs(rightJoystickX) > configuration.DEADZONE)
+            if (LeftJoystick->moving || RightJoystick->moving)
             {
                 drive.setLeftVelocity(leftVelocity);
                 drive.setRightVelocity(rightVelocity);

@@ -2,6 +2,7 @@
 #include "pros/misc.hpp"
 #include "pros/rtos.hpp"
 #include <cmath>
+#include <cstdlib>
 #include <vector>
 #include <functional>
 
@@ -10,10 +11,11 @@ namespace ControllerLib
     class EmulatedController;
     struct Joystick
     {
-        float x = 0;
-        float y = 0;
+        float X = 0;
+        float Y = 0;
         float deadzone = 0.15f;
         bool process = true;
+        bool moving = false;
         std::function<void(float, float)> OnMoveCallback = nullptr;
         pros::controller_analog_e_t stickX;
         pros::controller_analog_e_t stickY;
@@ -31,30 +33,22 @@ namespace ControllerLib
             {
                 return;
             }
-            if (static_cast<float>(control->get_analog(stickX)) != x || static_cast<float>(control->get_analog(stickY)) != y)
+            if (static_cast<float>(control->get_analog(stickX)) != X || static_cast<float>(control->get_analog(stickY)) != Y)
             {
-                x = static_cast<float>(control->get_analog(stickX));
-                y = static_cast<float>(control->get_analog(stickY));
-                if (OnMoveCallback != nullptr)
-                {
-                    OnMoveCallback(x, y);
-                }
+                SetStick(static_cast<float>(control->get_analog(stickX)), static_cast<float>(control->get_analog(stickY)));
             }
             else
             {
-                x = static_cast<float>(control->get_analog(stickX));
-                y = static_cast<float>(control->get_analog(stickY));
+                SetStick(static_cast<float>(control->get_analog(stickX)), static_cast<float>(control->get_analog(stickY)));
             }
         }
 
         void SetStick(float nx, float ny)
-        {
-            x = nx;
-            y = ny;
-            if (OnMoveCallback != nullptr)
-            {
-                OnMoveCallback(x, y);
-            }
+        {   
+            X = fabs(nx) > deadzone ? nx : 0.0f;
+            Y = fabs(ny) > deadzone ? ny : 0.0f;
+            moving = (fabs(X) < deadzone && fabs(Y) < deadzone) ? true : false;
+            if (OnMoveCallback != nullptr) {OnMoveCallback(X, Y);}
         }
 
         void SetEnabled(bool enabled) { process = enabled; }

@@ -1,4 +1,6 @@
 #include "main.h"
+#include "custom/controls.hpp"
+#include "custom/enums.hpp"
 #include <numeric> 
 
 /// @brief Variable init
@@ -55,29 +57,17 @@ void opcontrol() {
 	//	master
 
 	ControllerLib::EmulatedController control(&master);
-	
-
-	
-	ControllerLib::Macro AMacro({pros::E_CONTROLLER_DIGITAL_A}, on_a_pressed, on_a_released, true);
-	ControllerLib::Macro AMacro2({pros::E_CONTROLLER_DIGITAL_A, pros::E_CONTROLLER_DIGITAL_B}, on_ab_pressed, on_ab_released, false);
-	ControllerLib::Macro AMacro3({pros::E_CONTROLLER_DIGITAL_B}, on_b_pressed, on_b_released, true);
-	UILib::Slider velocity(120, 60, -127, 127);
-	UILib::Checkbox enabled(60,60,"Enabled"); 
-
+	ControllerLib::ControlScheme mainControl(
+		ARCADE_DRIVE,
+		drivetrain,
+		control
+	);
 
 	//control.createMacro(AMacro);
 	//control.createMacro(AMacro2);
 	//control.createMacro(AMacro3);
 	while (true) {
-		//control.update();
-		std::cout << enabled.checked << std::endl;
-		if (!enabled.checked) {
-			fly.move(0);
-		}else{
-			fly.move(velocity.value);
-		}
-		
+		mainControl.update();
 		pros::delay(20);
-		UILib::update();
 	}
 }
