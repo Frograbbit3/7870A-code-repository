@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['keyboard_0',['Keyboard',['../df/def/classUILib_1_1Keyboard.html',1,'UILib']]]
+  ['joystick_0',['Joystick',['../d4/d66/structControllerLib_1_1Joystick.html',1,'ControllerLib']]]
 ];
