@@ -63,6 +63,8 @@ namespace ControllerLib
     {
         bool pressed = false;
         bool process = true;
+        bool triggered_press_callback = false;
+        bool triggered_release_callback = false;
 
         pros::controller_digital_e_t button;
         pros::Controller *control = nullptr;
@@ -93,15 +95,19 @@ namespace ControllerLib
             pressed = state;
             if (pressed)
             {
-                if (OnPressCallback != nullptr)
+                if (OnPressCallback != nullptr && !triggered_press_callback)
                 {
+                    triggered_press_callback = true;
+                    triggered_release_callback = false;
                     OnPressCallback();
                 }
             }
             else
             {
-                if (OnReleaseCallback != nullptr)
+                if (OnReleaseCallback != nullptr && !triggered_release_callback)
                 {
+                    triggered_release_callback = true;
+                    triggered_press_callback = false;
                     OnReleaseCallback();
                 }
             }

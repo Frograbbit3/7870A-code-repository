@@ -1,41 +1,12 @@
 #include "main.h"
 #include "custom/controls.hpp"
 #include "custom/enums.hpp"
+#include "pros/screen.hpp"
+#include <functional>
 #include <numeric> 
 
 /// @brief Variable init
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::Motor fly(20);
-
-void on_a_pressed() {
-	std::cout << "A PRESSED" << std::endl;
-	fly.move(127);
-}
-
-void on_a_released() {
-	std::cout << "A RELEASED" << std::endl;
-	fly.move(0);
-}
-
-void on_ab_pressed() {
-	std::cout << "AB PRESSED" << std::endl;
-	
-}
-
-void on_ab_released() {
-	std::cout << "AB RELEASED" << std::endl;
-}
-
-
-void on_b_pressed() {
-	std::cout << "B PRESSED" << std::endl;
-	fly.move(-127);
-}
-
-void on_b_released() {
-	std::cout << "B RELEASED" << std::endl;
-	fly.move(0);
-}
 
 void initialize(){
 
@@ -47,6 +18,13 @@ void disabled() {}
 void competition_initialize() {}
 void autonomous() {}
 
+
+void OnAPress() {
+	pros::screen::print(pros::E_TEXT_MEDIUM, 1, "yes");	
+}
+void OnARelease() {
+	pros::screen::print(pros::E_TEXT_MEDIUM, 1, "noo");
+}
 
 void opcontrol() {
 	//new comment
@@ -62,12 +40,19 @@ void opcontrol() {
 		drivetrain,
 		control
 	);
-
-	//control.createMacro(AMacro);
+;
+	control.buttons.A.OnButtonPress(OnAPress);
+	control.buttons.A.OnButtonRelease(OnARelease);
+	//control.createMacro(AMaAMacrocro);
 	//control.createMacro(AMacro2);
 	//control.createMacro(AMacro3);
+	int frame = 0;
 	while (true) {
 		mainControl.update();
+		if (frame % 60 == 0) {
+			pros::screen::erase();
+		}
+		frame++;
 		pros::delay(20);
 	}
 }
