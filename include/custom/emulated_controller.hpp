@@ -2,6 +2,7 @@
 #include "pros/misc.hpp"
 #include "pros/rtos.hpp"
 #include <vector>
+#include <functional>
 
 class EmulatedController {
 private:
@@ -16,6 +17,7 @@ private:
         float y = 0;
         float deadzone = 0.15f;
         bool process = true;
+        std::function<void(float, float)> OnMoveCallback=nullptr;
         pros::controller_analog_e_t stickX;
         pros::controller_analog_e_t stickY;
         pros::Controller* control = nullptr;
@@ -26,9 +28,36 @@ private:
             : stickX(stkX), stickY(stkY), control(ctrl) {}
 
         void update() {
-            if (!process || control == nullptr) {return};
-            x = static_cast<float>(control->get_analog(stickX));
-            y = static_cast<float>(control->get_analog(stickY));
+            if (!process || control == nullptr) {return;}
+            if (static_cast<float>(control->get_analog(stickX)) != x || static_cast<float>(control->get_analog(stickY)) != y) {
+                x = static_cast<float>(control->get_analog(stickX));
+                y = static_cast<float>(control->get_analog(stickY));
+                if (OnMoveCallback!=nullptr){OnMoveCallback(x, y);}
+            }else{
+                x = static_cast<float>(control->get_analog(stickX));
+                y = static_cast<float>(control->get_analog(stickY));
+            }
+        }
+        /*
+            Will manually set the values of the stick. Note that this will only persist for one frame, to keep it going make sure to SetEnabled(false)
+            @param nx A float from -1.0 to 1.0 representing left and right position.
+            @param ny A float from -1.0 to 1.0. representing up and down position.
+        */
+        void SetStick(float nx, float ny) {
+            x=nx;
+            y=ny;
+            if (OnMoveCallback!=nullptr){OnMoveCallback(x, y);}
+        }
+
+        /*Changes normal control of the joystick*/
+        void SetEnabled(bool enabled) {process=enabled;}
+
+        /*
+            Register a function to trigger whenever the controller joystick changes.
+            @param func An std::function which takes in two float params (stickX and stickY).
+        */
+        void OnMove(const std::function<void(float, float)>& func) {
+            OnMoveCallback = func;
         }
     };
 
@@ -48,7 +77,7 @@ private:
         }
 
         void update() {
-            if (!process|| control == nullptr) {return};
+            if (!process|| control == nullptr) {return;}
             pressed = control->get_digital(button);
         }
     };
@@ -70,6 +99,8 @@ public:
     Button R1;
     Button R2;
     Button Power;
+
+    bool enabled=true;
 
     EmulatedController(pros::Controller* ctrl)
         : controller(ctrl), //i know it's so amazing
