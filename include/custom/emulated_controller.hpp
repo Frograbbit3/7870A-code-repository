@@ -4,36 +4,48 @@
 #include <vector>
 #include <functional>
 
-class EmulatedController {
+class EmulatedController
+{
 private:
-    pros::Controller* controller;
+    pros::Controller *controller;
 
     struct Button;
     struct Joystick;
-    std::vector<Button*> buttons;
+    std::vector<Button *> buttons;
 
-    struct Joystick {
+    struct Joystick
+    {
         float x = 0;
         float y = 0;
         float deadzone = 0.15f;
         bool process = true;
-        std::function<void(float, float)> OnMoveCallback=nullptr;
+        std::function<void(float, float)> OnMoveCallback = nullptr;
         pros::controller_analog_e_t stickX;
         pros::controller_analog_e_t stickY;
-        pros::Controller* control = nullptr;
+        pros::Controller *control = nullptr;
 
-        Joystick(pros::Controller* ctrl,
+        Joystick(pros::Controller *ctrl,
                  pros::controller_analog_e_t stkX,
                  pros::controller_analog_e_t stkY)
             : stickX(stkX), stickY(stkY), control(ctrl) {}
 
-        void update() {
-            if (!process || control == nullptr) {return;}
-            if (static_cast<float>(control->get_analog(stickX)) != x || static_cast<float>(control->get_analog(stickY)) != y) {
+        void update()
+        {
+            if (!process || control == nullptr)
+            {
+                return;
+            }
+            if (static_cast<float>(control->get_analog(stickX)) != x || static_cast<float>(control->get_analog(stickY)) != y)
+            {
                 x = static_cast<float>(control->get_analog(stickX));
                 y = static_cast<float>(control->get_analog(stickY));
-                if (OnMoveCallback!=nullptr){OnMoveCallback(x, y);}
-            }else{
+                if (OnMoveCallback != nullptr)
+                {
+                    OnMoveCallback(x, y);
+                }
+            }
+            else
+            {
                 x = static_cast<float>(control->get_analog(stickX));
                 y = static_cast<float>(control->get_analog(stickY));
             }
@@ -43,42 +55,94 @@ private:
             @param nx A float from -1.0 to 1.0 representing left and right position.
             @param ny A float from -1.0 to 1.0. representing up and down position.
         */
-        void SetStick(float nx, float ny) {
-            x=nx;
-            y=ny;
-            if (OnMoveCallback!=nullptr){OnMoveCallback(x, y);}
+        void SetStick(float nx, float ny)
+        {
+            x = nx;
+            y = ny;
+            if (OnMoveCallback != nullptr)
+            {
+                OnMoveCallback(x, y);
+            }
         }
 
         /*Changes normal control of the joystick*/
-        void SetEnabled(bool enabled) {process=enabled;}
+        void SetEnabled(bool enabled) { process = enabled; }
 
         /*
             Register a function to trigger whenever the controller joystick changes.
             @param func An std::function which takes in two float params (stickX and stickY).
         */
-        void OnMove(const std::function<void(float, float)>& func) {
+        void OnMove(const std::function<void(float, float)> &func)
+        {
             OnMoveCallback = func;
         }
     };
 
-    struct Button {
+    struct Button
+    {
         bool pressed = false;
         bool process = true;
-        pros::controller_digital_e_t button;
-        pros::Controller* control = nullptr;
-        EmulatedController* parent = nullptr;
 
-        // Auto-register with parent
-        Button(EmulatedController* parent_,
-               pros::Controller* ctrl,
+        pros::controller_digital_e_t button;
+        pros::Controller *control = nullptr;
+        EmulatedController *parent = nullptr;
+        std::function<void()> OnPressCallback = nullptr;
+        std::function<void()> OnReleaseCallback = nullptr;
+
+        Button(EmulatedController *parent_,
+               pros::Controller *ctrl,
                pros::controller_digital_e_t btn)
-            : button(btn), control(ctrl), parent(parent_) {
-            if (parent) parent->buttons.push_back(this);
+            : button(btn), control(ctrl), parent(parent_)
+        {
+            if (parent)
+                parent->buttons.push_back(this);
         }
 
-        void update() {
-            if (!process|| control == nullptr) {return;}
-            pressed = control->get_digital(button);
+        void update()
+        {
+            if (!process || control == nullptr)
+            {
+                return;
+            }
+            SetButton(control->get_digital(button));
+        }
+
+        /*Will set the button's manual press. Make sure to run SetEnabled(false) or else this will only apply for one frame.*/
+        void SetButton(bool state)
+        {
+            pressed = state;
+            if (pressed)
+            {
+                if (OnPressCallback != nullptr)
+                {
+                    OnPressCallback();
+                }
+            }
+            else
+            {
+                if (OnReleaseCallback != nullptr)
+                {
+                    OnReleaseCallback();
+                }
+            }
+        }
+
+        /*Enables or disables the button.*/
+        void SetEnabled(bool enabled) { process = enabled; }
+
+        /*
+            Register a function to trigger whenever the button is pressed.
+        */
+        void OnButtonPress(const std::function<void()> &func)
+        {
+            OnPressCallback = func;
+        }
+        /*
+            Register a function to trigger whenever the button is released.
+        */
+        void OnButtonRelease(const std::function<void()> &func)
+        {
+            OnReleaseCallback = func;
         }
     };
 
@@ -100,11 +164,11 @@ public:
     Button R2;
     Button Power;
 
-    bool enabled=true;
+    bool enabled = true;
 
-    EmulatedController(pros::Controller* ctrl)
-        : controller(ctrl), //i know it's so amazing
-          LeftJoystick(ctrl, pros::E_CONTROLLER_ANALOG_LEFT_X,  pros::E_CONTROLLER_ANALOG_LEFT_Y),
+    EmulatedController(pros::Controller *ctrl)
+        : controller(ctrl), // i know it's so amazing
+          LeftJoystick(ctrl, pros::E_CONTROLLER_ANALOG_LEFT_X, pros::E_CONTROLLER_ANALOG_LEFT_Y),
           RightJoystick(ctrl, pros::E_CONTROLLER_ANALOG_RIGHT_X, pros::E_CONTROLLER_ANALOG_RIGHT_Y),
           A(this, ctrl, pros::E_CONTROLLER_DIGITAL_A),
           B(this, ctrl, pros::E_CONTROLLER_DIGITAL_B),
@@ -118,16 +182,20 @@ public:
           L2(this, ctrl, pros::E_CONTROLLER_DIGITAL_L2),
           R1(this, ctrl, pros::E_CONTROLLER_DIGITAL_R1),
           R2(this, ctrl, pros::E_CONTROLLER_DIGITAL_R2),
-          Power(this, ctrl, pros::E_CONTROLLER_DIGITAL_POWER) {
+          Power(this, ctrl, pros::E_CONTROLLER_DIGITAL_POWER)
+    {
     }
 
-    void update() {
+    void update()
+    {
         LeftJoystick.update();
         RightJoystick.update();
-        for (Button* b : buttons) {
-            if (b){
+        for (Button *b : buttons)
+        {
+            if (b)
+            {
                 b->update();
-            } 
+            }
         }
     }
 };
