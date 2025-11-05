@@ -75,5 +75,7 @@ void opcontrol() {
 		
 		pros::delay(20);
 		UILib::update();
+
+		//I like skibidi toilet
 	}
 }
