@@ -40,6 +40,7 @@
  * You should add more #includes here
  */
 //#include "okapi/api.hpp"
+#include "custom/emulated_controller.hpp"
 #include "custom/drivetrain.hpp"
 #include "custom/controls.hpp"
 #include "custom/ui.hpp"
