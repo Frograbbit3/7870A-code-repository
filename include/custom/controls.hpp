@@ -121,10 +121,10 @@ namespace ControllerLib
             if (fr % 3 == 0) {
                 pros::screen::print(pros::E_TEXT_LARGE_CENTER,1, std::to_string(MAX_SPEED_FACTOR).c_str());
             }
-            float LeftJoystickX=LeftJoystick->X//std::min(127, std::max(-127,std::pow(LeftJoystick->X/127.0f, 3)*127.0f));
-            float LeftJoystickY=LeftJoystick->Y//std::min(127, std::max(-127,std::pow(LeftJoystick->Y/127.0f, 3)*127.0f));
-            float RightJoystickX=RightJoystick->X//std::min(127, std::max(-127,std::pow(RightJoystick->X/127.0f, 3)*127.0f));
-            float RightJoystickY=RightJoystick->Y//std::min(127, std::max(-127,std::pow(RightJoystick->Y/127.0f, 3)*127.0f));
+            float LeftJoystickX=LeftJoystick->X;//std::min(127, std::max(-127,std::pow(LeftJoystick->X/127.0f, 3)*127.0f));
+            float LeftJoystickY=LeftJoystick->Y;//std::min(127, std::max(-127,std::pow(LeftJoystick->Y/127.0f, 3)*127.0f));
+            float RightJoystickX=RightJoystick->X;//std::min(127, std::max(-127,std::pow(RightJoystick->X/127.0f, 3)*127.0f));
+            float RightJoystickY=RightJoystick->Y;//std::min(127, std::max(-127,std::pow(RightJoystick->Y/127.0f, 3)*127.0f));
             if (configuration.CONTROL_SCHEME == ARCADE_DRIVE)
             {
                 leftVelocity = static_cast<int16_t>(RightJoystickX * -(configuration.MAX_TURN_SPEED+MAX_SPEED_FACTOR)) - static_cast<int16_t>(-LeftJoystickY* (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
