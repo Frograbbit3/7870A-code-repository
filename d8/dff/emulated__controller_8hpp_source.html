@@ -131,7 +131,7 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        {   </div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            X = fabs(nx) &gt; deadzone ? nx : 0.0f;</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            Y = fabs(ny) &gt; deadzone ? ny : 0.0f;</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            moving = (fabs(X) &lt; deadzone &amp;&amp; fabs(Y) &lt; deadzone) ? <span class="keyword">true</span> : <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            moving = (fabs(X) &gt; deadzone || fabs(Y) &gt; deadzone); <span class="comment">// FIXED: moving when OUTSIDE deadzone</span></div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>            <span class="keywordflow">if</span> (OnMoveCallback != <span class="keyword">nullptr</span>) {OnMoveCallback(X, Y);}</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        }</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
