@@ -47,7 +47,7 @@ namespace ControllerLib
         {   
             X = fabs(nx) > deadzone ? nx : 0.0f;
             Y = fabs(ny) > deadzone ? ny : 0.0f;
-            moving = (fabs(X) < deadzone && fabs(Y) < deadzone) ? true : false;
+            moving = (fabs(X) > deadzone || fabs(Y) > deadzone); // FIXED: moving when OUTSIDE deadzone
             if (OnMoveCallback != nullptr) {OnMoveCallback(X, Y);}
         }
 

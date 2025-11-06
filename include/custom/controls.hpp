@@ -3,7 +3,10 @@
 #include "custom/modded.hpp"
 #include "custom/enums.hpp"
 #include "custom/drivetrain.hpp"
+#include "pros/screen.h"
+#include "pros/screen.hpp"
 #include <map>
+#include <string>
 #include <vector>
 #include <algorithm>
 
@@ -31,6 +34,7 @@ namespace ControllerLib
 
     private:
         int current_action;
+        int fr;
         DrivetrainLib::Drivetrain &drive;
         ControllerLib::EmulatedController& controller;
         std::vector<ControllerLib::Macro> macros;
@@ -103,27 +107,39 @@ namespace ControllerLib
                         macro.LAST_PRESSED=true;
                         runMacro(&macro);
                     }else{
-                        macro.LAST_PRESSED = false;
-                        if (macro.ON_RELEASED) {
-                            macro.ON_RELEASED();
+                        if (macro.LAST_PRESSED && buttonCount != macro.MACRO_KEYS.size()) {
+                            macro.LAST_PRESSED = false;
+                            if (macro.ON_RELEASED) {
+                                macro.ON_RELEASED();
+                            }
                         }
                     }
                 }
             }
+            float MAX_SPEED_FACTOR =0.0f;// std::min(static_cast<double>(0.2f), (pros::millis() - configuration.timeSinceJoystickStop)/2000.0f);
+
+            if (fr % 3 == 0) {
+                pros::screen::print(pros::E_TEXT_LARGE_CENTER,1, std::to_string(MAX_SPEED_FACTOR).c_str());
+            }
+            float LeftJoystickX=std::pow(LeftJoystick->X, 3);
+            float LeftJoystickY=std::pow(LeftJoystick->X, 3);
+            float RightJoystickX=std::pow(LeftJoystick->X, 3);
+            float RightJoystickY=std::pow(LeftJoystick->X, 3);
             if (configuration.CONTROL_SCHEME == ARCADE_DRIVE)
             {
-                leftVelocity = static_cast<int16_t>(RightJoystick->X * -configuration.MAX_TURN_SPEED) - static_cast<int16_t>(-LeftJoystick->Y* configuration.MAX_FORWARD_SPEED);
-                rightVelocity = static_cast<int16_t>(RightJoystick->X * -configuration.MAX_TURN_SPEED) + static_cast<int16_t>(-LeftJoystick->Y * configuration.MAX_FORWARD_SPEED);
+                leftVelocity = static_cast<int16_t>(RightJoystickX * -(configuration.MAX_TURN_SPEED+MAX_SPEED_FACTOR)) - static_cast<int16_t>(-LeftJoystickY* (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
+                rightVelocity = static_cast<int16_t>(RightJoystickX * -(configuration.MAX_TURN_SPEED+MAX_SPEED_FACTOR)) + static_cast<int16_t>(-LeftJoystickY * (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
                 leftVelocity = std::min(127, std::max(-127, static_cast<int>(leftVelocity)));
                 rightVelocity = std::min(127, std::max(-127, static_cast<int>(rightVelocity)));
             }
             else if (configuration.CONTROL_SCHEME == TANK_DRIVE)
             {
-                leftVelocity = static_cast<int16_t>(LeftJoystick->Y * configuration.MAX_FORWARD_SPEED);
-                rightVelocity = static_cast<int16_t>(RightJoystick->Y * -configuration.MAX_FORWARD_SPEED);
+                leftVelocity = static_cast<int16_t>(LeftJoystickY * (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
+                rightVelocity = static_cast<int16_t>(RightJoystickY * -(configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
                 leftVelocity = std::min(127, std::max(-127, static_cast<int>(leftVelocity)));
                 rightVelocity = std::min(127, std::max(-127, static_cast<int>(rightVelocity)));
             }
+            
             if (LeftJoystick->moving || RightJoystick->moving)
             {
                 drive.setLeftVelocity(leftVelocity);
@@ -132,8 +148,10 @@ namespace ControllerLib
             }
             else
             {
+                configuration.timeSinceJoystickStop = pros::millis();
                 drive.stop();
             }
+            fr++;
         }
     };
 }

@@ -28,7 +28,7 @@ void OnARelease() {
 
 void opcontrol() {
 	//new comment
-	DrivetrainLib::Drivetrain drivetrain ({-3,9,10}, {5,12,20}); //put motor ports here
+	DrivetrainLib::Drivetrain drivetrain ({-1,-5,-20}, {-9,-10,-21}); //put motor ports here
 	//ControllerLib::ControlScheme control(
 	//	ARCADE_DRIVE,
 	//	drivetrain,
@@ -41,17 +41,16 @@ void opcontrol() {
 		control
 	);
 ;
-	control.buttons.A.OnButtonPress(OnAPress);
-	control.buttons.A.OnButtonRelease(OnARelease);
+	//control.buttons.A.OnButtonPress(OnAPress);
+	//control.buttons.A.OnButtonRelease(OnARelease);
+	ControllerLib::Macro main({&control.buttons.A, &control.buttons.B}, OnAPress, OnARelease);
+	mainControl.createMacro(main);
 	//control.createMacro(AMaAMacrocro);
 	//control.createMacro(AMacro2);
 	//control.createMacro(AMacro3);
 	int frame = 0;
 	while (true) {
 		mainControl.update();
-		if (frame % 60 == 0) {
-			pros::screen::erase();
-		}
 		frame++;
 		pros::delay(20);
 	}

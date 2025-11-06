@@ -55,12 +55,13 @@ namespace ControllerEnums
     struct ControllerSettings
     {
         ControllerDriveTypes CONTROL_SCHEME = ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE;
-        float MAX_TURN_SPEED = 0.6f;
-        float MAX_FORWARD_SPEED = 1.0f;
+        float MAX_TURN_SPEED = -0.6f;
+        float MAX_FORWARD_SPEED = 0.8f;
         float DEADZONE = 10.0f;
         bool DRIVE_AUTO_CORRECTION = false;
         bool ENABLED = true;
         bool MACROS_ENABLED = true;
+        double timeSinceJoystickStop = 0.0f;
     };
 
     std::vector<pros::controller_digital_e_t> __BUTTON_LIST = {

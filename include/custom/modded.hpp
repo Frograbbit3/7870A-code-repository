@@ -55,7 +55,7 @@ class MotorGroup {
                     stopped = 0;
                 }else{
                     for (pros::Motor& mtr: group) {
-                        mtr.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+                       // mtr.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
                     }
                 }
             }
