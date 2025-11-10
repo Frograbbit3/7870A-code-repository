@@ -29,25 +29,14 @@ void OnARelease() {
 void opcontrol() {
 	//new comment
 	DrivetrainLib::Drivetrain drivetrain ({-1,-5,-20}, {-9,-10,-21}); //put motor ports here
-	//ControllerLib::ControlScheme control(
-	//	ARCADE_DRIVE,
-	//	drivetrain,
-	//	master
-
 	ControllerLib::EmulatedController control(&master);
 	ControllerLib::ControlScheme mainControl(
 		ARCADE_DRIVE,
 		drivetrain,
 		control
 	);
-;
-	//control.buttons.A.OnButtonPress(OnAPress);
-	//control.buttons.A.OnButtonRelease(OnARelease);
 	ControllerLib::Macro main({&control.buttons.A, &control.buttons.B}, OnAPress, OnARelease);
 	mainControl.createMacro(main);
-	//control.createMacro(AMaAMacrocro);
-	//control.createMacro(AMacro2);
-	//control.createMacro(AMacro3);
 	int frame = 0;
 	while (true) {
 		mainControl.update();
