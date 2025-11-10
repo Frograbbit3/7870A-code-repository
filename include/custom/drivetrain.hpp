@@ -103,6 +103,12 @@ namespace DrivetrainLib
         }
 
     public:
+        /*
+            The core drivetrain.
+            This drivetrain is primarily used as a replacement to a manual motor system; it supports unlimited motors.
+            @param leftSide A list of left motor ports.
+            @param rightSide A list of right motor ports.
+        */
         Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide) : leftMotors(leftSide), rightMotors(rightSide)
         {
          //   pros::Task telementry(task_helper_telementry, (void *)this);

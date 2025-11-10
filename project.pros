@@ -592,7 +592,7 @@
       }
     },
     "upload_options": {
-      "icon": "X",
+      "icon": "ufo",
       "after": "run",
       "description": "we are cool drive"
     },
