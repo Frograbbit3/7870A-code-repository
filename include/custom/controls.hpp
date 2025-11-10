@@ -1,14 +1,7 @@
 #pragma once
 #include "custom/emulated_controller.hpp"
-#include "custom/modded.hpp"
 #include "custom/enums.hpp"
 #include "custom/drivetrain.hpp"
-#include "pros/screen.h"
-#include "pros/screen.hpp"
-#include <map>
-#include <string>
-#include <vector>
-#include <algorithm>
 #include "mathlib.h"
 
 namespace ControllerLib

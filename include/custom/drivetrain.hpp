@@ -1,6 +1,6 @@
 #pragma once
+#include "mathlib.h"
 #include "modded.hpp"
-#include "motor_testing.hpp"
 #include "enums.hpp"
 #include <math.h>
 #define pi M_PI
@@ -108,45 +108,33 @@ namespace DrivetrainLib
          //   pros::Task telementry(task_helper_telementry, (void *)this);
          //   pros::Task auto_drive(task_helper_drive_correction, (void *)this);
         }
+        /*@brief  'Calibrates' the drivetrain. To test, run `DriveUtils::Drivetrain.test()`*/
         void calibrate()
         {
-            /*@brief  'Calibrates' the drivetrain. To test, run `DriveUtils::Drivetrain.test()`*/
             calibrateMotors();
         }
-        bool test()
-        {
-            ///@brief Does a test of the drivetrain to confirm all motors are spinning and optimal. Can take a while.
-            calibrateMotors();
-            for (pros::Motor &mtr : leftMotors.group)
-            {
-                if (!testMotor(mtr))
-                {
-                    return false;
-                }
-            }
-            pros::delay(50);
-            for (pros::Motor &mtr : rightMotors.group)
-            {
-                if (!testMotor(mtr))
-                {
-                    return false;
-                }
-            }
-            pros::delay(50);
-            calibrateMotors();
-            return true;
-        }
+        /*Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.*/
         void setLeftVelocity(int velocity)
         {
-            /// Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.
-            leftProperties.SET_VELOCITY = std::min(127, std::max(-127, velocity));
+            leftProperties.SET_VELOCITY = minmax(static_cast<int>(velocity), -127, 127);
         }
-        void setRightVelocity(int velocity)
-        {
-            /// Sets the right velocity to a value between 0 - 100. Does this by attempting to set max voltage.
+        /*Sets the right velocity to a value between 0 - 100. Does this by attempting to set max voltage.*/
+        void setRightVelocity(int velocity){
             rightProperties.SET_VELOCITY = std::min(127, std::max(-127, velocity));
         }
 
+
+
+        /*
+            Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity
+        */
+        void setVelocity(int leftVelocity, int rightVelocity) {
+            setLeftVelocity(leftVelocity);
+            setRightVelocity(rightVelocity);
+        }
+        /*
+            Stops the robot. This uses the breaks' weird hold method which makes it stop immediately.
+        */
         void stop()
         {
             leftProperties.SET_VELOCITY = 0;
@@ -155,7 +143,6 @@ namespace DrivetrainLib
             rightMotors.brake();
             leftProperties.IS_DRIVING = false;
             rightProperties.IS_DRIVING = false;
-            /// Breaks the robot. This is the same as calling DriveUtils::Drivetrain::Drive(DrivetrainEnums::Direction::STOP)
         }
         void drive(DrivetrainEnums::Direction direction)
         {
@@ -173,6 +160,8 @@ namespace DrivetrainLib
                 rightMotors.move(rightProperties.SET_VELOCITY * -1);
                 leftProperties.IS_DRIVING = true;
                 rightProperties.IS_DRIVING = true;
+                break;
+            default:
                 break;
             }
         }

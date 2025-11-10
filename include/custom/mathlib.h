@@ -1,6 +1,8 @@
+#pragma once
 #include "math.h"
 
 template<typename T>
+/*A helper function that literally just sets a number if its too big or too low.*/
 T minmax(T num, T min, T max)  {
     if (num > max) {
         return max;
@@ -13,6 +15,7 @@ T minmax(T num, T min, T max)  {
 
 
 extern "C" {
+    /*Will take a float and pow it by an int. powf can do the same but is slower then this.*/
     float powerf(float num1, int num2) {
         float new_num = 1.0f;
         for (int i = 0; i < num2; i++) {
@@ -20,6 +23,7 @@ extern "C" {
         }
         return new_num;
     }
+    /*The equation to preprocess the joystick.*/
     float JoystickCurve(double x) {
         float num = static_cast<float>(x)/127.0f;
         int new_num = powerf(num, 3) * 127.0f;

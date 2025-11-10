@@ -159,6 +159,7 @@ namespace ControllerLib
 
         double battery = 100;
         bool enabled = true;
+        bool connected = false;
 
         EmulatedController(pros::Controller *ctrl)
             : controller(ctrl)
@@ -224,7 +225,9 @@ namespace ControllerLib
                     b->update();
                 }
             }
+            
             battery = static_cast<float>(controller->get_battery_level());
+            connected = controller->is_connected();
         }
     };
 }

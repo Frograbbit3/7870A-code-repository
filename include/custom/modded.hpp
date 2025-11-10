@@ -1,6 +1,7 @@
 #pragma once
-#include "main.h"
 #include "enums.hpp"
+#include "pros/motors.hpp"
+#include <cmath>
 
 #define time pros::millis()
 class MotorGroup {
@@ -55,6 +56,7 @@ class MotorGroup {
                     stopped = 0;
                 }else{
                     for (pros::Motor& mtr: group) {
+                    
                        // mtr.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
                     }
                 }
