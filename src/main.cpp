@@ -35,8 +35,6 @@ void opcontrol() {
 		drivetrain,
 		control
 	);
-	ControllerLib::Macro main({&control.buttons.A, &control.buttons.B}, OnAPress, OnARelease);
-	mainControl.createMacro(main);
 	int frame = 0;
 	while (true) {
 		mainControl.update();

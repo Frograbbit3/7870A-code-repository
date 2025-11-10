@@ -13,21 +13,6 @@
 
 namespace ControllerLib
 {
-    class Macro
-    {
-    public:
-        std::vector<Button*> MACRO_KEYS;
-        void (*ON_PRESSED)();
-        void (*ON_RELEASED)();
-        bool REGISTER_HOLD = false;
-        bool LAST_PRESSED = false;
-        Macro(const std::vector<Button*> &key_pressed, void (*press)(), void (*release)() = nullptr, bool hold = false) : MACRO_KEYS(key_pressed),
-                                                                                                                                               ON_PRESSED(press),
-                                                                                                                                               ON_RELEASED(release),
-                                                                                                                                               REGISTER_HOLD(hold)
-        {
-        }
-    };
     class ControlScheme
     {
     public:
@@ -38,7 +23,6 @@ namespace ControllerLib
         int fr;
         DrivetrainLib::Drivetrain &drive;
         ControllerLib::EmulatedController& controller;
-        std::vector<ControllerLib::Macro> macros;
         int16_t leftVelocity;
         int16_t rightVelocity;
         int lastPressedTime = pros::millis();
@@ -46,22 +30,6 @@ namespace ControllerLib
         bool keepGoing = false;
         Joystick* RightJoystick;
         Joystick* LeftJoystick;
-        void runMacro(const ControllerLib::Macro* macro)
-        {
-            const std::vector<Button*> &inputs = macro->MACRO_KEYS;
-            void (*on_press)() = macro->ON_PRESSED;
-            void (*on_release)() = macro->ON_RELEASED;
-            if (!is_held && isMacroPressed(*macro))
-            {
-                lastPressedTime = pros::millis();
-                if (!macro->REGISTER_HOLD)
-                {
-                    is_held = true;
-                }
-                on_press();
-                return;
-            }
-        }
 
     public:
         ControlScheme(ControllerEnums::ControllerDriveTypes typ, DrivetrainLib::Drivetrain &driveRef, EmulatedController &controllerRef) : drive(driveRef), controller(controllerRef)
@@ -70,62 +38,18 @@ namespace ControllerLib
             LeftJoystick = &controller.joysticks.Left;
             RightJoystick = &controller.joysticks.Right;
         }
-        inline void createMacro(ControllerLib::Macro mac)
-        {
-            macros.push_back(mac);
-        }
-        bool isMacroPressed(const ControllerLib::Macro &macro)
-        {
-            if (!configuration.MACROS_ENABLED)
-            {
-                return false;
-            }
-            for (const Button* m : macro.MACRO_KEYS)
-            {
-                if (!m->pressed)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
         void update(){
             drive.configuration.AUTO_DRIVE_ENABLED = configuration.DRIVE_AUTO_CORRECTION;
-            controller.update();
-            if (!configuration.ENABLED)
-                return;
+            controller.update(); // For the EmulatedController
+            if (!configuration.ENABLED) {return;}
+            float MAX_SPEED_FACTOR = 0.0f; // std::min(static_cast<double>(0.2f), (pros::millis() - configuration.timeSinceJoystickStop)/2000.0f);
 
-            if (pros::millis() - lastPressedTime > 25 && configuration.MACROS_ENABLED)
-            {
-                for (Macro &macro : macros) {
-                    int buttonCount = 0;
-                    for (const Button* button : macro.MACRO_KEYS) {
-                        if (button->pressed) {
-                            buttonCount++;
-                        }
-                    }
-                    if (buttonCount == macro.MACRO_KEYS.size() && (!macro.LAST_PRESSED || macro.REGISTER_HOLD)) {
-                        macro.LAST_PRESSED=true;
-                        runMacro(&macro);
-                    }else{
-                        if (macro.LAST_PRESSED && buttonCount != macro.MACRO_KEYS.size()) {
-                            macro.LAST_PRESSED = false;
-                            if (macro.ON_RELEASED) {
-                                macro.ON_RELEASED();
-                            }
-                        }
-                    }
-                }
-            }
-            float MAX_SPEED_FACTOR =0.0f;// std::min(static_cast<double>(0.2f), (pros::millis() - configuration.timeSinceJoystickStop)/2000.0f);
+            // Read joystick raw values through the pointer members and apply curve
+            float LeftJoystickX = JoystickCurve(LeftJoystick->X);
+            float LeftJoystickY = JoystickCurve(LeftJoystick->Y);
+            float RightJoystickX = JoystickCurve(RightJoystick->X);
+            float RightJoystickY = JoystickCurve(RightJoystick->Y);
 
-            if (fr % 3 == 0) {
-                pros::screen::print(pros::E_TEXT_LARGE_CENTER,1, std::to_string(MAX_SPEED_FACTOR).c_str());
-            }
-            float LeftJoystickX=minmax(powerf(LeftJoystick->X / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
-            float LeftJoystickY=minmax(powerf(LeftJoystick->Y / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
-            float RightJoystickX=minmax(powerf(RightJoystick->X / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
-            float RightJoystickY=minmax(powerf(RightJoystick->Y / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
             switch (configuration.CONTROL_SCHEME) {
                 case ARCADE_DRIVE:
                     leftVelocity = static_cast<int>(RightJoystickX * -(configuration.MAX_TURN_SPEED+MAX_SPEED_FACTOR)) - static_cast<int>(-LeftJoystickY* (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
@@ -137,6 +61,7 @@ namespace ControllerLib
                     break;
 
             }
+            
             if (LeftJoystick->moving || RightJoystick->moving)
             {
                 leftVelocity = minmax(static_cast<int>(leftVelocity), -127, 127);
