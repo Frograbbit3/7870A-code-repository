@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['motorgroup_0',['MotorGroup',['../d6/d0a/classMotorGroup.html',1,'']]],
-  ['motorproperties_1',['MotorProperties',['../de/dca/structDrivetrainEnums_1_1MotorProperties.html',1,'DrivetrainEnums']]]
+  ['roadmap_0',['Roadmap',['../d0/d30/md_README.html#autotoc_md4',1,'']]],
+  ['robotics_20team_207870a_20drive_20auton_20code_1',['Vex Robotics Team 7870A Drive / Auton Code',['../d0/d30/md_README.html',1,'']]]
 ];
