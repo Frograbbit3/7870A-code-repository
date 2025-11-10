@@ -126,23 +126,21 @@ namespace ControllerLib
             float LeftJoystickY=minmax(powerf(LeftJoystick->Y / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
             float RightJoystickX=minmax(powerf(RightJoystick->X / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
             float RightJoystickY=minmax(powerf(RightJoystick->Y / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
-            if (configuration.CONTROL_SCHEME == ARCADE_DRIVE)
-            {
-                leftVelocity = static_cast<int16_t>(RightJoystickX * -(configuration.MAX_TURN_SPEED+MAX_SPEED_FACTOR)) - static_cast<int16_t>(-LeftJoystickY* (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
-                rightVelocity = static_cast<int16_t>(RightJoystickX * -(configuration.MAX_TURN_SPEED+MAX_SPEED_FACTOR)) + static_cast<int16_t>(-LeftJoystickY * (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
-                leftVelocity = std::min(127, std::max(-127, static_cast<int>(leftVelocity)));
-                rightVelocity = std::min(127, std::max(-127, static_cast<int>(rightVelocity)));
+            switch (configuration.CONTROL_SCHEME) {
+                case ARCADE_DRIVE:
+                    leftVelocity = static_cast<int>(RightJoystickX * -(configuration.MAX_TURN_SPEED+MAX_SPEED_FACTOR)) - static_cast<int>(-LeftJoystickY* (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
+                    rightVelocity = static_cast<int>(RightJoystickX * -(configuration.MAX_TURN_SPEED+MAX_SPEED_FACTOR)) + static_cast<int>(-LeftJoystickY * (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
+                    break;
+                case TANK_DRIVE:
+                    leftVelocity = static_cast<int>(LeftJoystickY * (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
+                    rightVelocity = static_cast<int>(RightJoystickY * -(configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
+                    break;
+
             }
-            else if (configuration.CONTROL_SCHEME == TANK_DRIVE)
-            {
-                leftVelocity = static_cast<int16_t>(LeftJoystickY * (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
-                rightVelocity = static_cast<int16_t>(RightJoystickY * -(configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
-                leftVelocity = std::min(127, std::max(-127, static_cast<int>(leftVelocity)));
-                rightVelocity = std::min(127, std::max(-127, static_cast<int>(rightVelocity)));
-            }
-            
             if (LeftJoystick->moving || RightJoystick->moving)
             {
+                leftVelocity = minmax(static_cast<int>(leftVelocity), -127, 127);
+                rightVelocity = minmax(static_cast<int>(rightVelocity), -127, 127);
                 drive.setLeftVelocity(leftVelocity);
                 drive.setRightVelocity(rightVelocity);
                 drive.drive(DRIVE_FORWARD);
