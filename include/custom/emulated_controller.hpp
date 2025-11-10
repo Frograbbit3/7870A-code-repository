@@ -144,9 +144,9 @@ namespace ControllerLib
     {
     private:
         pros::Controller *controller;
+        std::vector<Button*> btns;
 
     public:
-        std::vector<Button*> btns;
 
         struct
         {

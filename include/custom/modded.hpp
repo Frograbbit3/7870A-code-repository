@@ -1,5 +1,6 @@
 #pragma once
 #include "enums.hpp"
+#include "mathlib.h"
 #include "pros/motors.hpp"
 #include <cmath>
 
@@ -11,14 +12,34 @@ class MotorGroup {
         std::vector<pros::Motor> group;
         std::vector<int8_t> ports;
         DrivetrainEnums::WheelProperties properties;
+        int velocity = 0;
         MotorGroup(const std::vector<int8_t>& ports) {
             for (int8_t port : ports) {
                 group.push_back(pros::Motor(port));
             }
         }
-        void move(int32_t voltage) {
+
+        /*
+            Sets the velocity.
+            vel -> -127 to 127
+        */
+        void setVelocity(int vel) {
+            velocity = minmax(vel, -127, 127);
+        }
+
+        void move(DrivetrainEnums::Direction& dir) {
             for (pros::Motor& mtr : group) {
-                mtr.move(voltage);
+                switch (dir) {
+                    case DRIVE_FORWARD:
+                        mtr.move(velocity);
+                        break;
+                    case DRIVE_REVERSE:
+                        mtr.move(-velocity);
+                        break;
+                    case DRIVE_STOP:
+                        brake();
+                        break;
+                }
             }
         }
         void brake() {
@@ -45,6 +66,32 @@ class MotorGroup {
                 return INCH_TO_MM(M_PI*getRotation()*properties.WHEEL_SIZE);
             case DrivetrainEnums::Distance::ROTATION:
                 return getRotation();
+            }
+        }
+
+        void moveRelative(int angle, int voltage) {
+            for (pros::Motor& mtr : group) {
+                mtr.move_relative(angle, voltage);
+            }
+        }
+
+        /*
+            Attempts to move the motor group a certain distance. This uses rough estimation, so it's not accurate.
+            TODO: Use sensors.
+        */
+        void moveDistance(float distance, DrivetrainEnums::Distance dst) {
+            int rot = 0;
+            switch (dst)
+            {
+            case DrivetrainEnums::Distance::INCHES:
+                moveRelative(distance/(M_PI*properties.WHEEL_SIZE), velocity);     
+                break;     
+            case DrivetrainEnums::Distance::MM:
+                moveRelative(INCH_TO_MM(distance)/(M_PI*properties.WHEEL_SIZE), velocity);
+                break;
+            case DrivetrainEnums::Distance::ROTATION:
+                moveRelative(distance, velocity);
+                break;
             }
         }
         void update() {
