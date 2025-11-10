@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include "mathlib.h"
 
 namespace ControllerLib
 {
@@ -121,10 +122,10 @@ namespace ControllerLib
             if (fr % 3 == 0) {
                 pros::screen::print(pros::E_TEXT_LARGE_CENTER,1, std::to_string(MAX_SPEED_FACTOR).c_str());
             }
-            float LeftJoystickX=std::min(127.0f, std::max(-127.0f, powf(LeftJoystick->X / 127.0f, 3.0f) * 127.0f));
-            float LeftJoystickY=std::min(127.0f, std::max(-127.0f, powf(LeftJoystick->Y / 127.0f, 3.0f) * 127.0f));
-            float RightJoystickX=std::min(127.0f, std::max(-127.0f, powf(RightJoystick->X / 127.0f, 3.0f) * 127.0f));
-            float RightJoystickY=std::min(127.0f, std::max(-127.0f, powf(RightJoystick->Y / 127.0f, 3.0f) * 127.0f));
+            float LeftJoystickX=minmax(powerf(LeftJoystick->X / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
+            float LeftJoystickY=minmax(powerf(LeftJoystick->Y / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
+            float RightJoystickX=minmax(powerf(RightJoystick->X / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
+            float RightJoystickY=minmax(powerf(RightJoystick->Y / 127.0f, 3.0f) * 127.0f, -127.0f, 127.0f);
             if (configuration.CONTROL_SCHEME == ARCADE_DRIVE)
             {
                 leftVelocity = static_cast<int16_t>(RightJoystickX * -(configuration.MAX_TURN_SPEED+MAX_SPEED_FACTOR)) - static_cast<int16_t>(-LeftJoystickY* (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
