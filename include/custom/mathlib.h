@@ -1,4 +1,5 @@
 #pragma once
+#define CD_TURN_NONLINEARITY 0.65
 #include "math.h"
 
 template<typename T>
@@ -26,10 +27,13 @@ extern "C" {
     /*
         The equation to preprocess the joystick. 
         Pass in a value from -127 to 127 and it will perform the math to feel slightly better
+
+        Source: https://github.com/purduesigbots/forkner-public/blob/62e1328b7902715035357622d81e4a35cb15ff2f/src/libforkner/drive.cpp#L363
     */
-    inline float JoystickCurve(double x) {
-        float num = static_cast<float>(x)/127.0f;
-        int new_num = powerf(num, 3) * 127.0f;
-        return minmax(new_num, -127, 1270);
-    };
+    inline float JoystickCurve(double iturn) {
+        double denominator = sin(M_PI / 2 * CD_TURN_NONLINEARITY);
+        double firstRemapIteration =
+            sin(M_PI / 2 * CD_TURN_NONLINEARITY * (iturn/127.0f)) / denominator;
+        return static_cast<float>(sin(M_PI / 2 * CD_TURN_NONLINEARITY * firstRemapIteration) / denominator)*127.0f;
+    }
 }

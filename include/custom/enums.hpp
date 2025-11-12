@@ -74,3 +74,9 @@ namespace ControllerEnums
 #define DRIVE_FORWARD DrivetrainEnums::Direction::FORWARD
 #define DRIVE_REVERSE DrivetrainEnums::Direction::REVERSE
 #define DRIVE_STOP DrivetrainEnums::Direction::STOP
+
+
+//drivetrain
+#define DRIVE_SLEW 0.02f
+#define CD_NEG_INERTIA_SCALAR 4.0
+#define CD_SENSITIVITY 1.0

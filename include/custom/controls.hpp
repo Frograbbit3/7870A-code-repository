@@ -21,6 +21,33 @@ namespace ControllerLib
         Joystick* RightJoystick;
         Joystick* LeftJoystick;
 
+        //cheese
+        float linearCmd = 0.0f;
+        bool turnInPlace = false;
+        double prevThrottle;
+        double prevTurn;
+        int left;
+        int right;
+        double quickStopAccumlator = 0.0;
+        double negInertiaAccumlator = 0.0;
+        void _updateAccumulators() {
+            if (negInertiaAccumlator > 1) {
+                negInertiaAccumlator -= 1;
+            } else if (negInertiaAccumlator < -1) {
+                negInertiaAccumlator += 1;
+            } else {
+                negInertiaAccumlator = 0;
+            }
+
+            if (quickStopAccumlator > 1) {
+                quickStopAccumlator -= 1;
+            } else if (quickStopAccumlator < -1) {
+                quickStopAccumlator += 1;
+            } else {
+                quickStopAccumlator = 0.0;
+            }
+        }
+
     public:
         ControlScheme(ControllerEnums::ControllerDriveTypes typ, DrivetrainLib::Drivetrain &driveRef, EmulatedController &controllerRef) : drive(driveRef), controller(controllerRef)
         {
@@ -49,10 +76,10 @@ namespace ControllerLib
                     leftVelocity = static_cast<int>(LeftJoystickY * (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
                     rightVelocity = static_cast<int>(RightJoystickY * -(configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
                     break;
-                case GTA_DRIVE:
+                case GTA_DRIVE: {
                     int forward = (controller.buttons.R2.pressed ? 1 : 0) -
                                 (controller.buttons.L2.pressed ? 1 : 0);
-                    int turn = LeftJoystickX;
+                    int turn = static_cast<int>(LeftJoystickX);
 
                     leftVelocity = static_cast<int>(
                         (forward * (configuration.MAX_FORWARD_SPEED + MAX_SPEED_FACTOR)) -
@@ -64,6 +91,54 @@ namespace ControllerLib
                         (turn * (configuration.MAX_TURN_SPEED + MAX_SPEED_FACTOR))
                     );
                     break;
+                }
+                case CHEESE_DRIVE: {
+                    double ithrottle = LeftJoystickY / 127.0;
+                    double iturn = RightJoystickY / 127.0;
+                    double linearCmd = ithrottle;
+                    bool turnInPlace = false;
+
+                    if (fabs(ithrottle) < 0.1 && fabs(iturn) > 0.1) {
+                        linearCmd = 0.0;
+                        turnInPlace = true;
+                    } else if (ithrottle - prevThrottle > DRIVE_SLEW) {
+                        linearCmd = prevThrottle + DRIVE_SLEW;
+                    } else if (ithrottle - prevThrottle < -(DRIVE_SLEW * 2)) {
+                        linearCmd = prevThrottle - (DRIVE_SLEW * 2);
+                    }
+
+                    double remappedTurn = iturn;
+                    double left, right;
+
+                    if (turnInPlace) {
+                        left = remappedTurn * fabs(remappedTurn);
+                        right = -remappedTurn * fabs(remappedTurn);
+                    } else {
+                        double negInertiaPower = (iturn - prevTurn) * CD_NEG_INERTIA_SCALAR;
+                        negInertiaAccumlator += negInertiaPower;
+
+                        double angularCmd =
+                            fabs(linearCmd) *
+                            (remappedTurn + negInertiaAccumlator) *
+                            CD_SENSITIVITY -
+                            quickStopAccumlator;
+
+                        right = left = linearCmd;
+                        left += angularCmd;
+                        right -= angularCmd;
+
+                        _updateAccumulators();
+                    }
+
+                    // scale to [-127, 127]
+                    leftVelocity = static_cast<int>(std::clamp(left, -1.0, 1.0) * 127);
+                    rightVelocity = static_cast<int>(std::clamp(right, -1.0, 1.0) * 127);
+
+                    prevTurn = iturn;
+                    prevThrottle = ithrottle;
+                    break;
+                }
+
                 
                 
             }
