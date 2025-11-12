@@ -23,7 +23,10 @@ extern "C" {
         }
         return new_num;
     }
-    /*The equation to preprocess the joystick.*/
+    /*
+        The equation to preprocess the joystick. 
+        Pass in a value from -127 to 127 and it will perform the math to feel slightly better
+    */
     float JoystickCurve(double x) {
         float num = static_cast<float>(x)/127.0f;
         int new_num = powerf(num, 3) * 127.0f;

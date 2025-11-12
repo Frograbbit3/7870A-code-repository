@@ -18,9 +18,6 @@ namespace ControllerLib
         ControllerLib::EmulatedController& controller;
         int16_t leftVelocity;
         int16_t rightVelocity;
-        int lastPressedTime = pros::millis();
-        bool is_held = true;
-        bool keepGoing = false;
         Joystick* RightJoystick;
         Joystick* LeftJoystick;
 
@@ -52,15 +49,13 @@ namespace ControllerLib
                     leftVelocity = static_cast<int>(LeftJoystickY * (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
                     rightVelocity = static_cast<int>(RightJoystickY * -(configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
                     break;
-
             }
             
             if (LeftJoystick->moving || RightJoystick->moving)
             {
                 leftVelocity = minmax(static_cast<int>(leftVelocity), -127, 127);
                 rightVelocity = minmax(static_cast<int>(rightVelocity), -127, 127);
-                drive.setLeftVelocity(leftVelocity);
-                drive.setRightVelocity(rightVelocity);
+                drive.setVelocity(leftVelocity, rightVelocity);
                 drive.drive(DRIVE_FORWARD);
             }
             else

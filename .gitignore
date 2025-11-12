@@ -19,3 +19,6 @@ temp.errors
 #doxygen
 html/
 latex/
+
+#git sometimes
+log.txt

@@ -123,10 +123,12 @@ namespace DrivetrainLib
         void setLeftVelocity(int velocity)
         {
             leftProperties.SET_VELOCITY = minmax(static_cast<int>(velocity), -127, 127);
+            leftMotors.setVelocity(leftProperties.SET_VELOCITY);
         }
         /*Sets the right velocity to a value between 0 - 100. Does this by attempting to set max voltage.*/
         void setRightVelocity(int velocity){
             rightProperties.SET_VELOCITY = std::min(127, std::max(-127, velocity));
+            rightMotors.setVelocity(rightProperties.SET_VELOCITY);
         }
 
 
@@ -152,24 +154,12 @@ namespace DrivetrainLib
         }
         void drive(DrivetrainEnums::Direction direction)
         {
-            /// Moves the robot. Simple.
-            switch (direction)
-            {
-            case DrivetrainEnums::Direction::FORWARD:
-                leftMotors.move(leftProperties.SET_VELOCITY);
-                rightMotors.move(rightProperties.SET_VELOCITY);
-                leftProperties.IS_DRIVING = true;
-                rightProperties.IS_DRIVING = true;
-                break;
-            case DrivetrainEnums::Direction::REVERSE:
-                leftMotors.move(leftProperties.SET_VELOCITY * -1);
-                rightMotors.move(rightProperties.SET_VELOCITY * -1);
-                leftProperties.IS_DRIVING = true;
-                rightProperties.IS_DRIVING = true;
-                break;
-            default:
-                break;
-            }
+            leftMotors.setVelocity(leftProperties.SET_VELOCITY);
+            leftMotors.move(direction);
+            rightMotors.setVelocity(rightProperties.SET_VELOCITY);
+            rightMotors.move(direction);
+            leftProperties.IS_DRIVING = true;
+            rightProperties.IS_DRIVING = true;
         }
     };
 }
