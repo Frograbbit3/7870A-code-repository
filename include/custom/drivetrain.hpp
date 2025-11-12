@@ -19,6 +19,8 @@ namespace DrivetrainLib
         std::vector<int8_t> rightSide;
         DrivetrainEnums::MotorProperties leftProperties;
         DrivetrainEnums::MotorProperties rightProperties;
+         pros::Task telementry_task;
+        pros::Task auto_drive_task;
 
         void internal_telementry_collector()
         {
@@ -109,10 +111,13 @@ namespace DrivetrainLib
             @param leftSide A list of left motor ports.
             @param rightSide A list of right motor ports.
         */
-        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide) : leftMotors(leftSide), rightMotors(rightSide)
-        {
-         //   pros::Task telementry(task_helper_telementry, (void *)this);
-         //   pros::Task auto_drive(task_helper_drive_correction, (void *)this);
+        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide) : leftMotors(leftSide), rightMotors(rightSide),          telementry_task(task_helper_telementry, (void *)this),
+          auto_drive_task(task_helper_drive_correction, (void *)this){}
+
+        /*@brief Will completely stop all tasks related to the drivetrain. Call this on shutdown.*/
+        void shutdown() {
+            telementry_task.remove();
+            auto_drive_task.remove();
         }
         /*@brief  'Calibrates' the drivetrain. To test, run `DriveUtils::Drivetrain.test()`*/
         void calibrate()
