@@ -49,6 +49,23 @@ namespace ControllerLib
                     leftVelocity = static_cast<int>(LeftJoystickY * (configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
                     rightVelocity = static_cast<int>(RightJoystickY * -(configuration.MAX_FORWARD_SPEED+MAX_SPEED_FACTOR));
                     break;
+                case GTA_DRIVE:
+                    int forward = (controller.buttons.R2.pressed ? 1 : 0) -
+                                (controller.buttons.L2.pressed ? 1 : 0);
+                    int turn = LeftJoystickX;
+
+                    leftVelocity = static_cast<int>(
+                        (forward * (configuration.MAX_FORWARD_SPEED + MAX_SPEED_FACTOR)) -
+                        (turn * (configuration.MAX_TURN_SPEED + MAX_SPEED_FACTOR))
+                    );
+
+                    rightVelocity = static_cast<int>(
+                        (forward * (configuration.MAX_FORWARD_SPEED + MAX_SPEED_FACTOR)) +
+                        (turn * (configuration.MAX_TURN_SPEED + MAX_SPEED_FACTOR))
+                    );
+                    break;
+                
+                
             }
             
             if (LeftJoystick->moving || RightJoystick->moving)

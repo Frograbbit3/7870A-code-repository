@@ -50,7 +50,9 @@ namespace ControllerEnums
     enum class ControllerDriveTypes
     {
         DRIVE_MODE_TANK = 1,
-        DRIVE_MODE_ARCADE = 2
+        DRIVE_MODE_ARCADE = 2,
+        DRIVE_MODE_GTA = 3,
+        DRIVE_MODE_CHEESE = 4,
     };
 
     struct ControllerSettings
@@ -67,6 +69,8 @@ namespace ControllerEnums
 
 #define TANK_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_TANK
 #define ARCADE_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE
+#define GTA_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_GTA
+#define CHEESE_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_CHEESE
 #define DRIVE_FORWARD DrivetrainEnums::Direction::FORWARD
 #define DRIVE_REVERSE DrivetrainEnums::Direction::REVERSE
 #define DRIVE_STOP DrivetrainEnums::Direction::STOP
