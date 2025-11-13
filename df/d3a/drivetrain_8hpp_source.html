@@ -226,39 +226,48 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>            rightMotors.setVelocity(rightProperties.SET_VELOCITY);</div>
 <div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        }</div>
 <div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span> </div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span> </div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span> </div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>        <span class="comment">/*</span></div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="comment">            Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity</span></div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="comment">        */</span></div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        <span class="keywordtype">void</span> setVelocity(<span class="keywordtype">int</span> leftVelocity, <span class="keywordtype">int</span> rightVelocity) {</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>            setLeftVelocity(leftVelocity);</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>            setRightVelocity(rightVelocity);</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        }</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        <span class="comment">/*</span></div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span><span class="comment">            Stops the robot. This uses the breaks&#39; weird hold method which makes it stop immediately.</span></div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span><span class="comment">        */</span></div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>        <span class="keywordtype">void</span> stop()</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        {</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>            leftProperties.SET_VELOCITY = 0;</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>            rightProperties.SET_VELOCITY = 0;</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>            leftMotors.brake();</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>            rightMotors.brake();</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>            leftProperties.IS_DRIVING = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>            rightProperties.IS_DRIVING = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        }</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        <span class="keywordtype">void</span> drive(DrivetrainEnums::Direction direction)</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        <span class="comment">/*Attempts to move forward a certain distance. Will be improved upon later.*/</span></div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>        <span class="keywordtype">void</span> moveDistance(<span class="keywordtype">float</span> distance, DrivetrainEnums::Distance dist)</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>        {</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>            leftMotors.moveDistance(distance,dist);</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>            rightMotors.moveDistance(distance,dist);</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        }</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span> </div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        <span class="comment">/*Attempts to turn to a heading. Not really ready but I want to make a stable API so*/</span></div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        <span class="keywordtype">void</span> rotateTo(<span class="keywordtype">int</span> heading) {</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>            <span class="comment">//pretend i did it</span></div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        }</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        <span class="comment">/*</span></div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="comment">            Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity</span></div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span><span class="comment">        */</span></div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        <span class="keywordtype">void</span> setVelocity(<span class="keywordtype">int</span> leftVelocity, <span class="keywordtype">int</span> rightVelocity) {</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>            setLeftVelocity(leftVelocity);</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>            setRightVelocity(rightVelocity);</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        }</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        <span class="comment">/*</span></div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="comment">            Stops the robot. This uses the breaks&#39; weird hold method which makes it stop immediately.</span></div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="comment">        */</span></div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        <span class="keywordtype">void</span> stop()</div>
 <div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        {</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>            leftMotors.setVelocity(leftProperties.SET_VELOCITY);</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>            leftMotors.move(direction);</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            rightMotors.setVelocity(rightProperties.SET_VELOCITY);</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            rightMotors.move(direction);</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>            leftProperties.IS_DRIVING = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            rightProperties.IS_DRIVING = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>            leftProperties.SET_VELOCITY = 0;</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>            rightProperties.SET_VELOCITY = 0;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            leftMotors.brake();</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            rightMotors.brake();</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>            leftProperties.IS_DRIVING = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            rightProperties.IS_DRIVING = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>        }</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    };</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>        <span class="keywordtype">void</span> drive(DrivetrainEnums::Direction direction)</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        {</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            leftMotors.setVelocity(leftProperties.SET_VELOCITY);</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>            leftMotors.move(direction);</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>            rightMotors.setVelocity(rightProperties.SET_VELOCITY);</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>            rightMotors.move(direction);</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>            leftProperties.IS_DRIVING = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>            rightProperties.IS_DRIVING = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        }</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>    };</div>
 </div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>}</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>}</div>
 <div class="ttc" id="aclassDrivetrainLib_1_1Drivetrain_html"><div class="ttname"><a href="../../d4/d52/classDrivetrainLib_1_1Drivetrain.html">DrivetrainLib::Drivetrain</a></div><div class="ttdef"><b>Definition</b> drivetrain.hpp:12</div></div>
 <div class="ttc" id="aclassMotorGroup_html"><div class="ttname"><a href="../../d6/d0a/classMotorGroup.html">MotorGroup</a></div><div class="ttdef"><b>Definition</b> modded.hpp:8</div></div>
 <div class="ttc" id="astructDrivetrainEnums_1_1DrivetrainSettings_html"><div class="ttname"><a href="../../dd/df7/structDrivetrainEnums_1_1DrivetrainSettings.html">DrivetrainEnums::DrivetrainSettings</a></div><div class="ttdef"><b>Definition</b> enums.hpp:19</div></div>
