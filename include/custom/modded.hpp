@@ -52,7 +52,7 @@ class MotorGroup {
         double getRotation() {
             double v = 0.0f;
             for (pros::Motor& mtr : group) {
-                v+=mtr.get_position();
+                v+=pros::c::motor_get_position(mtr.get_port());
             }
             return (v / group.size()/2);
         }

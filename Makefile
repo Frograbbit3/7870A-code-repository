@@ -13,8 +13,8 @@ SRCDIR=$(ROOT)/src
 INCDIR=$(ROOT)/include
 
 WARNFLAGS+=
-EXTRA_CFLAGS=-O2
-EXTRA_CXXFLAGS=-O2
+EXTRA_CFLAGS=
+EXTRA_CXXFLAGS=
 
 # Set to 1 to enable hot/cold linking
 USE_PACKAGE:=1

@@ -1,4 +1,5 @@
 #pragma once
+#include "config.h"
 #include "mathlib.h"
 #include "modded.hpp"
 #include "enums.hpp"
@@ -82,13 +83,17 @@ namespace DrivetrainLib
 
         static void task_helper_telementry(void *ptr)
         {
+            #ifdef AUTO_DRIVE_TASK
             Drivetrain *self = static_cast<Drivetrain *>(ptr);
             self->internal_telementry_collector();
+            #endif
         }
         static void task_helper_drive_correction(void *ptr)
         {
+            #ifdef AUTO_DRIVE_TASK
             Drivetrain *self = static_cast<Drivetrain *>(ptr);
             self->drive_correction();
+            #endif
         }
         void calibrateMotors()
         {
@@ -111,7 +116,8 @@ namespace DrivetrainLib
             @param leftSide A list of left motor ports.
             @param rightSide A list of right motor ports.
         */
-        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide) : leftMotors(leftSide), rightMotors(rightSide),          telementry_task(task_helper_telementry, (void *)this),
+        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide) : leftMotors(leftSide), rightMotors(rightSide),         
+        telementry_task(task_helper_telementry, (void *)this),
           auto_drive_task(task_helper_drive_correction, (void *)this){}
 
         /*@brief Will completely stop all tasks related to the drivetrain. Call this on shutdown.*/
