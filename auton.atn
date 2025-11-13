@@ -1,0 +1,9 @@
+assign drivetrain
+forward 500 mm
+wait 5 s
+rotate right 90 degrees
+rotate to -281.2528172 degrees
+rotate left 23
+
+any unknown lines are comments
+reverse 900 mm

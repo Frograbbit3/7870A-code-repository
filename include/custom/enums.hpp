@@ -80,3 +80,8 @@ namespace ControllerEnums
 #define DRIVE_SLEW 0.02f
 #define CD_NEG_INERTIA_SCALAR 4.0
 #define CD_SENSITIVITY 1.0
+
+//distances
+#define DIST_MM DrivetrainEnums::Distance::MM
+#define DIST_INCHES DrivetrainEnums::Distance::INCHES
+#define DIST_ROTATION DrivetrainEnums::Distance::ROTATION

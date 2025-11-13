@@ -1,67 +1,34 @@
 #include "pros/gps.hpp"
 #include "pros/imu.hpp"
 #include "drivetrain.hpp"
-#include "config.h"
-namespace SensorLib
-{
-    class SensorReader
-    {
-    private:
-        pros::GPS *gps = nullptr;
-        pros::Imu *gyro = nullptr;
-        DrivetrainLib::Drivetrain *drive = nullptr;
-        double rotationBuffer[ROTATION_BUFFER];
-        int curRBuffer = 0;
-        double rotMin = 0;
-        double rotLast = 999999;
-        double rotMax = 0;
+namespace SensorLib {
+    class SensorReader {
+        private:
+            pros::GPS* gps=nullptr;
+            pros::Imu* gyro=nullptr;
+            DrivetrainLib::Drivetrain* drive=nullptr;
+        public:
+            SensorReader(pros::IMU *mu, pros::GPS *gp, DrivetrainLib::Drivetrain *dr): gps(gp), gyro(mu), drive(dr) {
 
-    public:
-        SensorReader(pros::IMU *mu, pros::GPS *gp, DrivetrainLib::Drivetrain *dr) : gps(gp), gyro(mu), drive(dr)
-        {
-        }
-        int rotation = 0;
-        int calibrated = false;
-        void init()
-        {
-            if (gps)
-            {
-                // i'm lazy lol we'll add this later
-                // gps->initialize_full()
             }
-            if (gyro)
-            {
-                gyro->reset(false);
-                while (gyro->is_calibrating())
-                {
-                    pros::delay(50);
+            int rotation = 0;
+            int calibrated = false;
+            void init() {
+                if (gps) {
+                    // i'm lazy lol we'll add this later
+                    //gps->initialize_full() 
                 }
+                if (gyro) {
+                    gyro->reset(false);
+                    while (gyro->is_calibrating()) {
+                        pros::delay(50);
+                    }
+                }
+                calibrated=true;
             }
-            calibrated = true;
-        }
-        void update()
-        {
-            rotationBuffer[curRBuffer] = gyro->get_heading();
-            curRBuffer++;
-            curRBuffer = curRBuffer % ROTATION_BUFFER;
-            rotMax = -1;
-            rotMin = 360;
-            for (int i = 0; i < ROTATION_BUFFER; ++i)
-            {
-                double slot = rotationBuffer[i];
-                if (fabs(slot - rotLast) > ROTATION_OFFSET_LIMIT && rotLast < 360)
-                {             // A weird reading
-                    continue; // why is this so bad?
-                }
-                if (slot < rotMin) {
-                    rotMin = slot;
-                }
-                if (slot > rotMax) {
-                    rotMax = slot;
-                }
-                rotation+=slot;
+            void update() {
+                //currently gps isn't used so we are just gonna guestimate 
+                
             }
-            rotation /= ROTATION_BUFFER;
-        }
     };
 }

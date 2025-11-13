@@ -94,7 +94,7 @@ namespace ControllerLib
                 }
                 case CHEESE_DRIVE: {
                     double ithrottle = LeftJoystickY / 127.0;
-                    double iturn = RightJoystickY / 127.0;
+                    double iturn = RightJoystickX / 127.0;
                     double linearCmd = ithrottle;
                     bool turnInPlace = false;
 

@@ -142,8 +142,17 @@ namespace DrivetrainLib
             rightMotors.setVelocity(rightProperties.SET_VELOCITY);
         }
 
+        /*Attempts to move forward a certain distance. Will be improved upon later.*/
+        void moveDistance(float distance, DrivetrainEnums::Distance dist)
+        {
+            leftMotors.moveDistance(distance,dist);
+            rightMotors.moveDistance(distance,dist);
+        }
 
-
+        /*Attempts to turn to a heading. Not really ready but I want to make a stable API so*/
+        void rotateTo(int heading) {
+            //pretend i did it
+        }
         /*
             Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity
         */
