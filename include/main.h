@@ -45,6 +45,7 @@
 #include "custom/drivetrain.hpp"
 #include "custom/controls.hpp"
 #include "custom/enums.hpp"
+#include "custom/sensors.hpp"
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
  * Motor, you can use the namespace with the following commented out line.
