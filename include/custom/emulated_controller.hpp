@@ -1,5 +1,6 @@
 #pragma once
 #include "pros/misc.hpp"
+#include "config.h"
 #include <cmath>
 #include <cstdlib>
 #include <vector>
@@ -119,7 +120,7 @@ namespace ControllerLib
                 }
             }
         }
-        /*Enabled / disabled the button; disabling this will allow the user to control it*/
+        /*Enabled / disables the button; disabling this will allow the user to control it*/
         void SetEnabled(bool enabled) { process = enabled; }
 
         /*
@@ -240,8 +241,10 @@ namespace ControllerLib
                 }
             }
             
-            battery = static_cast<float>(controller->get_battery_level());
-            connected = controller->is_connected();
+            #ifndef SKIP_OPTIONAL_CONTROLLER_UPDATES
+                battery = static_cast<float>(controller->get_battery_level());
+                connected = controller->is_connected();
+            #endif
         }
     };
 }
