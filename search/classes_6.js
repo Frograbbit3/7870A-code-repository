@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['wheelproperties_0',['WheelProperties',['../d1/d3f/structDrivetrainEnums_1_1WheelProperties.html',1,'DrivetrainEnums']]]
+  ['sensorreader_0',['SensorReader',['../d3/d97/classSensorLib_1_1SensorReader.html',1,'SensorLib']]]
 ];
