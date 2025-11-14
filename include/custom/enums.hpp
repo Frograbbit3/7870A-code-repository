@@ -1,32 +1,142 @@
 #pragma once
 #include <iostream>
+#include "mathlib.h"
 inline double INCH_TO_MM(double inch) { return 25.4 * inch; }
 inline double MM_TO_INCH(double mm) { return mm / 25.4; }
 template <typename T>
 inline void print(T m) { std::cout << m << std::endl; }
 
-#define __VERSION 1.0b
+
+#define RED_MOTOR_CART pros::motor_gearset_e_t::E_MOTOR_GEAR_RED
+#define GREEN_MOTOR_CART pros::motor_gearset_e_t::E_MOTOR_GEAR_GREEN
+#define BLUE_MOTOR_CART pros::motor_gearset_e_t::E_MOTOR_GEAR_BLUE
+#define __VERSION 1.3b
+#define VELOCITY_PERCENT DrivetrainEnums::VelocityUnit::PERCENT
+#define VELOCITY_RAW DrivetrainEnums::VelocityUnit::RAW
+#define VELOCITY_mV DrivetrainEnums::VelocityUnit::mV
+#define VELOCITY_VOLTS DrivetrainEnums::VelocityUnit::VOLTS
 namespace DrivetrainEnums
 {
-    struct WheelProperties
-    {
-        double GEAR_RATIO = 1.0;
-        double WHEEL_SIZE = 3.5;
-        double STOP_COOLDOWN = 1.0;
+    enum class VelocityUnit {
+        PERCENT=0,
+        RAW=1,
+        mV=2,
+        VOLTS=3
     };
+    
+    struct CustomMotor {
+        private:
+            double velocity=0;
+        public:
+            pros::Motor* motor;
+            CustomMotor(pros::Motor *mtr) : motor(mtr) {}
 
-    struct DrivetrainSettings
-    {
-        bool AUTO_DRIVE_ENABLED = true;
+            /*Get functions*/
+
+            /*Gets the brake mode of the motor. Returns a pros::MotorBrake object.*/
+            pros::MotorBrake getBrakeMode() {
+                return motor->get_brake_mode();
+            }
+            /*Gets the current limit of the motor. Returns a value in mA*/
+            int32_t getCurrentLimit() {
+                return motor->get_current_limit();
+            }
+            /*Gets the motor's gearing. Returns a pros::MotorGears value.*/
+            pros::MotorGears getGearing() {
+                return motor->get_gearing();
+            }
+            /*Gets the motor's port. Returns an int8_t.*/
+            int8_t getPort(){
+                return motor->get_port();
+            }
+            /*Gets the motor's voltage limit. Returns a voltage in mV*/
+            int32_t getVoltageLimit(){
+                return motor->get_voltage_limit();
+            }
+            /*Gets the motor's reversed flag. Returns true if reversed.*/
+            bool getReversed() {
+                return motor->is_reversed();
+            }
+
+            /*Gets the velocity. Takes in a VelocityUnit*/
+            double getVelocity(VelocityUnit unit=VELOCITY_RAW){
+                switch(unit){
+                    case VELOCITY_RAW:
+                        return velocity;
+
+                    case VELOCITY_mV:
+                        return (velocity/12.7)*1000.0;
+
+                    case VELOCITY_VOLTS:
+                        return (velocity/127.0)*12.0;
+
+                    case VELOCITY_PERCENT:
+                        return (velocity/127.0)*100.0;
+
+                    default:
+                        return 0.0;
+                }
+            }
+
+
+            /*Set functions*/
+
+            /*Sets the motor's brake mode.*/
+            void setBrakeMode(pros::MotorBrake brake) {
+                motor->set_brake_mode(brake);
+            }
+            /*Sets the motor's current limit in mA.*/
+            void setCurrentLimit(int32_t current) {
+                motor->set_current_limit(current);
+            }
+            /*Sets the motor's voltage limit in mV.*/
+            void setVoltageLimit(int32_t voltage) {
+                motor->set_voltage_limit(voltage);
+            }
+            /*Sets the motor's gearing.*/
+            void setGearing(pros::MotorGears gears) {
+                motor->set_gearing(gears);
+            }
+
+            /*Sets the reversed flag.*/
+            void setReversed(bool reversed) {
+                motor->set_reversed(reversed);
+            }
+
+            /*Sets the zero of the motor. Pass in NULL to use the current motor position.*/
+            void setZero(double position=NULL) {
+                if (position != NULL) {
+                    motor->set_zero_position(position);
+                }else{
+                    motor->tare_position();
+                }
+            }
+            /*Sets the motors velocity. Defaults to a unit of RAW, meaning -127 -> 127*/
+            void setVelocity(float vel, VelocityUnit unit=VELOCITY_RAW) {
+                switch (unit)
+                {
+                    case VELOCITY_RAW:
+                        velocity=minmax<double>(vel,-127.0f,127.0f);
+                        break;
+                    case VELOCITY_mV:
+                        velocity=minmax<double>((vel/1000.0f)*12.7f, -127.0f, 127.0f);
+                        break;
+                    case VELOCITY_VOLTS:
+                        velocity=minmax<double>((vel/12.0f)*127.0f, -127.0f, 127.0f);
+                        break;
+                    case VELOCITY_PERCENT:
+                        velocity=minmax<double>((vel/100.0f)*127.0f, -127.0f, 127.0f);
+                        break;
+                    default:
+                        break;
+
+                };
+                
+            }
+            
+            /*Movement Functions*/
+
     };
-
-    struct MotorProperties
-    {
-        int SET_VELOCITY = 0; // in mV
-        bool IS_DRIVING = false;
-        float ACTUAL_VELOCITY = 0; // updated by internal_telementry_collector
-    };
-
     enum class Distance
     {
         INCHES = 1,

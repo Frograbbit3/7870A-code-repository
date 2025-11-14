@@ -9,15 +9,16 @@ class MotorGroup {
     private:
         int stopped = 0;
     public:
-        std::vector<pros::Motor> group;
+        std::vector<DrivetrainEnums::CustomMotor> group;
         std::vector<int8_t> ports;
-        DrivetrainEnums::WheelProperties properties;
         int velocity = 0;
-        MotorGroup(const std::vector<int8_t>& ports) {
+
+        MotorGroup(const std::vector<int8_t>& ports_) : ports(ports_) {
             for (int8_t port : ports) {
-                group.push_back(pros::Motor(port));
+                group.emplace_back(pros::Motor(port));
             }
         }
+
 
         /*
             Sets the velocity.
@@ -28,7 +29,7 @@ class MotorGroup {
         }
 
         void move(DrivetrainEnums::Direction& dir) {
-            for (pros::Motor& mtr : group) {
+            for (DrivetrainEnums::CustomMotor& mtr : group) {
                 switch (dir) {
                     case DRIVE_FORWARD:
                         mtr.move(velocity);
@@ -43,7 +44,7 @@ class MotorGroup {
             }
         }
         void brake() {
-            for (pros::Motor& mtr : group) {
+            for (DrivetrainEnums::CustomMotor& mtr : group) {
                 mtr.brake();
                 mtr.move(0);
                 //stopped=time;
@@ -51,7 +52,7 @@ class MotorGroup {
         }
         double getRotation() {
             double v = 0.0f;
-            for (pros::Motor& mtr : group) {
+            for (DrivetrainEnums::CustomMotor& mtr : group) {
                 v+=pros::c::motor_get_position(mtr.get_port());
             }
             return (v / group.size()/2);
@@ -70,7 +71,7 @@ class MotorGroup {
         }
 
         void moveRelative(int angle, int voltage) {
-            for (pros::Motor& mtr : group) {
+            for (DrivetrainEnums::CustomMotor& mtr : group) {
                 mtr.move_relative(angle, voltage);
             }
         }
@@ -97,12 +98,12 @@ class MotorGroup {
         void update() {
             if (stopped > 0) {
                 if (time - stopped > properties.STOP_COOLDOWN) {
-                    for (pros::Motor& mtr: group) {
+                    for (DrivetrainEnums::CustomMotor& mtr: group) {
                         mtr.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
                     }
                     stopped = 0;
                 }else{
-                    for (pros::Motor& mtr: group) {
+                    for (DrivetrainEnums::CustomMotor& mtr: group) {
                     
                        // mtr.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
                     }

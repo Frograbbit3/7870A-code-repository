@@ -13,102 +13,10 @@ namespace DrivetrainLib
     public:
         MotorGroup leftMotors;
         MotorGroup rightMotors;
-        DrivetrainEnums::DrivetrainSettings configuration;
 
     private:
         std::vector<int8_t> leftSide;
         std::vector<int8_t> rightSide;
-        DrivetrainEnums::MotorProperties leftProperties;
-        DrivetrainEnums::MotorProperties rightProperties;
-         pros::Task telementry_task;
-        pros::Task auto_drive_task;
-
-        void internal_telementry_collector()
-        {
-            float average_vel;
-            while (true)
-            {
-                // left side
-                average_vel = 0.0f;
-                for (pros::Motor &mtr : leftMotors.group)
-                {
-                    average_vel += mtr.get_actual_velocity();
-                }
-                leftProperties.ACTUAL_VELOCITY = average_vel / leftMotors.group.size();
-
-                // right side
-                average_vel = 0.0f;
-                for (pros::Motor &mtr : rightMotors.group)
-                {
-                    average_vel += mtr.get_actual_velocity();
-                }
-                rightProperties.ACTUAL_VELOCITY = average_vel / rightMotors.group.size();
-                pros::delay(250);
-            }
-        }
-
-        void drive_correction()
-        { // NOTE TO SELF! Correct this soon!
-            float correction = 2.0;
-            double leftSideDifference = 0;
-            double rightSideDifference = 0;
-            while (true)
-            {
-                if (configuration.AUTO_DRIVE_ENABLED)
-                {
-                    if (leftProperties.IS_DRIVING && rightProperties.IS_DRIVING)
-                    {
-                        leftSideDifference = leftProperties.SET_VELOCITY - leftProperties.ACTUAL_VELOCITY;
-                        rightSideDifference = rightProperties.SET_VELOCITY - rightProperties.ACTUAL_VELOCITY;
-                        if (leftSideDifference - rightSideDifference > correction)
-                        {
-                            rightProperties.SET_VELOCITY = (leftSideDifference - rightSideDifference) * leftProperties.SET_VELOCITY;
-                        }
-                        else if (rightSideDifference - leftSideDifference > correction)
-                        {
-                            leftProperties.SET_VELOCITY = (rightSideDifference - leftSideDifference) * rightProperties.SET_VELOCITY;
-                        }
-                    }
-                    else
-                    { // Process breaking as well; makes life easier.
-                        leftMotors.update();
-                        rightMotors.update();
-                    }
-                }
-                // only correct if both sides are driving
-
-                pros::delay(20);
-            }
-        }
-
-        static void task_helper_telementry(void *ptr)
-        {
-            #ifdef AUTO_DRIVE_TASK
-            Drivetrain *self = static_cast<Drivetrain *>(ptr);
-            self->internal_telementry_collector();
-            #endif
-        }
-        static void task_helper_drive_correction(void *ptr)
-        {
-            #ifdef AUTO_DRIVE_TASK
-            Drivetrain *self = static_cast<Drivetrain *>(ptr);
-            self->drive_correction();
-            #endif
-        }
-        void calibrateMotors()
-        {
-            for (pros::Motor &mtr : leftMotors.group)
-            {
-                mtr.tare_position();
-            }
-            pros::delay(50);
-            for (pros::Motor &mtr : rightMotors.group)
-            {
-                mtr.tare_position();
-            }
-            pros::delay(50);
-        }
-
     public:
         /*
             The core drivetrain.
@@ -116,30 +24,16 @@ namespace DrivetrainLib
             @param leftSide A list of left motor ports.
             @param rightSide A list of right motor ports.
         */
-        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide) : leftMotors(leftSide), rightMotors(rightSide),         
-        telementry_task(task_helper_telementry, (void *)this),
-          auto_drive_task(task_helper_drive_correction, (void *)this){}
+        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide) : leftMotors(leftSide), rightMotors(rightSide) {}
 
-        /*@brief Will completely stop all tasks related to the drivetrain. Call this on shutdown.*/
-        void shutdown() {
-            telementry_task.remove();
-            auto_drive_task.remove();
-        }
-        /*@brief  'Calibrates' the drivetrain. To test, run `DriveUtils::Drivetrain.test()`*/
-        void calibrate()
-        {
-            calibrateMotors();
-        }
         /*Sets the left velocity to a value between 0 - 100. Does this by attempting to set max voltage.*/
         void setLeftVelocity(int velocity)
         {
-            leftProperties.SET_VELOCITY = minmax(static_cast<int>(velocity), -127, 127);
-            leftMotors.setVelocity(leftProperties.SET_VELOCITY);
+            leftMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
         }
         /*Sets the right velocity to a value between 0 - 100. Does this by attempting to set max voltage.*/
         void setRightVelocity(int velocity){
-            rightProperties.SET_VELOCITY = std::min(127, std::max(-127, velocity));
-            rightMotors.setVelocity(rightProperties.SET_VELOCITY);
+            rightMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
         }
 
         /*Attempts to move forward a certain distance. Will be improved upon later.*/
@@ -165,21 +59,13 @@ namespace DrivetrainLib
         */
         void stop()
         {
-            leftProperties.SET_VELOCITY = 0;
-            rightProperties.SET_VELOCITY = 0;
             leftMotors.brake();
             rightMotors.brake();
-            leftProperties.IS_DRIVING = false;
-            rightProperties.IS_DRIVING = false;
         }
         void drive(DrivetrainEnums::Direction direction)
         {
-            leftMotors.setVelocity(leftProperties.SET_VELOCITY);
             leftMotors.move(direction);
-            rightMotors.setVelocity(rightProperties.SET_VELOCITY);
             rightMotors.move(direction);
-            leftProperties.IS_DRIVING = true;
-            rightProperties.IS_DRIVING = true;
         }
     };
 }
