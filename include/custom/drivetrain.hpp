@@ -36,11 +36,12 @@ namespace DrivetrainLib
             rightMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
         }
 
-        /*Attempts to move forward a certain distance. Will be improved upon later.*/
+        /*Attempts to move forward a certain distance. DOES NOT WORK YET!*/
         void moveDistance(float distance, DrivetrainEnums::Distance dist)
         {
-            leftMotors.moveDistance(distance,dist);
-            rightMotors.moveDistance(distance,dist);
+            double leftRotation = leftMotors.getRotation();
+            double rightRotation = rightMotors.getRotation();
+
         }
 
         /*Attempts to turn to a heading. Not really ready but I want to make a stable API so*/
@@ -55,7 +56,7 @@ namespace DrivetrainLib
             setRightVelocity(rightVelocity);
         }
         /*
-            Stops the robot. This uses the breaks' weird hold method which makes it stop immediately.
+            Stops the robot. This uses the breaks' weird hold method which makes it stop immediately. (currently disa)
         */
         void stop()
         {

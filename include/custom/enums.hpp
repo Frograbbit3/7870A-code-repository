@@ -145,12 +145,12 @@ namespace DrivetrainEnums
             motor->set_reversed(reversed);
         }
 
-        /*Sets the zero of the motor. Pass in NULL to use the current motor position.*/
-        void setZero(double position = NULL)
+        /*Sets the zero of the motor. Pass in no args to use the current motor position.*/
+        void setZero(std::optional<double> position = std::nullopt)
         {
-            if (position != NULL)
+            if (position.has_value())
             {
-                motor->set_zero_position(position);
+                motor->set_zero_position(position.value());
             }
             else
             {

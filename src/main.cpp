@@ -7,7 +7,6 @@ void controllerTick();
 
 void disabled() {
     mainControl.configuration.ENABLED = false;
-    drivetrain.shutdown();
 }
 void competition_initialize() {}
 

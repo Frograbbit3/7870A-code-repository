@@ -19,7 +19,8 @@ public:
     {
         for (int8_t port : ports)
         {
-            group.emplace_back(pros::Motor(port));
+            pros::Motor *tmp = new pros::Motor(port);
+            group.emplace_back(tmp);
         }
     }
 
@@ -30,6 +31,9 @@ public:
     void setVelocity(int vel)
     {
         velocity = minmax(vel, -127, 127);
+        for (DrivetrainEnums::CustomMotor& mtr: group) {
+            mtr.setVelocity(velocity, VELOCITY_RAW);
+        }
     }
 
     void move(DrivetrainEnums::Direction &dir)
