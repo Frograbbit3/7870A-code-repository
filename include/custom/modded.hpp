@@ -62,6 +62,12 @@ public:
             // stopped=time;
         }
     }
+    void calibrate() {
+        for (DrivetrainEnums::CustomMotor &mtr : group)
+        {
+            mtr.calibrate();
+        }
+    }
     double getRotation()
     {
         double v = 0.0f;

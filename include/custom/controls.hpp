@@ -106,6 +106,8 @@ namespace ControllerLib
                     (turn * (configuration.MAX_TURN_SPEED + MAX_SPEED_FACTOR)));
                 break;
             }
+
+            /*Credit where credit is due: made by Purdue ACM SIGBots. They also wrote the joystick curve I used.*/
             case CHEESE_DRIVE:
             {
                 double ithrottle = LeftJoystickY / 127.0;

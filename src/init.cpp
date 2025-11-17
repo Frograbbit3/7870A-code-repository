@@ -1,7 +1,8 @@
 #include "init.hpp"
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-DrivetrainLib::Drivetrain drivetrain({-3,-21, -20}, {5, 9,10});
+pros::Imu gyro(11);
+DrivetrainLib::Drivetrain drivetrain({-3,-21, -20}, {5, 9,10}, 32.0f, &gyro);
 ControllerLib::EmulatedController control(&master);
 ControllerLib::ControlScheme mainControl(CHEESE_DRIVE, drivetrain, control);
 pros::Motor flywheel(7);

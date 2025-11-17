@@ -29,6 +29,19 @@ namespace DrivetrainEnums
         REVERSE = -1,
         STOP = 0
     };
+    enum class Distance
+    {
+        INCHES = 1,
+        MM = 0,
+        ROTATION = 2,
+
+    };
+    
+    enum class WheelType {
+        WHEEL_275,
+        WHEEL_325,
+        WHEEL_400
+    };
 
     struct CustomMotor
     {
@@ -37,6 +50,7 @@ namespace DrivetrainEnums
 
     public:
         pros::Motor *motor;
+        WheelType *wheel=nullptr;
         CustomMotor(pros::Motor *mtr) : motor(mtr)
         {
             motor->set_encoder_units(MOTOR_ENCODER_DEGREES);
@@ -55,6 +69,13 @@ namespace DrivetrainEnums
         pros::MotorEncoderUnits getEncoding()
         {
             return motor->get_encoder_units();
+        }
+
+        /*Gets the current type of wheel connected to this motor.*/
+        WheelType getWheelType() {
+            if (wheel) {
+                return *wheel;
+            }
         }
 
         /*Gets the position of the motor. Returns a value in degrees.*/
@@ -145,6 +166,11 @@ namespace DrivetrainEnums
             motor->set_reversed(reversed);
         }
 
+        /*Sets the wheel type of the motor.*/
+        void setWheelType(WheelType whl) {
+            wheel = &whl;
+        }
+    
         /*Sets the zero of the motor. Pass in no args to use the current motor position.*/
         void setZero(std::optional<double> position = std::nullopt)
         {
@@ -234,15 +260,28 @@ namespace DrivetrainEnums
         {
             motor->brake();
         }
-    };
-    enum class Distance
-    {
-        INCHES = 1,
-        MM = 0,
-        ROTATION = 2,
+        
 
-    };
+        /*OTHER*/
 
+        /*Resets the motor position to 0dg.*/
+        void calibrate() {
+            motor->move_voltage(0);
+            motor->set_zero_position(0);
+        }
+    };
+    inline double getWheelDiameter(WheelType type) {
+        switch (type) {
+            case WheelType::WHEEL_275:
+                return 2.75f;
+            case WheelType::WHEEL_325:
+                return 3.25f;
+            case WheelType::WHEEL_400:
+                return 4.00f;
+            default:
+                return 3.25f;
+        }
+    }
 } // namespace DrivetrainEnums
 
 // controller stuff
@@ -268,6 +307,8 @@ namespace ControllerEnums
         double timeSinceJoystickStop = 0.0f;
     };
 }
+
+
 
 #define TANK_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_TANK
 #define ARCADE_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE
