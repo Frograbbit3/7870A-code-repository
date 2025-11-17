@@ -104,23 +104,35 @@ namespace DrivetrainLib
             setRightVelocity(rightVelocity);
         }
 
-        /*Attempts to turn to a heading. Not really ready but I want to make a stable API so*/
+        /*Attempts to turn to a heading. Uses gyro.*/
         void rotateTo(double heading) {
             double difference = getHeading() - heading;
             DrivetrainEnums::Direction dir;
-            if (difference < 0) {
-                dir=DrivetrainEnums::Direction::REVERSE;
-            }else if(difference > 0) {
-                dir=DrivetrainEnums::Direction::FORWARD;
-            }
-            while (fabs(difference) > ROTATION_OFFSET_LIMIT) {
+            const int MAX_VELOCITY = 127;
+            const int MIN_VELOCITY = 20; 
+            const int TIMEOUT = 5000;     
+            int elapsedTime = 0;
+
+            while (fabs(difference) > ROTATION_OFFSET_LIMIT && elapsedTime < TIMEOUT) {
                 difference = getHeading() - heading;
-                double percent = (fabs(difference)/360.0f)*(difference/fabs(difference));
-                double vel = (percent*100);
+                if (difference < 0) {
+                    dir = DrivetrainEnums::Direction::REVERSE;
+                } else {
+                    dir = DrivetrainEnums::Direction::FORWARD;
+                }
+                double percent = fabs(difference) / 360.0;
+                double vel = percent * MAX_VELOCITY;
+
+                vel = minmax<double>(vel, MIN_VELOCITY, MAX_VELOCITY);
                 setVelocity(vel, -vel);
                 drive(dir);
+
+                pros::delay(5);
+                elapsedTime += 5;
             }
+            stop();
         }
+
         /*
             Stops the robot. This uses the breaks' weird hold method which makes it stop immediately. (currently disa)
         */
