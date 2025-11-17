@@ -52,7 +52,7 @@ namespace DrivetrainLib
             rightMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
         }
 
-        /*Attempts to get the current heading of the drivetrain. Uses encoders & gyro (if provided)*/ 
+        /*Attempts to get the current heading of the drivetrain. Uses encoders & gyro (if provided). */ 
         double getHeading()
         {
             double leftRotations = leftMotors.getRotation();
@@ -65,6 +65,11 @@ namespace DrivetrainLib
             double deltaDistance = rightDistance - leftDistance;
             double headingRadians = deltaDistance / trackWidth;
             double headingDegrees = headingRadians * (180.0 / pi);
+
+            if (imu != nullptr) {
+                double gyroAngle = imu->get_heading();
+                return (headingDegrees + gyroAngle) / 2;
+            }
 
             return headingDegrees;
         }
@@ -91,17 +96,30 @@ namespace DrivetrainLib
             leftMotors.moveRelative(rotations);
             rightMotors.moveRelative(rotations);
         }
-
-        /*Attempts to turn to a heading. Not really ready but I want to make a stable API so*/
-        void rotateTo(int heading) {
-            //pretend i did it
-        }
         /*
             Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity
         */
         void setVelocity(int leftVelocity, int rightVelocity) {
             setLeftVelocity(leftVelocity);
             setRightVelocity(rightVelocity);
+        }
+
+        /*Attempts to turn to a heading. Not really ready but I want to make a stable API so*/
+        void rotateTo(double heading) {
+            double difference = getHeading() - heading;
+            DrivetrainEnums::Direction dir;
+            if (difference < 0) {
+                dir=DrivetrainEnums::Direction::REVERSE;
+            }else if(difference > 0) {
+                dir=DrivetrainEnums::Direction::FORWARD;
+            }
+            while (fabs(difference) > ROTATION_OFFSET_LIMIT) {
+                difference = getHeading() - heading;
+                double percent = (fabs(difference)/360.0f)*(difference/fabs(difference));
+                double vel = (percent*100);
+                setVelocity(vel, -vel);
+                drive(dir);
+            }
         }
         /*
             Stops the robot. This uses the breaks' weird hold method which makes it stop immediately. (currently disa)
