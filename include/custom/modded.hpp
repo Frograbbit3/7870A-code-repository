@@ -78,6 +78,16 @@ public:
         return (v / group.size() / 2);
     }
 
+    bool isMoving() {
+        for (DrivetrainEnums::CustomMotor &mtr : group)
+        {
+            if (mtr.getMovement()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void moveRelative(double angle)
     {
         for (DrivetrainEnums::CustomMotor &mtr : group)

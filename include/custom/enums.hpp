@@ -78,6 +78,11 @@ namespace DrivetrainEnums
             }
         }
 
+        /*Gets if the motor is moving.*/
+        bool getMovement() {
+            return abs(motor->get_actual_velocity()) < 1;
+        }
+
         /*Gets the position of the motor. Returns a value in degrees.*/
         int32_t getPosition()
         {
