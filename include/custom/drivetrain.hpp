@@ -116,6 +116,7 @@ namespace DrivetrainLib
             leftMotors.moveRelative(rotations);
             rightMotors.moveRelative(rotations);
             antiDrift();
+            stop();
         }
         /*
             Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity

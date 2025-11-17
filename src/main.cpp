@@ -12,6 +12,7 @@ void competition_initialize() {}
 
 void autonomous() {
     mainControl.configuration.ENABLED = false;
+    drivetrain.calibrate();
     autonomousTick();
 }
 
