@@ -4,5 +4,5 @@ extern pros::Controller master;
 extern DrivetrainLib::Drivetrain drivetrain;
 extern ControllerLib::EmulatedController control;
 extern ControllerLib::ControlScheme mainControl;
-extern pros::Motor flywheel;
+extern DrivetrainEnums::CustomMotor flywheel;
 extern pros::Imu gyro;

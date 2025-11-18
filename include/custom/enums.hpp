@@ -76,6 +76,7 @@ namespace DrivetrainEnums
             if (wheel) {
                 return *wheel;
             }
+            return WheelType::WHEEL_400; //fallback
         }
 
         /*Gets if the motor is moving.*/

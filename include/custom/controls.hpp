@@ -3,9 +3,16 @@
 #include "custom/enums.hpp"
 #include "custom/drivetrain.hpp"
 #include "mathlib.h"
-
+#include <variant>
 namespace ControllerLib
 {
+    struct ControlBinding
+    {
+        std::variant<DrivetrainEnums::CustomMotor*, MotorGroup*> motor;
+        std::variant<std::pair<ControllerLib::Button, ControllerLib::Button>, ControllerLib::Button> buttons;
+        int speed = 127;
+        bool toggle = false;
+    };
     class ControlScheme
     {
     public:
@@ -65,6 +72,78 @@ namespace ControllerLib
             configuration.CONTROL_SCHEME = typ;
             LeftJoystick = &controller.joysticks.Left;
             RightJoystick = &controller.joysticks.Right;
+        }
+        /*Registers a motor to a button press. THIS WILL OVERWRITE ANY CALLBACKS!*/
+        void registerMotor(ControlBinding binding)
+        {
+            if (std::holds_alternative<DrivetrainEnums::CustomMotor*>(binding.motor))
+            {
+                auto m = std::get<DrivetrainEnums::CustomMotor*>(binding.motor);
+                if (std::holds_alternative<ControllerLib::Button>(binding.buttons))
+                {
+                    auto &btns = std::get<ControllerLib::Button>(binding.buttons);
+                    // we have a single button
+                    if (binding.toggle)
+                    {
+                        auto onpress = [m, &binding]()
+                        {
+                            
+                            if (m->getMovement())
+                            {
+                                m->move(DRIVE_STOP);
+                            }
+                            else
+                            {
+                                m->move(DRIVE_FORWARD, binding.speed);
+                            }
+                        };
+                        btns.OnButtonPress(onpress);
+                    }
+                    else
+                    {
+                        auto onpress = [&m, &binding]()
+                        {
+                            m->move(DRIVE_FORWARD, binding.speed);
+                        };
+                        auto onrelease = [&m, &binding]()
+                        {
+                            m->move(DRIVE_STOP, binding.speed);
+                        };
+                        btns.OnButtonPress(onpress);
+                        btns.OnButtonRelease(onrelease);
+                    }
+                }
+                else
+                {
+                    if (std::holds_alternative<std::pair<ControllerLib::Button, ControllerLib::Button>>(binding.buttons))
+                    {
+                        auto &btns = std::get<std::pair<ControllerLib::Button, ControllerLib::Button>>(binding.buttons);
+                        // we have two buttons
+                        // toggle doesnt work on this so
+                        auto onforwardpress = [&m, &binding]()
+                        {
+                            m->move(DRIVE_FORWARD, binding.speed);
+                        };
+                        auto onbackwardspress = [&m, &binding]()
+                        {
+                            m->move(DRIVE_REVERSE, binding.speed);
+                        };
+                        auto onrelease = [&m, &binding]()
+                        {
+                            m->move(DRIVE_STOP, binding.speed);
+                        };
+                        btns.first.OnButtonPress(onforwardpress);
+                        btns.second.OnButtonPress(onbackwardspress);
+                        btns.first.OnButtonRelease(onrelease);
+                        btns.second.OnButtonRelease(onrelease);
+                    }
+                }
+            }
+            else
+            {
+                auto &mg = std::get<MotorGroup*>(binding.motor);
+                // use mg
+            }
         }
         void update()
         {
