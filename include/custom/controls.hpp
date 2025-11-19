@@ -38,8 +38,16 @@ namespace ControllerLib
         int right;
         double quickStopAccumlator = 0.0;
         double negInertiaAccumlator = 0.0;
+        float LeftJoystickX;
+        float LeftJoystickY;
+        float RightJoystickX;
+        float RightJoystickY;
 
         void _updateAccumulators();
+        void tankDrive();
+        void arcadeDrive();
+        void gtaDrive();
+        void cheeseDrive();
 
     public:
         ControlScheme(ControllerEnums::ControllerDriveTypes typ,
@@ -49,10 +57,7 @@ namespace ControllerLib
         void registerMotor(ControlBinding binding);
 
     private:
-        std::pair<int, int> doControllerInputs(float LeftJoystickX,
-                                               float LeftJoystickY,
-                                               float RightJoystickX,
-                                               float RightJoystickY);
+        void doControllerInputs();
 
     public:
         void update();

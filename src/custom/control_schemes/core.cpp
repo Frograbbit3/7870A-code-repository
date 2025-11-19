@@ -2,7 +2,8 @@
 
 namespace ControllerLib
 {
-    ControlScheme::ControlScheme(ControllerEnums::ControllerDriveTypes typ, DrivetrainLib::Drivetrain &driveRef, EmulatedController &controllerRef): drive(driveRef), controller(controllerRef) {
+    ControlScheme::ControlScheme(ControllerEnums::ControllerDriveTypes typ, DrivetrainLib::Drivetrain &driveRef, EmulatedController &controllerRef) : drive(driveRef), controller(controllerRef)
+    {
         configuration.CONTROL_SCHEME = typ;
         LeftJoystick = &controller.joysticks.Left;
         RightJoystick = &controller.joysticks.Right;
@@ -105,7 +106,7 @@ namespace ControllerLib
             // use mg
         }
     }
-    std::pair<int, int> ControlScheme::doControllerInputs(float LeftJoystickX, float LeftJoystickY, float RightJoystickX, float RightJoystickY)
+    void ControlScheme::doControllerInputs()
     {
         switch (configuration.CONTROL_SCHEME)
         {
@@ -113,85 +114,34 @@ namespace ControllerLib
             leftVelocity = static_cast<int>(RightJoystickX * -(configuration.maxTurnSpeed)) - static_cast<int>(-LeftJoystickY * (configuration.maxForwardSpeed));
             rightVelocity = static_cast<int>(RightJoystickX * -(configuration.maxTurnSpeed)) + static_cast<int>(-LeftJoystickY * (configuration.maxForwardSpeed));
             break;
+
         case TANK_DRIVE:
             leftVelocity = static_cast<int>(LeftJoystickY * (configuration.maxForwardSpeed));
             rightVelocity = static_cast<int>(RightJoystickY * -(configuration.maxForwardSpeed));
             break;
+
         case GTA_DRIVE:
         {
-            int forward = (controller.buttons.R2.pressed ? 1 : 0) -
-                          (controller.buttons.L2.pressed ? 1 : 0);
+            int forward = (controller.buttons.R2.pressed ? 1 : 0) - (controller.buttons.L2.pressed ? 1 : 0);
             int turn = static_cast<int>(LeftJoystickX);
 
-            leftVelocity = static_cast<int>(
-                (forward * (configuration.maxForwardSpeed)) -
-                (turn * (configuration.maxTurnSpeed)));
-
-            rightVelocity = static_cast<int>(
-                (forward * (configuration.maxForwardSpeed)) +
-                (turn * (configuration.maxTurnSpeed)));
+            leftVelocity = static_cast<int>((forward * configuration.maxForwardSpeed) - (turn * configuration.maxTurnSpeed));
+            rightVelocity = static_cast<int>((forward * configuration.maxForwardSpeed) + (turn * configuration.maxTurnSpeed));
             break;
         }
 
-        /*Credit where credit is due: made by Purdue ACM SIGBots. They also wrote the joystick curve I used.*/
         case CHEESE_DRIVE:
         {
-            double ithrottle = (LeftJoystickY * configuration.maxForwardSpeed) / 127.0;
-            double iturn = (RightJoystickX * configuration.maxTurnSpeed) / 127.0;
-            double linearCmd = ithrottle;
-            bool turnInPlace = false;
-
-            if (fabs(ithrottle) < 0.1 && fabs(iturn) > 0.1)
-            {
-                linearCmd = 0.0;
-                turnInPlace = true;
-            }
-            else if (ithrottle - prevThrottle > DRIVE_SLEW)
-            {
-                linearCmd = prevThrottle + DRIVE_SLEW;
-            }
-            else if (ithrottle - prevThrottle < -(DRIVE_SLEW * 2))
-            {
-                linearCmd = prevThrottle - (DRIVE_SLEW * 2);
-            }
-
-            double remappedTurn = iturn;
-            double left, right;
-
-            if (turnInPlace)
-            {
-                left = remappedTurn * fabs(remappedTurn);
-                right = -remappedTurn * fabs(remappedTurn);
-            }
-            else
-            {
-                double negInertiaPower = (iturn - prevTurn) * CD_NEG_INERTIA_SCALAR;
-                negInertiaAccumlator += negInertiaPower;
-
-                double angularCmd =
-                    fabs(linearCmd) *
-                        (remappedTurn + negInertiaAccumlator) *
-                        CD_SENSITIVITY -
-                    quickStopAccumlator;
-
-                right = left = linearCmd;
-                left += angularCmd;
-                right -= angularCmd;
-
-                _updateAccumulators();
-            }
-
-            // scale to [-127, 127]
-            leftVelocity = static_cast<int>(std::clamp(left, -1.0, 1.0) * 127);
-            rightVelocity = static_cast<int>(std::clamp(right, -1.0, 1.0) * 127);
-
-            prevTurn = iturn;
-            prevThrottle = ithrottle;
+            cheeseDrive();
             break;
         }
+
+        default:
+            break;
         }
-        return std::make_pair(leftVelocity, rightVelocity);
+
     }
+
     void ControlScheme::update()
     {
         controller.update(); // For the EmulatedController
@@ -206,10 +156,7 @@ namespace ControllerLib
         float RightJoystickX = JoystickCurve(RightJoystick->X);
         float RightJoystickY = JoystickCurve(RightJoystick->Y);
 
-        std::pair<int, int> velocities = doControllerInputs(LeftJoystickX, LeftJoystickY, RightJoystickX, RightJoystickY);
-        int leftVelocity = velocities.first;
-        int rightVelocity = velocities.second;
-
+        doControllerInputs();
         if (fabs(leftVelocity) > 0 || fabs(rightVelocity) > 0)
         {
             leftVelocity = minmax(static_cast<int>(leftVelocity), -127, 127);
