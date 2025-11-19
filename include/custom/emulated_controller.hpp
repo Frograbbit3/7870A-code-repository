@@ -1,10 +1,9 @@
 #pragma once
 #include "pros/misc.hpp"
 #include "config.h"
-#include <cmath>
-#include <cstdlib>
 #include <vector>
 #include <functional>
+#include <math.h>
 
 namespace ControllerLib
 {
@@ -128,6 +127,9 @@ namespace ControllerLib
             --.--.
         */
         void vibrate(std::string pattern);
+        /*
+            Processes joystick inputs
+        */
         void update();
     };
 }

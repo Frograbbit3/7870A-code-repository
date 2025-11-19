@@ -48,18 +48,23 @@ namespace ControllerLib
         void arcadeDrive();
         void gtaDrive();
         void cheeseDrive();
+        void doControllerInputs();
 
     public:
         ControlScheme(ControllerEnums::ControllerDriveTypes typ,
                       DrivetrainLib::Drivetrain &driveRef,
                       EmulatedController &controllerRef);
 
+        /*
+            Creates a binding for a motor. Useful for keybinding to a button.
+            @param binding a ControlBinding
+        */
         void registerMotor(ControlBinding binding);
 
-    private:
-        void doControllerInputs();
-
     public:
+        /* 
+            Processes controls. This is what you want to call.
+        */
         void update();
     };
 }

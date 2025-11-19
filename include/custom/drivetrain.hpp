@@ -1,10 +1,6 @@
 #pragma once
 #include "config.h"
-#include "mathlib.h"
 #include "modded.hpp"
-#include "pros/imu.hpp"
-#include "enums.hpp"
-#include <math.h>
 #define pi M_PI
 
 namespace DrivetrainLib

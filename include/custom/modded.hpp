@@ -1,8 +1,5 @@
 #pragma once
 #include "enums.hpp"
-#include "mathlib.h"
-#include "pros/motors.hpp"
-#include <cmath>
 
 #define time pros::millis()
 class MotorGroup
@@ -19,14 +16,39 @@ public:
 
     /*
         Sets the velocity.
-        vel -> -127 to 127
+        @param vel A value from -127 to 127.
     */
     void setVelocity(int vel);
+    /*
+        Moves the motor `angle` degrees from where it is.
+        @param angle The amount of degrees to turn.
+    */
     void moveRelative(double angle);
+    /*
+        Starts moving indefinately until stopped with `stopMove`.
+        @param dir The direction to move.
+    */
     void startMove(DrivetrainEnums::Direction &dir);
+    /*
+        Stops all the motors.
+    */
     void stopMove();
+    /*
+        Resets the motors' encoders. Does not block.
+    */
     void doCalibration();
+    /*
+        Gets the average rotation of the motors. 
+    */
     double getRotation();
+    /*
+        Checks if the motors are spinning.
+        @return If the motors are spinning.
+    */
     bool isMoving();
+    /*
+        Processes misc events within the motor.
+        @warning Don't need to call this, handled by drivetrain.
+    */
     void update();
 };
