@@ -2,8 +2,6 @@
 #include "custom/drivetrain.hpp"
 #include "custom/emulated_controller.hpp"
 #include "custom/enums.hpp"
-#include "mathlib.h"
-#include <variant>
 
 namespace MKV5 {
 class ControlScheme {

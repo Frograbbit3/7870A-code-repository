@@ -1,5 +1,4 @@
 #pragma once
-#include "config.h"
 #include "custom/enums.hpp"
 #include "modded.hpp"
 #define pi M_PI

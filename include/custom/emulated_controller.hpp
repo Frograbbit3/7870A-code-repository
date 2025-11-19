@@ -1,11 +1,11 @@
 #pragma once
-#include "config.h"
 #include "custom/enums.hpp"
 #include "custom/modded.hpp"
 #include "pros/misc.hpp"
 #include <functional>
 #include <math.h>
 #include <vector>
+#include "config.h"
 
 namespace MKV5 {
 

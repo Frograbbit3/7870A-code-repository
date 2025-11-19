@@ -1,4 +1,5 @@
 #include "custom/drivetrain.hpp"
+#include "config.h"
 namespace MKV5
 {
     void Drivetrain::setLeftVelocity(int velocity)
