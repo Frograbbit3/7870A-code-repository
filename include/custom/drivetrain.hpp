@@ -23,7 +23,7 @@ namespace DrivetrainLib
         void antiDrift();
     public:
         /*Resets all motors & calibrates the gyro.*/
-        void calibrate();
+        void doCalibration();
         /*
             The core drivetrain.
             This drivetrain is primarily used as a replacement to a manual motor system; it supports unlimited motors.
@@ -75,11 +75,11 @@ namespace DrivetrainLib
         /*
             Stops the robot.
         */
-        void stop();
+        void stopDrive();
         /*
             Moves the robot in a direction.
             @param direction Direction to move.
         */
-        void drive(DrivetrainEnums::Direction direction);
+        void startDrive(DrivetrainEnums::Direction direction);
     };
 }

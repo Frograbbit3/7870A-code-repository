@@ -17,7 +17,7 @@ void MotorGroup::setVelocity(int vel)
     }
 }
 
-void MotorGroup::move(DrivetrainEnums::Direction &dir)
+void MotorGroup::startMove(DrivetrainEnums::Direction &dir)
 {
     for (DrivetrainEnums::CustomMotor &mtr : group)
     {
@@ -30,12 +30,12 @@ void MotorGroup::move(DrivetrainEnums::Direction &dir)
             mtr.move(DRIVE_REVERSE);
             break;
         case DRIVE_STOP:
-            brake();
+            stopMove();
             break;
         }
     }
 }
-void MotorGroup::brake()
+void MotorGroup::stopMove()
 {
     for (DrivetrainEnums::CustomMotor &mtr : group)
     {
@@ -44,7 +44,7 @@ void MotorGroup::brake()
     }
 }
 
-void MotorGroup::calibrate()
+void MotorGroup::doCalibration()
 {
     for (DrivetrainEnums::CustomMotor &mtr : group)
     {

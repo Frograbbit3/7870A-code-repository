@@ -30,7 +30,7 @@ namespace DrivetrainLib
         leftMotors.moveRelative(rotations);
         rightMotors.moveRelative(rotations);
         antiDrift();
-        stop();
+        stopDrive();
     }
     void Drivetrain::setVelocity(int leftVelocity, int rightVelocity)
     {
@@ -62,21 +62,21 @@ namespace DrivetrainLib
 
             vel = minmax<double>(vel, MIN_VELOCITY, MAX_VELOCITY);
             setVelocity(vel, -vel);
-            drive(dir);
+            startDrive(dir);
 
             pros::delay(5);
             elapsedTime += 5;
         }
-        stop();
+        stopDrive();
     }
-    void Drivetrain::stop()
+    void Drivetrain::stopDrive()
     {
-        leftMotors.brake();
-        rightMotors.brake();
+        leftMotors.stopMove();
+        rightMotors.stopMove();
     }
-    void Drivetrain::drive(DrivetrainEnums::Direction direction)
+    void Drivetrain::startDrive(DrivetrainEnums::Direction direction)
     {
-        leftMotors.move(direction);
-        rightMotors.move(direction);
+        leftMotors.startMove(direction);
+        rightMotors.startMove(direction);
     }
 }

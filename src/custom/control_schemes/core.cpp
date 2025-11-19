@@ -162,12 +162,12 @@ namespace ControllerLib
             leftVelocity = minmax(static_cast<int>(leftVelocity), -127, 127);
             rightVelocity = minmax(static_cast<int>(rightVelocity), -127, 127);
             drive.setVelocity(leftVelocity, rightVelocity);
-            drive.drive(DRIVE_FORWARD);
+            drive.startDrive(DRIVE_FORWARD);
         }
         else
         {
             configuration.timeSinceJoystickStop = pros::millis();
-            drive.stop();
+            drive.stopDrive();
         }
         fr++;
     }

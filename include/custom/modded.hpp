@@ -22,11 +22,11 @@ public:
         vel -> -127 to 127
     */
     void setVelocity(int vel);
-    void move(DrivetrainEnums::Direction &dir);
-    void brake();
-    void calibrate();
+    void moveRelative(double angle);
+    void startMove(DrivetrainEnums::Direction &dir);
+    void stopMove();
+    void doCalibration();
     double getRotation();
     bool isMoving();
-    void moveRelative(double angle);
     void update();
 };
