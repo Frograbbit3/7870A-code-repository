@@ -1,5 +1,5 @@
 #include "custom/drivetrain.hpp"
-namespace DrivetrainLib
+namespace MKV5
 {
     void Drivetrain::setLeftVelocity(int velocity)
     {
@@ -9,17 +9,17 @@ namespace DrivetrainLib
     {
         rightMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
     }
-    void Drivetrain::moveDistance(float distance, DrivetrainEnums::Distance dist)
+    void Drivetrain::moveDistance(float distance, MKV5::Enums::Distance dist)
     {
-        double wheelRad = DrivetrainEnums::getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0; // Convert diameter to radius
+        double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0; // Convert diameter to radius
         double rotations = 0;
         switch (dist)
         {
-        case DrivetrainEnums::Distance::INCHES:
+        case Enums::Distance::INCHES:
             rotations = distance / (2 * pi * wheelRad);
             break;
 
-        case DrivetrainEnums::Distance::MM:
+        case Enums::Distance::MM:
             rotations = (distance / INCH_TO_MM(1)) / (2 * pi * wheelRad);
             break;
 
@@ -31,6 +31,7 @@ namespace DrivetrainLib
         rightMotors.moveRelative(rotations);
         antiDrift();
         stopDrive();
+        
     }
     void Drivetrain::setVelocity(int leftVelocity, int rightVelocity)
     {
@@ -40,7 +41,7 @@ namespace DrivetrainLib
     void Drivetrain::rotateTo(double heading)
     {
         double difference = getHeading() - heading;
-        DrivetrainEnums::Direction dir;
+        Enums::Direction dir;
         const int MAX_VELOCITY = 127;
         const int MIN_VELOCITY = 20;
         const int TIMEOUT = 5000;
@@ -51,11 +52,11 @@ namespace DrivetrainLib
             difference = getHeading() - heading;
             if (difference < 0)
             {
-                dir = DrivetrainEnums::Direction::REVERSE;
+                dir = Enums::Direction::REVERSE;
             }
             else
             {
-                dir = DrivetrainEnums::Direction::FORWARD;
+                dir = Enums::Direction::FORWARD;
             }
             double percent = fabs(difference) / 360.0;
             double vel = percent * MAX_VELOCITY;
@@ -74,7 +75,7 @@ namespace DrivetrainLib
         leftMotors.stopMove();
         rightMotors.stopMove();
     }
-    void Drivetrain::startDrive(DrivetrainEnums::Direction direction)
+    void Drivetrain::startDrive(Enums::Direction direction)
     {
         leftMotors.startMove(direction);
         rightMotors.startMove(direction);

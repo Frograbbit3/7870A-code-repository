@@ -1,135 +1,150 @@
 #pragma once
-#include "pros/misc.hpp"
 #include "config.h"
-#include <vector>
+#include "custom/enums.hpp"
+#include "custom/modded.hpp"
+#include "pros/misc.hpp"
 #include <functional>
 #include <math.h>
+#include <vector>
 
-namespace ControllerLib
-{
-    class EmulatedController;
-    struct Joystick{
-        pros::controller_analog_e_t stickX;
-        pros::controller_analog_e_t stickY;
-        float X = 0;
-        float Y = 0;
-        float deadzone = 0.15f;
-        bool process = true;
-        bool moving = false;
-        std::function<void(float, float)> OnMoveCallback = nullptr;
-        pros::Controller *control = nullptr;
+namespace MKV5 {
 
-        Joystick() = default;
-        Joystick(pros::Controller *ctrl,
-                 pros::controller_analog_e_t stkX,
-                 pros::controller_analog_e_t stkY);
+class EmulatedController;
+namespace ControllerInputs {
 
-        /*Called automatically by the EmulatedController loop, but this is used if macro mode is not enabled to link the joystick to the physical joystick.*/
-        void update();
+struct Joystick {
+	pros::controller_analog_e_t stickX;
+	pros::controller_analog_e_t stickY;
+	float X = 0;
+	float Y = 0;
+	float deadzone = 0.15f;
+	bool process = true;
+	bool moving = false;
+	std::function<void(float, float)> OnMoveCallback = nullptr;
+	pros::Controller *control = nullptr;
 
-        /*Sets the stick X and stick Y. If you want to set these values, call SetEnabled(false) to disable the joystick overwriting it.*/
-        void SetStick(float nx, float ny);
+	Joystick() = default;
+	Joystick(pros::Controller *ctrl, pros::controller_analog_e_t stkX,
+	         pros::controller_analog_e_t stkY);
 
-        /*Enabled / disables Macro mode.*/
-        void SetEnabled(bool enabled);
+	/*Called automatically by the EmulatedController loop, but this is used
+	 * if macro mode is not enabled to link the joystick to the physical
+	 * joystick.*/
+	void update();
 
-        /*
-            Pass in a function and it will call it with the DIFFERENCE between the old joystick and the new joystick
-            @param func This is an std::function with two args, both being float.The first one is the difference in the X and the second one is the difference in the Y.
-        */
-        void OnMove(const std::function<void(float, float)> &func);
-    };
+	/*Sets the stick X and stick Y. If you want to set these values, call
+	 * SetEnabled(false) to disable the joystick overwriting it.*/
+	void SetStick(float nx, float ny);
 
-    struct Button
-    {
-        pros::controller_digital_e_t button;
-        pros::Controller *control = nullptr;
+	/*Enabled / disables Macro mode.*/
+	void SetEnabled(bool enabled);
 
-        bool pressed = false;
-        bool process = true;
-        bool triggered_press_callback = false;
-        bool triggered_release_callback = false;
-        EmulatedController *parent = nullptr;
-        std::function<void()> OnPressCallback = nullptr;
-        std::function<void()> OnReleaseCallback = nullptr;
+	/*
+	    Pass in a function and it will call it with the DIFFERENCE between
+	   the old joystick and the new joystick
+	    @param func This is an std::function with two args, both being
+	   float.The first one is the difference in the X and the second one is
+	   the difference in the Y.
+	*/
+	void OnMove(const std::function<void(float, float)> &func);
+};
 
-        Button() = default;
+struct Button {
+	pros::controller_digital_e_t button;
+	pros::Controller *control = nullptr;
 
-        Button(EmulatedController *parent_,
-               pros::Controller *ctrl,
-               pros::controller_digital_e_t btn);
+	bool pressed = false;
+	bool process = true;
+	bool triggered_press_callback = false;
+	bool triggered_release_callback = false;
+	EmulatedController *parent = nullptr;
+	std::function<void()> OnPressCallback = nullptr;
+	std::function<void()> OnReleaseCallback = nullptr;
 
-        /*Processes button events. Called by EmulatedController main loop, calling manually does next to nothing.*/
-        void update();
-        
-        /*Changes the button's state. To manually call this run SetEnabled(false)*/
-        void SetButton(bool state);
+	Button() = default;
 
-        /*Enabled / disables the button; disabling this will allow the user to control it*/
-        void SetEnabled(bool enabled);
+	Button(EmulatedController *parent_, pros::Controller *ctrl,
+	       pros::controller_digital_e_t btn);
 
-        /*
-            Callback for when the button is pressed.
-            @param func An std::function with no args.
-        */
-        void OnButtonPress(const std::function<void()> &func);
-        /*
-            Callback for when the button is released.
-            @param func An std::function with no args.
-        */
-        void OnButtonRelease(const std::function<void()> &func);
-    };
+	/*Processes button events. Called by EmulatedController main loop,
+	 * calling manually does next to nothing.*/
+	void update();
 
-    class EmulatedController
-    {
-    private:
-        pros::Controller *controller;
-        std::vector<Button*> btns;
+	/*Changes the button's state. To manually call this run
+	 * SetEnabled(false)*/
+	void SetButton(bool state);
 
-    public:
+	/*Enabled / disables the button; disabling this will allow the user to
+	 * control it*/
+	void SetEnabled(bool enabled);
 
-        struct
-        {
-            Button A;
-            Button B;
-            Button Y;
-            Button X;
-            Button Left;
-            Button Right;
-            Button Up;
-            Button Down;
-            Button L1;
-            Button L2;
-            Button R1;
-            Button R2;
-            Button Power;
-        } buttons;
+	/*
+	    Callback for when the button is pressed.
+	    @param func An std::function with no args.
+	*/
+	void OnButtonPress(const std::function<void()> &func);
+	/*
+	    Callback for when the button is released.
+	    @param func An std::function with no args.
+	*/
+	void OnButtonRelease(const std::function<void()> &func);
+};
+struct ControlBinding {
+	std::variant<MKV5::CustomMotor *, MKV5::MotorGroup *> motor;
+	std::variant<std::pair<MKV5::ControllerInputs::Button,
+	                       MKV5::ControllerInputs::Button>,
+	             MKV5::ControllerInputs::Button>
+	    buttons;
+	int speed = 127;
+	bool toggle = false;
+};
+} // namespace ControllerInputs
+class EmulatedController {
+      private:
+	pros::Controller *controller;
+	std::vector<ControllerInputs::Button *> btns;
 
-        struct
-        {
-            Joystick Left;
-            Joystick Right;
-        } joysticks;
+      public:
+	struct {
+		ControllerInputs::Button A;
+		ControllerInputs::Button B;
+		ControllerInputs::Button Y;
+		ControllerInputs::Button X;
+		ControllerInputs::Button Left;
+		ControllerInputs::Button Right;
+		ControllerInputs::Button Up;
+		ControllerInputs::Button Down;
+		ControllerInputs::Button L1;
+		ControllerInputs::Button L2;
+		ControllerInputs::Button R1;
+		ControllerInputs::Button R2;
+		ControllerInputs::Button Power;
+	} buttons;
 
-        double battery = 100;
-        bool enabled = true;
-        bool connected = false;
+	struct {
+		ControllerInputs::Joystick Left;
+		ControllerInputs::Joystick Right;
+	} joysticks;
 
-        EmulatedController(pros::Controller *ctrl);
-        /*
-            Vibrates a controller based off a pattern.
-            WARNING! Buggy & limited.
-            Use a pattern of this:
-             - Spaces: break
-             - Dash: long
-             - Dot/Period: short
+	double battery = 100;
+	bool enabled = true;
+	bool connected = false;
 
-            --.--.
-        */
-        void vibrate(std::string pattern);
-        /*
-            Processes joystick inputs
-        */
-        void update();
-    };
-}
+	EmulatedController(pros::Controller *ctrl);
+	/*
+	    Vibrates a controller based off a pattern.
+	    WARNING! Buggy & limited.
+	    Use a pattern of this:
+	     - Spaces: break
+	     - Dash: long
+	     - Dot/Period: short
+
+	    --.--.
+	*/
+	void vibrate(std::string pattern);
+	/*
+	    Processes joystick inputs
+	*/
+	void update();
+};
+} // namespace MKV5

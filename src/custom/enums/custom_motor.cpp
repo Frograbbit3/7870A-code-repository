@@ -1,5 +1,5 @@
 #include "custom/enums.hpp"
-namespace DrivetrainEnums
+namespace MKV5
 {
 
     // constructor
@@ -20,11 +20,11 @@ namespace DrivetrainEnums
         return motor->get_encoder_units();
     }
 
-    WheelType CustomMotor::getWheelType()
+    Enums::WheelType CustomMotor::getWheelType()
     {
         if (wheel)
             return *wheel;
-        return WheelType::WHEEL_400;
+        return Enums::WheelType::WHEEL_400;
     }
 
     bool CustomMotor::getMovement()
@@ -62,7 +62,7 @@ namespace DrivetrainEnums
         return motor->is_reversed();
     }
 
-    double CustomMotor::getVelocity(VelocityUnit unit)
+    double CustomMotor::getVelocity(Enums::VelocityUnit unit)
     {
         switch (unit)
         {
@@ -110,7 +110,7 @@ namespace DrivetrainEnums
         motor->set_reversed(reversed);
     }
 
-    void CustomMotor::setWheelType(WheelType whl)
+    void CustomMotor::setWheelType(Enums::WheelType whl)
     {
         wheel = &whl;
     }
@@ -123,7 +123,7 @@ namespace DrivetrainEnums
             motor->tare_position();
     }
 
-    void CustomMotor::setVelocity(float vel, VelocityUnit unit)
+    void CustomMotor::setVelocity(float vel, Enums::VelocityUnit unit)
     {
         switch (unit)
         {
@@ -150,9 +150,9 @@ namespace DrivetrainEnums
     }
 
     // movement
-    void CustomMotor::move(Direction dir, std::optional<int32_t> voltage)
+    void CustomMotor::move(Enums::Direction dir, std::optional<int32_t> voltage)
     {
-        int mult = (dir == Direction::FORWARD) ? 1 : (dir == Direction::REVERSE) ? -1
+        int mult = (dir == Enums::Direction::FORWARD) ? 1 : (dir == Enums::Direction::REVERSE) ? -1
                                                                                  : 0;
 
         int32_t out = voltage.has_value()
@@ -162,10 +162,10 @@ namespace DrivetrainEnums
         motor->move(out);
     }
 
-    void CustomMotor::moveAbsolute(Direction direction, double position,
+    void CustomMotor::moveAbsolute(Enums::Direction direction, double position,
                                    std::optional<int32_t> voltage)
     {
-        int8_t mult = (direction == Direction::FORWARD) ? 1 : (direction == Direction::REVERSE) ? -1
+        int8_t mult = (direction == Enums::Direction::FORWARD) ? 1 : (direction == Enums::Direction::REVERSE) ? -1
                                                                                                 : 0;
 
         int32_t out = voltage.has_value()
@@ -175,10 +175,10 @@ namespace DrivetrainEnums
         motor->move_absolute(position, out);
     }
 
-    void CustomMotor::moveRelative(Direction direction, double position,
+    void CustomMotor::moveRelative(Enums::Direction direction, double position,
                                    std::optional<int32_t> voltage)
     {
-        int8_t mult = (direction == Direction::FORWARD) ? 1 : (direction == Direction::REVERSE) ? -1
+        int8_t mult = (direction == Enums::Direction::FORWARD) ? 1 : (direction == Enums::Direction::REVERSE) ? -1
                                                                                                 : 0;
 
         int32_t out = voltage.has_value()

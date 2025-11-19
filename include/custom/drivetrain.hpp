@@ -1,9 +1,10 @@
 #pragma once
 #include "config.h"
+#include "custom/enums.hpp"
 #include "modded.hpp"
 #define pi M_PI
 
-namespace DrivetrainLib
+namespace MKV5
 {
     class Drivetrain
     {
@@ -15,8 +16,9 @@ namespace DrivetrainLib
     private:
         std::vector<int8_t> leftSide;
         std::vector<int8_t> rightSide;
-        pros::Imu* imu;
+        pros::Imu *imu;
         void antiDrift();
+
     public:
         /*Resets all motors & calibrates the gyro.*/
         void doCalibration();
@@ -28,7 +30,7 @@ namespace DrivetrainLib
             @param trc A double with the distance between the left & right wheels in inches.
             @param imu A gyroscope for more accurate rotation.
         */
-        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide, double trc, std::optional<pros::Imu*> i);
+        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide, double trc, std::optional<pros::Imu *> i);
 
         /*
             Sets the left side velocity.
@@ -43,8 +45,8 @@ namespace DrivetrainLib
 
         /*
             Attempts to get the current heading of the drivetrain. Uses encoders & gyro (if provided).
-            @return A double with the approximate heading. 
-        */ 
+            @return A double with the approximate heading.
+        */
         double getHeading();
 
         /*
@@ -52,7 +54,7 @@ namespace DrivetrainLib
             @param distance A float containing a distance.
             @param dist The unit for the distance.
         */
-        void moveDistance(float distance, DrivetrainEnums::Distance dist);
+        void moveDistance(float distance, MKV5::Enums::Distance dist);
 
         /*
             Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity.
@@ -64,7 +66,7 @@ namespace DrivetrainLib
         /*
             Attempts to turn to a heading. Uses gyro.
             @param heading A double of the degree you want to turn two. Accuracy is ~2dg by default.
-            @example 
+            @example
         */
         void rotateTo(double heading);
 
@@ -76,6 +78,6 @@ namespace DrivetrainLib
             Moves the robot in a direction.
             @param direction Direction to move.
         */
-        void startDrive(DrivetrainEnums::Direction direction);
+        void startDrive(MKV5::Enums::Direction direction);
     };
 }

@@ -12,39 +12,49 @@ inline void print(T m) { std::cout << m << std::endl; }
 #define GREEN_MOTOR_CART pros::motor_gearset_e_t::E_MOTOR_GEAR_GREEN
 #define BLUE_MOTOR_CART pros::motor_gearset_e_t::E_MOTOR_GEAR_BLUE
 #define __VERSION 1.3b
-#define VELOCITY_PERCENT DrivetrainEnums::VelocityUnit::PERCENT
-#define VELOCITY_RAW DrivetrainEnums::VelocityUnit::RAW
-#define VELOCITY_mV DrivetrainEnums::VelocityUnit::mV
-#define VELOCITY_VOLTS DrivetrainEnums::VelocityUnit::VOLTS
-namespace DrivetrainEnums
+#define VELOCITY_PERCENT MKV5::Enums::VelocityUnit::PERCENT
+#define VELOCITY_RAW MKV5::Enums::VelocityUnit::RAW
+#define VELOCITY_mV MKV5::Enums::VelocityUnit::mV
+#define VELOCITY_VOLTS MKV5::Enums::VelocityUnit::VOLTS
+namespace MKV5
 {
-    enum class VelocityUnit
+    namespace Enums
     {
-        PERCENT = 0,
-        RAW = 1,
-        mV = 2,
-        VOLTS = 3
-    };
-    enum class Direction
-    {
-        FORWARD = 1,
-        REVERSE = -1,
-        STOP = 0
-    };
-    enum class Distance
-    {
-        INCHES = 1,
-        MM = 0,
-        ROTATION = 2,
+        enum class VelocityUnit
+        {
+            PERCENT = 0,
+            RAW = 1,
+            mV = 2,
+            VOLTS = 3
+        };
+        enum class Direction
+        {
+            FORWARD = 1,
+            REVERSE = -1,
+            STOP = 0
+        };
+        enum class Distance
+        {
+            INCHES = 1,
+            MM = 0,
+            ROTATION = 2,
 
-    };
+        };
 
-    enum class WheelType
-    {
-        WHEEL_275,
-        WHEEL_325,
-        WHEEL_400
-    };
+        enum class WheelType
+        {
+            WHEEL_275,
+            WHEEL_325,
+            WHEEL_400
+        };
+        enum class ControllerDriveTypes
+        {
+            DRIVE_MODE_TANK = 1,
+            DRIVE_MODE_ARCADE = 2,
+            DRIVE_MODE_GTA = 3,
+            DRIVE_MODE_CHEESE = 4,
+        };
+    }
 
     struct CustomMotor
     {
@@ -53,7 +63,7 @@ namespace DrivetrainEnums
 
     public:
         pros::Motor *motor;
-        WheelType *wheel = nullptr;
+        Enums::WheelType *wheel = nullptr;
         CustomMotor(pros::Motor *mtr);
 
         /*Get functions*/
@@ -63,7 +73,7 @@ namespace DrivetrainEnums
         /*Gets the encoding. Defaults to degrees.*/
         pros::MotorEncoderUnits getEncoding();
         /*Gets the current type of wheel connected to this motor.*/
-        WheelType getWheelType();
+        Enums::WheelType getWheelType();
         /*Gets if the motor is moving.*/
         bool getMovement();
         /*Gets the position of the motor. Returns a value in degrees.*/
@@ -79,7 +89,7 @@ namespace DrivetrainEnums
         /*Gets the motor's reversed flag. Returns true if reversed.*/
         bool getReversed();
         /*Gets the velocity. Takes in a VelocityUnit*/
-        double getVelocity(VelocityUnit unit = VELOCITY_RAW);
+        double getVelocity(Enums::VelocityUnit unit = VELOCITY_RAW);
         /*Gets the position the motor is *attempting* to turn to.*/
         double getTargetPosition();
         /*Set functions*/
@@ -95,23 +105,23 @@ namespace DrivetrainEnums
         /*Sets the reversed flag.*/
         void setReversed(bool reversed);
         /*Sets the wheel type of the motor.*/
-        void setWheelType(WheelType whl);
+        void setWheelType(Enums::WheelType whl);
         /*Sets the zero of the motor. Pass in no args to use the current motor position.*/
         void setZero(std::optional<double> position = std::nullopt);
         /*Sets the motors velocity. Defaults to a unit of RAW, meaning -127 -> 127*/
-        void setVelocity(float vel, VelocityUnit unit = VELOCITY_RAW);
+        void setVelocity(float vel, Enums::VelocityUnit unit = VELOCITY_RAW);
 
         /*Sets the encoding of the motor. Defaults to DEGREES.*/
         void setEncoding(pros::MotorEncoderUnits unit);
         /*Movement Functions*/
 
         /*Moves the motor forever until .brake is called. Pass in an argument if you want to choose a voltage.*/
-        void move(Direction dir, std::optional<int32_t> voltage = std::nullopt);
+        void move(Enums::Direction dir, std::optional<int32_t> voltage = std::nullopt);
         /*Moves the motor to a specific position. Pass in a voltage if you want to choose the speed.*/
-        void moveAbsolute(Direction direction, double position,
+        void moveAbsolute(Enums::Direction direction, double position,
                           std::optional<int32_t> voltage = std::nullopt);
         /*Moves the motor to an offset based off the current pos. Pass in a voltage if you want to choose the speed.*/
-        void moveRelative(Direction direction, double position,
+        void moveRelative(Enums::Direction direction, double position,
                           std::optional<int32_t> voltage = std::nullopt);
         /*Stops the motor.*/
         void brake();
@@ -122,24 +132,11 @@ namespace DrivetrainEnums
         void calibrate();
     };
     /*Helper function to get the diameter of a wheel. Defaults to 4.0f. Returns in inches.*/
-    double getWheelDiameter(WheelType type);
-} // namespace DrivetrainEnums
-
-// controller stuff
-
-namespace ControllerEnums
-{
-    enum class ControllerDriveTypes
-    {
-        DRIVE_MODE_TANK = 1,
-        DRIVE_MODE_ARCADE = 2,
-        DRIVE_MODE_GTA = 3,
-        DRIVE_MODE_CHEESE = 4,
-    };
+    double getWheelDiameter(Enums::WheelType type);
 
     struct ControllerSettings
     {
-        ControllerDriveTypes CONTROL_SCHEME = ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE;
+        Enums::ControllerDriveTypes CONTROL_SCHEME = Enums::ControllerDriveTypes::DRIVE_MODE_ARCADE;
         float maxTurnSpeed = -0.6f;
         float maxForwardSpeed = 0.8f;
         bool enabled = true;
@@ -147,13 +144,13 @@ namespace ControllerEnums
     };
 }
 
-#define TANK_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_TANK
-#define ARCADE_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE
-#define GTA_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_GTA
-#define CHEESE_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_CHEESE
-#define DRIVE_FORWARD DrivetrainEnums::Direction::FORWARD
-#define DRIVE_REVERSE DrivetrainEnums::Direction::REVERSE
-#define DRIVE_STOP DrivetrainEnums::Direction::STOP
+#define TANK_DRIVE MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_TANK
+#define ARCADE_DRIVE MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_ARCADE
+#define GTA_DRIVE MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_GTA
+#define CHEESE_DRIVE MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_CHEESE
+#define DRIVE_FORWARD MKV5::Enums::Direction::FORWARD
+#define DRIVE_REVERSE MKV5::Enums::Direction::REVERSE
+#define DRIVE_STOP MKV5::Enums::Direction::STOP
 
 // drivetrain
 #define DRIVE_SLEW 0.02f
@@ -161,6 +158,6 @@ namespace ControllerEnums
 #define CD_SENSITIVITY 1.0
 
 // distances
-#define DIST_MM DrivetrainEnums::Distance::MM
-#define DIST_INCHES DrivetrainEnums::Distance::INCHES
-#define DIST_ROTATION DrivetrainEnums::Distance::ROTATION
+#define DIST_MM MKV5::Enums::Distance::MM
+#define DIST_INCHES MKV5::Enums::Distance::INCHES
+#define DIST_ROTATION MKV5::Enums::Distance::ROTATION

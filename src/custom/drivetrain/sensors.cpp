@@ -1,11 +1,12 @@
 #include "custom/drivetrain.hpp"
-namespace DrivetrainLib
+namespace MKV5
 {
     void Drivetrain::antiDrift()
     {
+        
         while (leftMotors.isMoving() || rightMotors.isMoving())
         {
-            double wheelRad = DrivetrainEnums::getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0;
+            double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0;
             double leftDistance = leftMotors.getRotation() * 2 * pi * wheelRad;
             double rightDistance = rightMotors.getRotation() * 2 * pi * wheelRad;
             double drift = leftDistance - rightDistance;
@@ -27,7 +28,7 @@ namespace DrivetrainLib
     {
         double leftRotations = leftMotors.getRotation();
         double rightRotations = rightMotors.getRotation();
-        double wheelRad = DrivetrainEnums::getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0;
+        double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0;
 
         double leftDistance = leftRotations * 2 * pi * wheelRad;
         double rightDistance = rightRotations * 2 * pi * wheelRad;

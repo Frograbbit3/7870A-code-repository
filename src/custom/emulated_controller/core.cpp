@@ -1,6 +1,8 @@
 #include "custom/emulated_controller.hpp"
 
-namespace ControllerLib
+
+using namespace MKV5::ControllerInputs;
+namespace MKV5
 {
 
     EmulatedController::EmulatedController(pros::Controller *ctrl)

@@ -2,10 +2,6 @@
 #define CD_TURN_NONLINEARITY 0.65
 #include "math.h"
 
-namespace DrivetrainEnums {
-    enum class WheelType;
-}
-
 
 template<typename T>
 /*A helper function that literally just sets a number if its too big or too low.*/

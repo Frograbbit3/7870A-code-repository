@@ -2,15 +2,15 @@
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Imu gyro(11);
-DrivetrainLib::Drivetrain drivetrain({-3,-21, -20}, {5, 9,10}, 12.75f, &gyro);
+MKV5::Drivetrain drivetrain({-3,-21, -20}, {5, 9,10}, 12.75f, &gyro);
 
-ControllerLib::EmulatedController control(&master);
-ControllerLib::ControlScheme mainControl(CHEESE_DRIVE, drivetrain, control);
+MKV5::EmulatedController control(&master);
+MKV5::ControlScheme mainControl(CHEESE_DRIVE, drivetrain, control);
 pros::Motor f(7);
-DrivetrainEnums::CustomMotor flywheel(&f);
+MKV5::CustomMotor flywheel(&f);
 
 void initialize() {
-    mainControl.registerMotor(ControllerLib::ControlBinding{
+    mainControl.registerMotor(MKV5::ControllerInputs::ControlBinding{
         .motor = &flywheel,
         .buttons = std::pair{
             control.buttons.R1,

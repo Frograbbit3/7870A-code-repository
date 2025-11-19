@@ -1,8 +1,8 @@
 #include "main.h"
 #pragma once
 extern pros::Controller master;
-extern DrivetrainLib::Drivetrain drivetrain;
-extern ControllerLib::EmulatedController control;
-extern ControllerLib::ControlScheme mainControl;
-extern DrivetrainEnums::CustomMotor flywheel;
+extern MKV5::Drivetrain drivetrain;
+extern MKV5::EmulatedController control;
+extern MKV5::ControlScheme mainControl;
+extern MKV5::CustomMotor flywheel;
 extern pros::Imu gyro;
