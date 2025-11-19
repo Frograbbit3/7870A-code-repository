@@ -1,4 +1,6 @@
 #pragma once
+#include "api.h"
+#include "pros/motors.h"
 #include <iostream>
 #include "mathlib.h"
 inline double INCH_TO_MM(double inch) { return 25.4 * inch; }
@@ -53,8 +55,8 @@ namespace DrivetrainEnums
         WheelType *wheel=nullptr;
         CustomMotor(pros::Motor *mtr) : motor(mtr)
         {
-            motor->set_encoder_units(MOTOR_ENCODER_DEGREES);
-            motor->set_gearing(MOTOR_GEAR_200);
+            motor->set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+            motor->set_gearing(pros::E_MOTOR_GEAR_200);
         }
 
         /*Get functions*/
@@ -305,11 +307,9 @@ namespace ControllerEnums
     struct ControllerSettings
     {
         ControllerDriveTypes CONTROL_SCHEME = ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE;
-        float MAX_TURN_SPEED = -0.6f;
-        float MAX_FORWARD_SPEED = 0.8f;
-        float DEADZONE = 10.0f;
-        bool DRIVE_AUTO_CORRECTION = false;
-        bool ENABLED = true;
+        float maxTurnSpeed = -0.6f;
+        float maxForwardSpeed = 0.8f;
+        bool enabled = true;
         double timeSinceJoystickStop = 0.0f;
     };
 }

@@ -1,6 +1,7 @@
 #pragma once
 #define CD_TURN_NONLINEARITY 0.65
 #include "math.h"
+
 namespace DrivetrainEnums {
     enum class WheelType;
 }
