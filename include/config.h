@@ -9,3 +9,6 @@
 
 // The amount of dg off for it to consider it "acceptable."
 #define ROTATION_OFFSET_LIMIT 2.0f
+
+// Basically just adds macros to make it easier to write auton code
+#define USE_EASY_MOVEMENT
