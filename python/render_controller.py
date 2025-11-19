@@ -31,6 +31,7 @@ def clear_line(line):
 
 def _render():
     os.system("cls" if os.name=="nt" else "clear")
+    print("[THIS IS A DEMO]")
     for l in LINES:
         print(l)
 
