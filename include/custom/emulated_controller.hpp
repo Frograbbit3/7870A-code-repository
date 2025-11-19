@@ -23,46 +23,22 @@ namespace ControllerLib
         Joystick() = default;
         Joystick(pros::Controller *ctrl,
                  pros::controller_analog_e_t stkX,
-                 pros::controller_analog_e_t stkY)
-            : stickX(stkX), stickY(stkY), control(ctrl) {}
+                 pros::controller_analog_e_t stkY);
 
         /*Called automatically by the EmulatedController loop, but this is used if macro mode is not enabled to link the joystick to the physical joystick.*/
-        void update()
-        {
-            if (!process || control == nullptr)
-            {
-                return;
-            }
-            if (static_cast<float>(control->get_analog(stickX)) != X || static_cast<float>(control->get_analog(stickY)) != Y)
-            {
-                SetStick(static_cast<float>(control->get_analog(stickX)), static_cast<float>(control->get_analog(stickY)));
-            }
-            else
-            {
-                SetStick(static_cast<float>(control->get_analog(stickX)), static_cast<float>(control->get_analog(stickY)));
-            }
-        }
+        void update();
 
         /*Sets the stick X and stick Y. If you want to set these values, call SetEnabled(false) to disable the joystick overwriting it.*/
-        void SetStick(float nx, float ny)
-        {   
-            moving = (fabs(nx) > deadzone || fabs(ny) > deadzone); // FIXED: moving when OUTSIDE deadzone
-            if (OnMoveCallback != nullptr && moving) {OnMoveCallback(nx-X, ny-Y);}
-            X = fabs(nx) > deadzone ? nx : 0.0f;
-            Y = fabs(ny) > deadzone ? ny : 0.0f;
-        }
+        void SetStick(float nx, float ny);
 
         /*Enabled / disables Macro mode.*/
-        void SetEnabled(bool enabled) { process = enabled; }
+        void SetEnabled(bool enabled);
 
         /*
             Pass in a function and it will call it with the DIFFERENCE between the old joystick and the new joystick
             @param func This is an std::function with two args, both being float.The first one is the difference in the X and the second one is the difference in the Y.
         */
-        void OnMove(const std::function<void(float, float)> &func)
-        {
-            OnMoveCallback = func;
-        }
+        void OnMove(const std::function<void(float, float)> &func);
     };
 
     struct Button
@@ -82,63 +58,27 @@ namespace ControllerLib
 
         Button(EmulatedController *parent_,
                pros::Controller *ctrl,
-               pros::controller_digital_e_t btn)
-            : button(btn), control(ctrl), parent(parent_)
-        {
-        }
+               pros::controller_digital_e_t btn);
 
         /*Processes button events. Called by EmulatedController main loop, calling manually does next to nothing.*/
-        void update()
-        {
-            if (!process || control == nullptr)
-            {
-                return;
-            }
-            SetButton(control->get_digital(button));
-        }
+        void update();
         
         /*Changes the button's state. To manually call this run SetEnabled(false)*/
-        void SetButton(bool state)
-        {
-            pressed = state;
-            if (pressed)
-            {
-                if (OnPressCallback != nullptr && !triggered_press_callback)
-                {
-                    triggered_press_callback = true;
-                    triggered_release_callback = false;
-                    OnPressCallback();
-                }
-            }
-            else
-            {
-                if (OnReleaseCallback != nullptr && !triggered_release_callback)
-                {
-                    triggered_release_callback = true;
-                    triggered_press_callback = false;
-                    OnReleaseCallback();
-                }
-            }
-        }
+        void SetButton(bool state);
+
         /*Enabled / disables the button; disabling this will allow the user to control it*/
-        void SetEnabled(bool enabled) { process = enabled; }
+        void SetEnabled(bool enabled);
 
         /*
             Callback for when the button is pressed.
             @param func An std::function with no args.
         */
-        void OnButtonPress(const std::function<void()> &func)
-        {
-            OnPressCallback = func;
-        }
+        void OnButtonPress(const std::function<void()> &func);
         /*
             Callback for when the button is released.
             @param func An std::function with no args.
         */
-        void OnButtonRelease(const std::function<void()> &func)
-        {
-            OnReleaseCallback = func;
-        }
+        void OnButtonRelease(const std::function<void()> &func);
     };
 
     class EmulatedController

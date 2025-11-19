@@ -1,9 +1,5 @@
-#include "controls.hpp"
-#include "custom/emulated_controller.hpp"
-#include "custom/enums.hpp"
-#include "custom/drivetrain.hpp"
-#include "mathlib.h"
-#include <variant>
+#include "custom/controls.hpp"
+
 namespace ControllerLib
 {
     ControlScheme::ControlScheme(ControllerEnums::ControllerDriveTypes typ, DrivetrainLib::Drivetrain &driveRef, EmulatedController &controllerRef): drive(driveRef), controller(controllerRef) {
