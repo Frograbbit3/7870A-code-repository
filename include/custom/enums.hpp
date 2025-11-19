@@ -38,8 +38,9 @@ namespace DrivetrainEnums
         ROTATION = 2,
 
     };
-    
-    enum class WheelType {
+
+    enum class WheelType
+    {
         WHEEL_275,
         WHEEL_325,
         WHEEL_400
@@ -52,244 +53,76 @@ namespace DrivetrainEnums
 
     public:
         pros::Motor *motor;
-        WheelType *wheel=nullptr;
-        CustomMotor(pros::Motor *mtr) : motor(mtr)
-        {
-            motor->set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
-            motor->set_gearing(pros::E_MOTOR_GEAR_200);
-        }
+        WheelType *wheel = nullptr;
+        CustomMotor(pros::Motor *mtr);
 
         /*Get functions*/
 
         /*Gets the brake mode of the motor. Returns a pros::MotorBrake object.*/
-        pros::MotorBrake getBrakeMode()
-        {
-            return motor->get_brake_mode();
-        }
-
+        pros::MotorBrake getBrakeMode();
         /*Gets the encoding. Defaults to degrees.*/
-        pros::MotorEncoderUnits getEncoding()
-        {
-            return motor->get_encoder_units();
-        }
-
+        pros::MotorEncoderUnits getEncoding();
         /*Gets the current type of wheel connected to this motor.*/
-        WheelType getWheelType() {
-            if (wheel) {
-                return *wheel;
-            }
-            return WheelType::WHEEL_400; //fallback
-        }
-
+        WheelType getWheelType();
         /*Gets if the motor is moving.*/
-        bool getMovement() {
-            return abs(motor->get_actual_velocity()) < 1;
-        }
-
+        bool getMovement();
         /*Gets the position of the motor. Returns a value in degrees.*/
-        int32_t getPosition()
-        {
-            return motor->get_position();
-        }
-
+        int32_t getPosition();
         /*Gets the current limit of the motor. Returns a value in mA*/
-        int32_t getCurrentLimit()
-        {
-            return motor->get_current_limit();
-        }
+        int32_t getCurrentLimit();
         /*Gets the motor's gearing. Returns a pros::MotorGears value.*/
-        pros::MotorGears getGearing()
-        {
-            return motor->get_gearing();
-        }
-
+        pros::MotorGears getGearing();
         /*Gets the motor's port. Returns an int8_t.*/
-        int8_t getPort()
-        {
-            return motor->get_port();
-        }
+        int8_t getPort();
         /*Gets the motor's voltage limit. Returns a voltage in mV*/
-        int32_t getVoltageLimit()
-        {
-            return motor->get_voltage_limit();
-        }
+        int32_t getVoltageLimit();
         /*Gets the motor's reversed flag. Returns true if reversed.*/
-        bool getReversed()
-        {
-            return motor->is_reversed();
-        }
-
+        bool getReversed();
         /*Gets the velocity. Takes in a VelocityUnit*/
-        double getVelocity(VelocityUnit unit = VELOCITY_RAW)
-        {
-            switch (unit)
-            {
-            case VELOCITY_RAW:
-                return velocity;
-
-            case VELOCITY_mV:
-                return (velocity / 12.7) * 1000.0;
-
-            case VELOCITY_VOLTS:
-                return (velocity / 127.0) * 12.0;
-
-            case VELOCITY_PERCENT:
-                return (velocity / 127.0) * 100.0;
-
-            default:
-                return 0.0;
-            }
-        }
-        double getTargetPosition()
-        {
-            return motor->get_target_position();
-        }
-
+        double getVelocity(VelocityUnit unit = VELOCITY_RAW);
+        /*Gets the position the motor is *attempting* to turn to.*/
+        double getTargetPosition();
         /*Set functions*/
 
         /*Sets the motor's brake mode.*/
-        void setBrakeMode(pros::MotorBrake brake)
-        {
-            motor->set_brake_mode(brake);
-        }
+        void setBrakeMode(pros::MotorBrake brake);
         /*Sets the motor's current limit in mA.*/
-        void setCurrentLimit(int32_t current)
-        {
-            motor->set_current_limit(current);
-        }
+        void setCurrentLimit(int32_t current);
         /*Sets the motor's voltage limit in mV.*/
-        void setVoltageLimit(int32_t voltage)
-        {
-            motor->set_voltage_limit(voltage);
-        }
+        void setVoltageLimit(int32_t voltage);
         /*Sets the motor's gearing.*/
-        void setGearing(pros::MotorGears gears)
-        {
-            motor->set_gearing(gears);
-        }
-
+        void setGearing(pros::MotorGears gears);
         /*Sets the reversed flag.*/
-        void setReversed(bool reversed)
-        {
-            motor->set_reversed(reversed);
-        }
-
+        void setReversed(bool reversed);
         /*Sets the wheel type of the motor.*/
-        void setWheelType(WheelType whl) {
-            wheel = &whl;
-        }
-    
+        void setWheelType(WheelType whl);
         /*Sets the zero of the motor. Pass in no args to use the current motor position.*/
-        void setZero(std::optional<double> position = std::nullopt)
-        {
-            if (position.has_value())
-            {
-                motor->set_zero_position(position.value());
-            }
-            else
-            {
-                motor->tare_position();
-            }
-        }
+        void setZero(std::optional<double> position = std::nullopt);
         /*Sets the motors velocity. Defaults to a unit of RAW, meaning -127 -> 127*/
-        void setVelocity(float vel, VelocityUnit unit = VELOCITY_RAW)
-        {
-            switch (unit)
-            {
-            case VELOCITY_RAW:
-                velocity = minmax<double>(vel, -127.0f, 127.0f);
-                break;
-            case VELOCITY_mV:
-                velocity = minmax<double>((vel / 1000.0f) * 12.7f, -127.0f, 127.0f);
-                break;
-            case VELOCITY_VOLTS:
-                velocity = minmax<double>((vel / 12.0f) * 127.0f, -127.0f, 127.0f);
-                break;
-            case VELOCITY_PERCENT:
-                velocity = minmax<double>((vel / 100.0f) * 127.0f, -127.0f, 127.0f);
-                break;
-            default:
-                break;
-            };
-        }
+        void setVelocity(float vel, VelocityUnit unit = VELOCITY_RAW);
 
         /*Sets the encoding of the motor. Defaults to DEGREES.*/
-        void setEncoding(pros::MotorEncoderUnits unit) {
-            motor->set_encoder_units(unit);
-        }
-
+        void setEncoding(pros::MotorEncoderUnits unit);
         /*Movement Functions*/
 
-        /*Drives the robot. Pass in an argument if you want to choose a voltage.*/
-        void move(Direction dir, std::optional<int32_t> voltage = std::nullopt)
-        {
-            int mult = (dir == Direction::FORWARD)   ? 1
-                       : (dir == Direction::REVERSE) ? -1
-                                                     : 0;
-
-            int32_t out = voltage.has_value()
-                              ? *voltage * mult
-                              : velocity * mult;
-
-            motor->move(out);
-        }
+        /*Moves the motor forever until .brake is called. Pass in an argument if you want to choose a voltage.*/
+        void move(Direction dir, std::optional<int32_t> voltage = std::nullopt);
+        /*Moves the motor to a specific position. Pass in a voltage if you want to choose the speed.*/
         void moveAbsolute(Direction direction, double position,
-                          std::optional<int32_t> voltage = std::nullopt)
-        {
-
-            int8_t mult =
-                (direction == Direction::FORWARD) ? 1 : (direction == Direction::REVERSE) ? -1
-                                                                                          : 0;
-
-            int32_t out = voltage.has_value()
-                              ? (*voltage) * mult
-                              : velocity * mult;
-
-            motor->move_absolute(position, out);
-        }
-
+                          std::optional<int32_t> voltage = std::nullopt);
+        /*Moves the motor to an offset based off the current pos. Pass in a voltage if you want to choose the speed.*/
         void moveRelative(Direction direction, double position,
-                          std::optional<int32_t> voltage = std::nullopt)
-        {
-
-            int8_t mult =
-                (direction == Direction::FORWARD) ? 1 : (direction == Direction::REVERSE) ? -1
-                                                                                          : 0;
-
-            int32_t out = voltage.has_value()
-                              ? (*voltage) * mult
-                              : velocity * mult;
-
-            motor->move_relative(position, out);
-        }
-
+                          std::optional<int32_t> voltage = std::nullopt);
         /*Stops the motor.*/
-        void brake()
-        {
-            motor->brake();
-        }
-        
+        void brake();
 
         /*OTHER*/
 
         /*Resets the motor position to 0dg.*/
-        void calibrate() {
-            motor->move_voltage(0);
-            motor->set_zero_position(0);
-        }
+        void calibrate();
     };
-    inline double getWheelDiameter(WheelType type) {
-        switch (type) {
-            case WheelType::WHEEL_275:
-                return 2.75f;
-            case WheelType::WHEEL_325:
-                return 3.25f;
-            case WheelType::WHEEL_400:
-                return 4.00f;
-            default:
-                return 3.25f;
-        }
-    }
+    /*Helper function to get the diameter of a wheel. Defaults to 4.0f. Returns in inches.*/
+    double getWheelDiameter(WheelType type);
 } // namespace DrivetrainEnums
 
 // controller stuff
@@ -313,8 +146,6 @@ namespace ControllerEnums
         double timeSinceJoystickStop = 0.0f;
     };
 }
-
-
 
 #define TANK_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_TANK
 #define ARCADE_DRIVE ControllerEnums::ControllerDriveTypes::DRIVE_MODE_ARCADE

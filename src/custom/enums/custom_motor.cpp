@@ -1,0 +1,203 @@
+#include "custom/enums.hpp"
+namespace DrivetrainEnums
+{
+
+    // constructor
+    CustomMotor::CustomMotor(pros::Motor *mtr) : motor(mtr)
+    {
+        motor->set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+        motor->set_gearing(pros::E_MOTOR_GEAR_200);
+    }
+
+    // getters
+    pros::MotorBrake CustomMotor::getBrakeMode()
+    {
+        return motor->get_brake_mode();
+    }
+
+    pros::MotorEncoderUnits CustomMotor::getEncoding()
+    {
+        return motor->get_encoder_units();
+    }
+
+    WheelType CustomMotor::getWheelType()
+    {
+        if (wheel)
+            return *wheel;
+        return WheelType::WHEEL_400;
+    }
+
+    bool CustomMotor::getMovement()
+    {
+        return abs(motor->get_actual_velocity()) < 1;
+    }
+
+    int32_t CustomMotor::getPosition()
+    {
+        return motor->get_position();
+    }
+
+    int32_t CustomMotor::getCurrentLimit()
+    {
+        return motor->get_current_limit();
+    }
+
+    pros::MotorGears CustomMotor::getGearing()
+    {
+        return motor->get_gearing();
+    }
+
+    int8_t CustomMotor::getPort()
+    {
+        return motor->get_port();
+    }
+
+    int32_t CustomMotor::getVoltageLimit()
+    {
+        return motor->get_voltage_limit();
+    }
+
+    bool CustomMotor::getReversed()
+    {
+        return motor->is_reversed();
+    }
+
+    double CustomMotor::getVelocity(VelocityUnit unit)
+    {
+        switch (unit)
+        {
+        case VELOCITY_RAW:
+            return velocity;
+        case VELOCITY_mV:
+            return (velocity / 12.7) * 1000.0;
+        case VELOCITY_VOLTS:
+            return (velocity / 127.0) * 12.0;
+        case VELOCITY_PERCENT:
+            return (velocity / 127.0) * 100.0;
+        default:
+            return 0.0;
+        }
+    }
+
+    double CustomMotor::getTargetPosition()
+    {
+        return motor->get_target_position();
+    }
+
+    // setters
+    void CustomMotor::setBrakeMode(pros::MotorBrake brake)
+    {
+        motor->set_brake_mode(brake);
+    }
+
+    void CustomMotor::setCurrentLimit(int32_t current)
+    {
+        motor->set_current_limit(current);
+    }
+
+    void CustomMotor::setVoltageLimit(int32_t voltage)
+    {
+        motor->set_voltage_limit(voltage);
+    }
+
+    void CustomMotor::setGearing(pros::MotorGears gears)
+    {
+        motor->set_gearing(gears);
+    }
+
+    void CustomMotor::setReversed(bool reversed)
+    {
+        motor->set_reversed(reversed);
+    }
+
+    void CustomMotor::setWheelType(WheelType whl)
+    {
+        wheel = &whl;
+    }
+
+    void CustomMotor::setZero(std::optional<double> position)
+    {
+        if (position.has_value())
+            motor->set_zero_position(position.value());
+        else
+            motor->tare_position();
+    }
+
+    void CustomMotor::setVelocity(float vel, VelocityUnit unit)
+    {
+        switch (unit)
+        {
+        case VELOCITY_RAW:
+            velocity = minmax<double>(vel, -127.0f, 127.0f);
+            break;
+        case VELOCITY_mV:
+            velocity = minmax<double>((vel / 1000.0f) * 12.7f, -127.0f, 127.0f);
+            break;
+        case VELOCITY_VOLTS:
+            velocity = minmax<double>((vel / 12.0f) * 127.0f, -127.0f, 127.0f);
+            break;
+        case VELOCITY_PERCENT:
+            velocity = minmax<double>((vel / 100.0f) * 127.0f, -127.0f, 127.0f);
+            break;
+        default:
+            break;
+        }
+    }
+
+    void CustomMotor::setEncoding(pros::MotorEncoderUnits unit)
+    {
+        motor->set_encoder_units(unit);
+    }
+
+    // movement
+    void CustomMotor::move(Direction dir, std::optional<int32_t> voltage)
+    {
+        int mult = (dir == Direction::FORWARD) ? 1 : (dir == Direction::REVERSE) ? -1
+                                                                                 : 0;
+
+        int32_t out = voltage.has_value()
+                          ? *voltage * mult
+                          : velocity * mult;
+
+        motor->move(out);
+    }
+
+    void CustomMotor::moveAbsolute(Direction direction, double position,
+                                   std::optional<int32_t> voltage)
+    {
+        int8_t mult = (direction == Direction::FORWARD) ? 1 : (direction == Direction::REVERSE) ? -1
+                                                                                                : 0;
+
+        int32_t out = voltage.has_value()
+                          ? (*voltage) * mult
+                          : velocity * mult;
+
+        motor->move_absolute(position, out);
+    }
+
+    void CustomMotor::moveRelative(Direction direction, double position,
+                                   std::optional<int32_t> voltage)
+    {
+        int8_t mult = (direction == Direction::FORWARD) ? 1 : (direction == Direction::REVERSE) ? -1
+                                                                                                : 0;
+
+        int32_t out = voltage.has_value()
+                          ? (*voltage) * mult
+                          : velocity * mult;
+
+        motor->move_relative(position, out);
+    }
+
+    void CustomMotor::brake()
+    {
+        motor->brake();
+    }
+
+    // misc
+    void CustomMotor::calibrate()
+    {
+        motor->move_voltage(0);
+        motor->set_zero_position(0);
+    }
+
+} // namespace DrivetrainEnums
