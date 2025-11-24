@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #define CD_TURN_NONLINEARITY 0.65
 #include "math.h"
 
@@ -33,11 +34,18 @@ extern "C" {
 
         Source: https://github.com/purduesigbots/forkner-public/blob/62e1328b7902715035357622d81e4a35cb15ff2f/src/libforkner/drive.cpp#L363
     */
-    inline float JoystickCurve(double iturn) {
-        double denominator = sin(M_PI / 2 * CD_TURN_NONLINEARITY);
-        double firstRemapIteration =
-            sin(M_PI / 2 * CD_TURN_NONLINEARITY * (iturn/127.0f)) / denominator;
-        return static_cast<float>(sin(M_PI / 2 * CD_TURN_NONLINEARITY * firstRemapIteration) / denominator)*127.0f;
-    }
+        inline float JoystickCurve(float iturn) {
+            const double nl  = CD_TURN_NONLINEARITY;
+            const double k   = M_PI * 0.5 * nl;
+            const double den = std::sin(k);
+
+            double x = std::clamp(iturn / 127.0, -1.0, 1.0);
+
+            double y = std::sin(k * x) / den;
+            double z = std::sin(k * y) / den;
+
+            return static_cast<float>(std::clamp(z, -1.0, 1.0) * 127.0);
+        }
+
 }
 

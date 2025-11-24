@@ -1,4 +1,7 @@
 #include "custom/controls.hpp"
+#include "pros/screen.h"
+#include "pros/screen.hpp"
+#include <string>
 
 namespace MKV5 {
 ControlScheme::ControlScheme(Enums::ControllerDriveTypes typ,
@@ -35,7 +38,7 @@ void ControlScheme::registerMotor(ControllerInputs::ControlBinding binding) {
 			    std::get<ControllerInputs::Button>(binding.buttons);
 			// we have a single button
 			if (binding.toggle) {
-				auto onpress = [m, &binding]() {
+				auto onpress = [m, binding]() {
 					if (m->getMovement()) {
 						m->move(DRIVE_STOP);
 					} else {
@@ -45,32 +48,33 @@ void ControlScheme::registerMotor(ControllerInputs::ControlBinding binding) {
 				};
 				btns.OnButtonPress(onpress);
 			} else {
-				auto onpress = [&m, &binding]() {
+				auto onpress = [m, binding]() {
 					m->move(DRIVE_FORWARD, binding.speed);
 				};
-				auto onrelease = [&m, &binding]() {
+				auto onrelease = [m, binding]() {
 					m->move(DRIVE_STOP, binding.speed);
 				};
 				btns.OnButtonPress(onpress);
 				btns.OnButtonRelease(onrelease);
 			}
 		} else {
-			if (std::holds_alternative<std::pair<
-			        ControllerInputs::Button, ControllerInputs::Button>>(
+			if (std::holds_alternative<
+			        std::pair<ControllerInputs::Button,
+			                  ControllerInputs::Button>>(
 			        binding.buttons)) {
-				auto &btns =
-				    std::get<std::pair<ControllerInputs::Button,
-				                       ControllerInputs::Button>>(
-				        binding.buttons);
+				auto &btns = std::get<
+				    std::pair<ControllerInputs::Button,
+				              ControllerInputs::Button>>(
+				    binding.buttons);
 				// we have two buttons
 				// toggle doesnt work on this so
-				auto onforwardpress = [&m, &binding]() {
+				auto onforwardpress = [m, binding]() {
 					m->move(DRIVE_FORWARD, binding.speed);
 				};
-				auto onbackwardspress = [&m, &binding]() {
+				auto onbackwardspress = [m, binding]() {
 					m->move(DRIVE_REVERSE, binding.speed);
 				};
-				auto onrelease = [&m, &binding]() {
+				auto onrelease = [m, binding]() {
 					m->move(DRIVE_STOP, binding.speed);
 				};
 				btns.first.OnButtonPress(onforwardpress);
@@ -86,30 +90,31 @@ void ControlScheme::registerMotor(ControllerInputs::ControlBinding binding) {
 }
 void ControlScheme::doControllerInputs() {
 	switch (configuration.CONTROL_SCHEME) {
-	case ARCADE_DRIVE:
+
+	case MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_ARCADE:
 		leftVelocity =
-		    static_cast<int>(RightJoystickX *
+		    static_cast<int>(LeftJoystick->Y *
 		                     -(configuration.maxTurnSpeed)) -
-		    static_cast<int>(-LeftJoystickY *
+		    static_cast<int>(-RightJoystick->X *
 		                     (configuration.maxForwardSpeed));
 		rightVelocity =
-		    static_cast<int>(RightJoystickX *
+		    static_cast<int>(LeftJoystick->Y *
 		                     -(configuration.maxTurnSpeed)) +
-		    static_cast<int>(-LeftJoystickY *
+		    static_cast<int>(-RightJoystick->X *
 		                     (configuration.maxForwardSpeed));
 		break;
 
-	case TANK_DRIVE:
+	case MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_TANK:
 		leftVelocity = static_cast<int>(
-		    LeftJoystickY * (configuration.maxForwardSpeed));
+		    LeftJoystick->Y * (configuration.maxForwardSpeed));
 		rightVelocity = static_cast<int>(
-		    RightJoystickY * -(configuration.maxForwardSpeed));
+		    RightJoystick->Y * -(configuration.maxForwardSpeed));
 		break;
 
-	case GTA_DRIVE: {
+	case MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_GTA: {
 		int forward = (controller.buttons.R2.pressed ? 1 : 0) -
 		              (controller.buttons.L2.pressed ? 1 : 0);
-		int turn = static_cast<int>(LeftJoystickX);
+		int turn = static_cast<int>(LeftJoystick->X);
 
 		leftVelocity =
 		    static_cast<int>((forward * configuration.maxForwardSpeed) -
@@ -120,7 +125,7 @@ void ControlScheme::doControllerInputs() {
 		break;
 	}
 
-	case CHEESE_DRIVE: {
+	case MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_CHEESE: {
 		cheeseDrive();
 		break;
 	}
@@ -132,17 +137,15 @@ void ControlScheme::doControllerInputs() {
 
 void ControlScheme::update() {
 	controller.update(); // For the EmulatedController
-	if (!configuration.enabled) {
-		return;
-	}
-
 	// Read joystick raw values through the pointer members and apply curve
-	float LeftJoystickX = JoystickCurve(LeftJoystick->X);
-	float LeftJoystickY = JoystickCurve(LeftJoystick->Y);
-	float RightJoystickX = JoystickCurve(RightJoystick->X);
-	float RightJoystickY = JoystickCurve(RightJoystick->Y);
 
 	doControllerInputs();
+	if (fr % 120 == 0) {
+		std::cout << LeftJoystick->X << "," << LeftJoystickX << std::endl;
+		pros::screen::erase();
+		pros::screen::print(pros::E_TEXT_LARGE_CENTER, 0,
+		                    std::to_string(leftVelocity).c_str());
+	}
 	if (fabs(leftVelocity) > 0 || fabs(rightVelocity) > 0) {
 		leftVelocity =
 		    minmax(static_cast<int>(leftVelocity), -127, 127);
@@ -151,7 +154,6 @@ void ControlScheme::update() {
 		drive.setVelocity(leftVelocity, rightVelocity);
 		drive.startDrive(DRIVE_FORWARD);
 	} else {
-		configuration.timeSinceJoystickStop = pros::millis();
 		drive.stopDrive();
 	}
 	fr++;

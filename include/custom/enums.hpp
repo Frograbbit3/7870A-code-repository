@@ -136,11 +136,11 @@ namespace MKV5
 
     struct ControllerSettings
     {
-        Enums::ControllerDriveTypes CONTROL_SCHEME = Enums::ControllerDriveTypes::DRIVE_MODE_ARCADE;
+        Enums::ControllerDriveTypes CONTROL_SCHEME = MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_ARCADE;
         float maxTurnSpeed = -0.6f;
         float maxForwardSpeed = 0.8f;
         bool enabled = true;
-        double timeSinceJoystickStop = 0.0f;
+        bool useJoystickCurve=false;
     };
 }
 

@@ -11,4 +11,6 @@
 #define ROTATION_OFFSET_LIMIT 2.0f
 
 // Basically just adds macros to make it easier to write auton code
-#define USE_EASY_MOVEMENT
+//#define USE_EASY_MOVEMENT
+
+

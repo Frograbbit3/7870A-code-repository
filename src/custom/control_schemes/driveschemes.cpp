@@ -27,8 +27,8 @@ namespace MKV5 {
     };
     void ControlScheme::cheeseDrive()
     {
-        double ithrottle = (LeftJoystickY * configuration.maxForwardSpeed) / 127.0;
-        double iturn = (RightJoystickX * configuration.maxTurnSpeed) / 127.0;
+        double ithrottle = (LeftJoystick->Y * configuration.maxForwardSpeed) / 127.0;
+        double iturn = (RightJoystick->X * configuration.maxTurnSpeed) / 127.0;
         double linearCmd = ithrottle;
         bool turnInPlace = false;
 

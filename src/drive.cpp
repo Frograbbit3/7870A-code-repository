@@ -4,7 +4,7 @@
 #include "pros/misc.hpp"
 
 void controllerTick() {
-	while (pros::competition::is_field_control()) {
+	while (true) {
 		mainControl.update();
 		pros::delay(10);
 	}
