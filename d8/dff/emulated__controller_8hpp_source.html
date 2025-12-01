@@ -89,7 +89,7 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;math.h&gt;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;config.h&quot;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;piston.hpp&quot;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span>MKV5 {</div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">class </span>EmulatedController;</div>
@@ -178,7 +178,7 @@ $(document).ready(function() { init_codefold(1); });
 </div>
 <div class="foldopen" id="foldopen00092" data-start="{" data-end="};">
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="../../d7/d8f/structMKV5_1_1ControllerInputs_1_1ControlBinding.html">   92</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../d7/d8f/structMKV5_1_1ControllerInputs_1_1ControlBinding.html">ControlBinding</a> {</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    std::variant&lt;MKV5::CustomMotor*, MKV5::MotorGroup*&gt; motor;</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    std::variant&lt;MKV5::CustomMotor*, MKV5::MotorGroup*, MKV5::Piston*&gt; motor;</div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    std::variant&lt;</div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <a class="code hl_struct" href="../../d2/de6/structMKV5_1_1ControllerInputs_1_1Button.html">MKV5::ControllerInputs::Button</a>*,</div>
