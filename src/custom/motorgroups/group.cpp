@@ -1,8 +1,9 @@
+#include "custom/enums.hpp"
 #include "custom/modded.hpp"
 namespace MKV5 {
 MotorGroup::MotorGroup(const std::vector<int8_t> &ports_) : ports(ports_) {
 	for (int8_t port : ports) {
-		pros::Motor *tmp = new pros::Motor(port);
+		MKV5::CustomMotor tmp = MKV5::CustomMotor (port);
 		group.emplace_back(tmp);
 	}
 }

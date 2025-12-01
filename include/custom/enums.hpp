@@ -63,9 +63,9 @@ namespace MKV5
         double velocity = 0;
 
     public:
-        pros::Motor *motor;
+        pros::Motor motor;
         Enums::WheelType *wheel = nullptr;
-        CustomMotor(std::variant<int, pros::Motor*> prt);
+        CustomMotor(int prt);
 
         /*Get functions*/
 

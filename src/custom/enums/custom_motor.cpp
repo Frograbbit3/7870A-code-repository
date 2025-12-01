@@ -5,26 +5,21 @@ namespace MKV5
 {
 
     // constructor
-    CustomMotor::CustomMotor(std::variant<int, pros::Motor*> prt)
+    CustomMotor::CustomMotor(int prt): motor(pros::Motor(prt))
     {
-        if (std::holds_alternative<int>(prt)) {
-            motor = new pros::Motor(std::get<int>(prt));
-        }else if (std::holds_alternative<pros::Motor*>(prt)){
-            motor = std::get<pros::Motor*>(prt);
-        }
-        motor->set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
-        motor->set_gearing(pros::E_MOTOR_GEAR_200);
+        motor.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+        motor.set_gearing(pros::E_MOTOR_GEAR_200);
     }
 
     // getters
     pros::MotorBrake CustomMotor::getBrakeMode()
     {
-        return motor->get_brake_mode();
+        return motor.get_brake_mode();
     }
 
     pros::MotorEncoderUnits CustomMotor::getEncoding()
     {
-        return motor->get_encoder_units();
+        return motor.get_encoder_units();
     }
 
     Enums::WheelType CustomMotor::getWheelType()
@@ -36,37 +31,37 @@ namespace MKV5
 
     bool CustomMotor::getMovement()
     {
-        return abs(motor->get_actual_velocity()) < 1;
+        return abs(motor.get_actual_velocity()) < 1;
     }
 
     int32_t CustomMotor::getPosition()
     {
-        return motor->get_position();
+        return motor.get_position();
     }
 
     int32_t CustomMotor::getCurrentLimit()
     {
-        return motor->get_current_limit();
+        return motor.get_current_limit();
     }
 
     pros::MotorGears CustomMotor::getGearing()
     {
-        return motor->get_gearing();
+        return motor.get_gearing();
     }
 
     int8_t CustomMotor::getPort()
     {
-        return motor->get_port();
+        return motor.get_port();
     }
 
     int32_t CustomMotor::getVoltageLimit()
     {
-        return motor->get_voltage_limit();
+        return motor.get_voltage_limit();
     }
 
     bool CustomMotor::getReversed()
     {
-        return motor->is_reversed();
+        return motor.is_reversed();
     }
 
     double CustomMotor::getVelocity(Enums::VelocityUnit unit)
@@ -88,33 +83,33 @@ namespace MKV5
 
     double CustomMotor::getTargetPosition()
     {
-        return motor->get_target_position();
+        return motor.get_target_position();
     }
 
     // setters
     void CustomMotor::setBrakeMode(pros::MotorBrake brake)
     {
-        motor->set_brake_mode(brake);
+        motor.set_brake_mode(brake);
     }
 
     void CustomMotor::setCurrentLimit(int32_t current)
     {
-        motor->set_current_limit(current);
+        motor.set_current_limit(current);
     }
 
     void CustomMotor::setVoltageLimit(int32_t voltage)
     {
-        motor->set_voltage_limit(voltage);
+        motor.set_voltage_limit(voltage);
     }
 
     void CustomMotor::setGearing(pros::MotorGears gears)
     {
-        motor->set_gearing(gears);
+        motor.set_gearing(gears);
     }
 
     void CustomMotor::setReversed(bool reversed)
     {
-        motor->set_reversed(reversed);
+        motor.set_reversed(reversed);
     }
 
     void CustomMotor::setWheelType(Enums::WheelType whl)
@@ -125,9 +120,9 @@ namespace MKV5
     void CustomMotor::setZero(std::optional<double> position)
     {
         if (position.has_value())
-            motor->set_zero_position(position.value());
+            motor.set_zero_position(position.value());
         else
-            motor->tare_position();
+            motor.tare_position();
     }
 
     void CustomMotor::setVelocity(float vel, Enums::VelocityUnit unit)
@@ -153,7 +148,7 @@ namespace MKV5
 
     void CustomMotor::setEncoding(pros::MotorEncoderUnits unit)
     {
-        motor->set_encoder_units(unit);
+        motor.set_encoder_units(unit);
     }
 
     // movement
@@ -166,7 +161,7 @@ namespace MKV5
                           ? *voltage * mult
                           : velocity * mult;
 
-        motor->move(out);
+        motor.move(out);
     }
 
     void CustomMotor::moveAbsolute(Enums::Direction direction, double position,
@@ -179,7 +174,7 @@ namespace MKV5
                           ? (*voltage) * mult
                           : velocity * mult;
 
-        motor->move_absolute(position, out);
+        motor.move_absolute(position, out);
     }
 
     void CustomMotor::moveRelative(Enums::Direction direction, double position,
@@ -192,19 +187,19 @@ namespace MKV5
                           ? (*voltage) * mult
                           : velocity * mult;
 
-        motor->move_relative(position, out);
+        motor.move_relative(position, out);
     }
 
     void CustomMotor::brake()
     {
-        motor->brake();
+        motor.brake();
     }
 
     // misc
     void CustomMotor::calibrate()
     {
-        motor->move_voltage(0);
-        motor->set_zero_position(0);
+        motor.move_voltage(0);
+        motor.set_zero_position(0);
     }
 
 } // namespace DrivetrainEnums
