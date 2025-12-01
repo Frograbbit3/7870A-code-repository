@@ -74,34 +74,42 @@ $(function() {
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="autotoc_md0"></a></p>
 <h2><a class="anchor" id="autotoc_md1"></a>
-Current Version: 1.0</h2>
+Current Version: 2.0</h2>
 <p>Welcome to my team's robotics code! This is a generalized system mainly designed for my (moakdoge) projects, not for public use. I will attempt to document it, but it will suck. Do not use this, especially not in the current state.</p>
 <h1><a class="anchor" id="autotoc_md2"></a>
-Features (As of October 23, 2025):</h1>
-<ul>
-<li>A custom drivetrain class with very experimental anti-drift system and supports any amount of motors</li>
-<li>A controller system which can take in a drivetrain supporting two modes (Currently Tank Drive and Arcade Drive)<ul>
-<li>A macro keybinding system to allow you to keybind events such as intake/outtake systems to a list of buttons (like A, B, and Left Arrow at the same time)</li>
-<li>An abstracted UI system for simple UI rendering</li>
-<li>A file embedding system allowing you to embed and read files directly in the code</li>
+Features (As of November 17, 2025):</h1>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Drivetrain</h2>
+<div class="fragment"><div class="line"><span class="comment">//Left side, right side, track width (inches). Optional gyro as the 4th argument.</span></div>
+<div class="line">DrivetrainLib drivetrain({1,2,3}, {4,5,6}, 320.0f);</div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">  <span class="comment">//DIST_INCHES &amp; DIST_MM;</span></div>
+<div class="line">  drivetrain.driveDistance(32.0f, DIST_INCHES);</div>
+<div class="line">  drivetrain.driveDistance(1000.0f, DIST_MM);</div>
+<div class="line">  <span class="comment">//Rotates to a heading.</span></div>
+<div class="line">  drivetrain.rotateTo(90.0f);</div>
+<div class="line">}</div>
+</div><!-- fragment --><ul>
+<li>A custom drivetrain class with a VERY simple API. Maybe even too simple.</li>
+<li>Internally handles any anti drift, wheel sizes (defaults to 3.25in), and distance calculations.</li>
 </ul>
-</li>
+<h2><a class="anchor" id="autotoc_md4"></a>
+Controller</h2>
+<div class="fragment"><div class="line">pros::Controller master(pros::E_CONTROLLER_MASTER);</div>
+<div class="line">pros::Imu gyro(11);</div>
+<div class="line">DrivetrainLib::Drivetrain drivetrain({-3,-21, -20}, {5, 9,10}, 32.0f, &amp;gyro);</div>
+<div class="line">ControllerLib::EmulatedController control(&amp;master);</div>
+<div class="line">ControllerLib::ControlScheme mainControl(ARCADE_DRIVE, drivetrain, control);</div>
+</div><!-- fragment --><ul>
+<li>A custom created abstracted controller with basic macroing support (<code>.SetButton, .SetStick</code>)</li>
+<li>A ControlScheme which is premade controller inputs and supports hot swapping (with code)</li>
 </ul>
 <blockquote class="doxtable">
 <p>&zwj;This project is <b>NOT</b> designed to be used by others! I'm publishing this purely to release my code to my team easier. Maybe soon I'll properly document this project. </p>
 </blockquote>
-<h1><a class="anchor" id="autotoc_md3"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Changelog</h1>
-<p>1.0 - October 23, 2025; Release</p>
-<h1><a class="anchor" id="autotoc_md4"></a>
-Roadmap</h1>
-<ul>
-<li>Improve macro system to support more complex macros</li>
-<li>Add system to create custom controller input macros</li>
-<li>Improve accuracy of anti-drift</li>
-<li>Add better documentation</li>
-<li>Improve UILib </li>
-</ul>
+<p>1.0 - October 23, 2025; Release 2.0 - November 17, 2025; Complete code rewrite. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

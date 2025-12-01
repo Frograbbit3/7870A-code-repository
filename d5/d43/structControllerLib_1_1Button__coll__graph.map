@@ -1,8 +1,0 @@
-<map id="ControllerLib::Button" name="ControllerLib::Button">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,161,31"/>
-<area shape="rect" id="Node000002" href="$d3/d5f/classControllerLib_1_1EmulatedController.html" title=" " alt="" coords="36,240,275,265"/>
-<area shape="poly" id="edge2_Node000002_Node000001" title=" " alt="" coords="77,44,68,80,62,125,65,172,71,194,82,214,94,228,111,238,108,242,91,232,77,218,66,196,60,173,57,125,63,79,72,43"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="154,226,155,191,151,147,142,100,124,56,114,43,101,33,104,29,117,39,128,53,147,98,156,146,160,191,160,226"/>
-<area shape="rect" id="Node000003" href="$d4/d66/structControllerLib_1_1Joystick.html" title=" " alt="" coords="185,5,349,31"/>
-<area shape="poly" id="edge3_Node000002_Node000003" title=" " alt="" coords="268,45,263,81,253,126,236,174,211,218,197,232,181,242,178,238,194,227,207,214,231,171,247,125,258,80,263,44"/>
-</map>

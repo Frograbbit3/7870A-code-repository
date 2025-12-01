@@ -1,0 +1,8 @@
+<map id="MKV5::EmulatedController" name="MKV5::EmulatedController">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,123,200,148"/>
+<area shape="rect" id="Node000002" href="$d2/de6/structMKV5_1_1ControllerInputs_1_1Button.html" title=" " alt="" coords="17,357,189,397"/>
+<area shape="poly" id="edge2_Node000002_Node000001" title=" " alt="" coords="74,158,62,173,46,216,41,252,47,289,62,332,80,356,75,359,58,335,42,290,36,252,41,215,58,171,69,155"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,343,109,333,116,253,109,172,104,149,109,148,115,172,121,253,115,334,113,344"/>
+<area shape="rect" id="Node000003" href="$d1/db5/structMKV5_1_1ControllerInputs_1_1Joystick.html" title=" " alt="" coords="17,5,189,45"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="105,59,105,122,100,122,100,59"/>
+</map>

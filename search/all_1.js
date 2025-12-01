@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['1_200_0',['Current Version: 1.0',['../d0/d30/md_README.html#autotoc_md1',1,'']]]
+  ['17_202025_20_3a_0',['Features (As of November 17, 2025):',['../d0/d30/md_README.html#autotoc_md2',1,'']]]
 ];
