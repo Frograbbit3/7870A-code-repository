@@ -6,11 +6,10 @@
 #include "pros/motors.hpp"
 
 //players
-pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Imu gyro(11);
 MKV5::Drivetrain drivetrain({-3,-21, -20}, {5, 9,10}, 12.75f, &gyro);
 
-MKV5::EmulatedController control(&master);
+MKV5::EmulatedController control(pros::E_CONTROLLER_MASTER);
 MKV5::ControlScheme mainControl(ARCADE_DRIVE, drivetrain, control);
 MKV5::CustomMotor flywheel(4);
 MKV5::CustomMotor secondFlywheel(8);

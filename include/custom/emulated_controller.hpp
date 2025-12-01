@@ -105,8 +105,9 @@ struct ControlBinding {
 } // namespace ControllerInputs
 class EmulatedController {
       private:
-	pros::Controller *controller;
+	pros::Controller controller;
 	std::vector<ControllerInputs::Button *> btns;
+	pros::Controller resolveController(const std::variant<pros::controller_id_e_t,int,pros::Controller> &ctrl);
 
       public:
 	struct {
@@ -134,7 +135,7 @@ class EmulatedController {
 	bool enabled = true;
 	bool connected = false;
 
-	EmulatedController(pros::Controller *ctrl);
+	EmulatedController(std::variant<pros::controller_id_e_t,int,pros::Controller> ctrl);
 	/*
 	    Vibrates a controller based off a pattern.
 	    WARNING! Buggy & limited.
