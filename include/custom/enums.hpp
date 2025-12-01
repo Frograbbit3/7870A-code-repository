@@ -2,6 +2,7 @@
 #include "api.h"
 #include "pros/motors.h"
 #include <iostream>
+#include <variant>
 #include "mathlib.h"
 inline double INCH_TO_MM(double inch) { return 25.4 * inch; }
 inline double MM_TO_INCH(double mm) { return mm / 25.4; }
@@ -64,7 +65,7 @@ namespace MKV5
     public:
         pros::Motor *motor;
         Enums::WheelType *wheel = nullptr;
-        CustomMotor(pros::Motor *mtr);
+        CustomMotor(std::variant<int, pros::Motor*> prt);
 
         /*Get functions*/
 

@@ -1,10 +1,17 @@
 #include "custom/enums.hpp"
+#include "pros/motors.hpp"
+#include <variant>
 namespace MKV5
 {
 
     // constructor
-    CustomMotor::CustomMotor(pros::Motor *mtr) : motor(mtr)
+    CustomMotor::CustomMotor(std::variant<int, pros::Motor*> prt)
     {
+        if (std::holds_alternative<int>(prt)) {
+            motor = new pros::Motor(std::get<int>(prt));
+        }else if (std::holds_alternative<pros::Motor*>(prt)){
+            motor = std::get<pros::Motor*>(prt);
+        }
         motor->set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
         motor->set_gearing(pros::E_MOTOR_GEAR_200);
     }

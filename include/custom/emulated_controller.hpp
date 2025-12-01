@@ -6,7 +6,7 @@
 #include <math.h>
 #include <vector>
 #include "config.h"
-
+#include "piston.hpp"
 namespace MKV5 {
 
 class EmulatedController;
@@ -90,7 +90,7 @@ struct Button {
 	void OnButtonRelease(const std::function<void()> &func);
 };
 struct ControlBinding {
-    std::variant<MKV5::CustomMotor*, MKV5::MotorGroup*> motor;
+    std::variant<MKV5::CustomMotor*, MKV5::MotorGroup*, MKV5::Piston*> motor;
 
     std::variant<
         MKV5::ControllerInputs::Button*,

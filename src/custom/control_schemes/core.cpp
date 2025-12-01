@@ -1,8 +1,10 @@
 #include "custom/controls.hpp"
+#include "custom/emulated_controller.hpp"
 #include "custom/enums.hpp"
 #include "pros/screen.h"
 #include "pros/screen.hpp"
 #include <string>
+#include <variant>
 
 namespace MKV5 {
 ControlScheme::ControlScheme(Enums::ControllerDriveTypes typ,
@@ -31,109 +33,131 @@ void ControlScheme::_updateAccumulators() {
 	}
 }
 void ControlScheme::registerMotor(ControllerInputs::ControlBinding &binding) {
-	    bindings.push_back(binding);
+	bindings.push_back(binding);
 }
 void ControlScheme::processBindings() {
-    for (auto &binding : bindings) {
+	for (auto &binding : bindings) {
 
-        // Determine motor target
-        MKV5::CustomMotor* m = nullptr;
-        MotorGroup* mg = nullptr;
+		// Determine motor target
+		MKV5::CustomMotor *m = nullptr;
+		MotorGroup *mg = nullptr;
+		MKV5::Piston *v = nullptr;
+        std::function<void(int)> startForward;
+        std::function<void(int)> startReverse;
+        std::function<void()> stopMotor;
+		if (std::holds_alternative<MKV5::CustomMotor *>(
+		        binding.motor)) {
+			m = std::get<MKV5::CustomMotor *>(binding.motor);
 
-        if (std::holds_alternative<MKV5::CustomMotor*>(binding.motor))
-            m = std::get<MKV5::CustomMotor*>(binding.motor);
-        else
-            mg = std::get<MotorGroup*>(binding.motor);
+			auto startForward = [&](int speed) {
+				m->setVelocity(speed);
+				m->move(Enums::Direction::FORWARD);
+			};
 
-        // Helper lambdas so logic is clean
-        auto startForward = [&](int speed){
-            if (m) {
-                m->setVelocity(speed);
-                m->move(Enums::Direction::FORWARD);
-            } else {
-                mg->setVelocity(speed);
-                mg->startMove(Enums::Direction::FORWARD);
-            }
-        };
+			auto startReverse = [&](int speed) {
+				m->setVelocity(speed);
+				m->move(Enums::Direction::REVERSE);
+			};
+			auto stopMotor = [&]() {
+				m->move(Enums::Direction::STOP);
+			};
+		}
 
-        auto startReverse = [&](int speed){
-            if (m) {
-                m->setVelocity(speed);
-                m->move(Enums::Direction::REVERSE);
-            } else {
-                mg->setVelocity(speed);
-                mg->startMove(Enums::Direction::REVERSE);
-            }
-        };
+		else if (std::holds_alternative<MKV5::Piston *>(
+		             binding.motor)) {
+			v = std::get<MKV5::Piston *>(binding.motor);
 
-        auto stopMotor = [&](){
-            if (m) {
-                m->move(Enums::Direction::STOP);
-            } else {
-                mg->startMove(Enums::Direction::STOP);
-            }
-        };
+			auto startForward = [&](int speed) { v->setState(true); };
 
-        // ----------------------
-        // SINGLE BUTTON BINDING
-        // ----------------------
+			auto startReverse = [&](int speed) { v->setState(false); };
+			auto stopMotor = [&]() { v->setState(false); };
+		} else {
+			mg = std::get<MotorGroup *>(binding.motor);
+			// Helper lambdas so logic is clean
+			auto startForward = [&](int speed) {
+				mg->setVelocity(speed);
+				mg->startMove(Enums::Direction::FORWARD);
+			};
 
-        if (std::holds_alternative<ControllerInputs::Button*>(binding.buttons)) {
-            auto* btn = std::get<ControllerInputs::Button*>(binding.buttons);
+			auto startReverse = [&](int speed) {
+				mg->setVelocity(speed);
+				mg->startMove(Enums::Direction::REVERSE);
+			};
 
-            if (btn->pressed) {
-                if (binding.toggle) {
-                    // Toggle activates ONLY on rising edge
-                    if (!binding._toggleState) {
-                        binding._toggleState = true;
+			auto stopMotor = [&]() {
+				mg->startMove(Enums::Direction::STOP);
+			};
+		}
 
-                        // If motor currently moving → stop
-                        if (m) {
-                            stopMotor();
-                        } else if (mg) {
-                            stopMotor();
-                        } 
-                        // Otherwise → start forward
-                        else {
-                            startForward(binding.speed);
-                        }
-                    }
-                } else {
-                    // Non-toggle (hold-to-drive)
-                    startForward(binding.speed);
-                }
-            }
-            else {
-                // Button released
-                if (!binding.toggle) {
-                    stopMotor();
-                }
-                binding._toggleState = false; // reset rising-edge latch
-            }
-        }
+		// ----------------------
+		// SINGLE BUTTON BINDING
+		// ----------------------
 
-        // ----------------------
-        // TWO BUTTON BINDING
-        // ----------------------
+		if (std::holds_alternative<ControllerInputs::Button *>(
+		        binding.buttons)) {
+			auto *btn = std::get<ControllerInputs::Button *>(
+			    binding.buttons);
 
-        else if (std::holds_alternative<std::pair<ControllerInputs::Button*,ControllerInputs::Button*>>(binding.buttons)) {
-            auto& pair = std::get<std::pair<ControllerInputs::Button*,ControllerInputs::Button*>>(binding.buttons);
+			if (btn->pressed) {
+				if (binding.toggle) {
+					// Toggle activates ONLY on rising edge
+					if (!binding._toggleState) {
+						binding._toggleState = true;
 
-            if (pair.first->pressed) {
-                startForward(binding.speed);
-				std::cout <<"first"<<std::endl;
-            } 
-            if (pair.second->pressed) {
-				std::cout<<"second"<<std::endl;
-                startReverse(binding.speed);
-            } 
+						// If motor currently moving →
+						// stop
+						if (m) {
+							stopMotor();
+						} else if (mg) {
+							stopMotor();
+						}
+						// Otherwise → start forward
+						else {
+							startForward(
+							    binding.speed);
+						}
+					}
+				} else {
+					// Non-toggle (hold-to-drive)
+					startForward(binding.speed);
+				}
+			} else {
+				// Button released
+				if (!binding.toggle) {
+					stopMotor();
+				}
+				binding._toggleState =
+				    false; // reset rising-edge latch
+			}
+		}
+
+		// ----------------------
+		// TWO BUTTON BINDING
+		// ----------------------
+
+		else if (std::holds_alternative<
+		             std::pair<ControllerInputs::Button *,
+		                       ControllerInputs::Button *>>(
+		             binding.buttons)) {
+			auto &pair =
+			    std::get<std::pair<ControllerInputs::Button *,
+			                       ControllerInputs::Button *>>(
+			        binding.buttons);
+
+			if (pair.first->pressed) {
+				startForward(binding.speed);
+				std::cout << "first" << std::endl;
+			}
+			if (pair.second->pressed) {
+				std::cout << "second" << std::endl;
+				startReverse(binding.speed);
+			}
 			if (!pair.second->pressed && !pair.first->pressed) {
 				stopMotor();
 			}
-        }
-    }
+		}
+	}
 }
-
 
 void ControlScheme::doControllerInputs() {
 	switch (configuration.CONTROL_SCHEME) {

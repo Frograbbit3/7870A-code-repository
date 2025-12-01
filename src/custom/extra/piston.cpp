@@ -1,0 +1,16 @@
+#include "custom/piston.hpp"
+#include "pros/adi.h"
+#include "pros/ext_adi.h"
+namespace MKV5 {
+Piston::Piston(int prt, bool start) : port(prt), state(start) {pros::c::ext_adi_digital_write(NULL,port, start);};
+bool Piston::getState() { return state; }
+bool Piston::toggleState() {
+	state = !state;
+	pros::c::adi_digital_write(port, state);
+	return state;
+}
+void Piston::setState(bool s) {
+	state = s;
+	pros::c::adi_digital_write(port, state);
+};
+} // namespace MKV5

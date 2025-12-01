@@ -12,10 +12,8 @@ MKV5::Drivetrain drivetrain({-3,-21, -20}, {5, 9,10}, 12.75f, &gyro);
 
 MKV5::EmulatedController control(&master);
 MKV5::ControlScheme mainControl(ARCADE_DRIVE, drivetrain, control);
-pros::Motor f(4);
-pros::Motor s(8);
-MKV5::CustomMotor flywheel(&f);
-MKV5::CustomMotor secondFlywheel(&s);
+MKV5::CustomMotor flywheel(4);
+MKV5::CustomMotor secondFlywheel(8);
 
 
 void initialize() {
