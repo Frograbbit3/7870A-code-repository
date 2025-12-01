@@ -14,7 +14,7 @@ void MotorGroup::setVelocity(int vel) {
 	}
 }
 
-void MotorGroup::startMove(Enums::Direction &dir) {
+void MotorGroup::startMove(Enums::Direction dir) {
 	for (CustomMotor &mtr : group) {
 		switch (dir) {
 		case DRIVE_FORWARD:

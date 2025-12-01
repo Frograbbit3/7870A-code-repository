@@ -90,14 +90,18 @@ struct Button {
 	void OnButtonRelease(const std::function<void()> &func);
 };
 struct ControlBinding {
-	std::variant<MKV5::CustomMotor *, MKV5::MotorGroup *> motor;
-	std::variant<std::pair<MKV5::ControllerInputs::Button,
-	                       MKV5::ControllerInputs::Button>,
-	             MKV5::ControllerInputs::Button>
-	    buttons;
-	int speed = 127;
-	bool toggle = false;
+    std::variant<MKV5::CustomMotor*, MKV5::MotorGroup*> motor;
+
+    std::variant<
+        MKV5::ControllerInputs::Button*,
+        std::pair<MKV5::ControllerInputs::Button*, MKV5::ControllerInputs::Button*>
+    > buttons;
+
+    int speed = 127;
+    bool toggle = false;
+    bool _toggleState = false;
 };
+
 } // namespace ControllerInputs
 class EmulatedController {
       private:

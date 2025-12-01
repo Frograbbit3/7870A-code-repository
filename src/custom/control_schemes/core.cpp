@@ -1,4 +1,5 @@
 #include "custom/controls.hpp"
+#include "custom/enums.hpp"
 #include "pros/screen.h"
 #include "pros/screen.hpp"
 #include <string>
@@ -29,65 +30,111 @@ void ControlScheme::_updateAccumulators() {
 		quickStopAccumlator = 0.0;
 	}
 }
-void ControlScheme::registerMotor(ControllerInputs::ControlBinding binding) {
-	if (std::holds_alternative<MKV5::CustomMotor *>(binding.motor)) {
-		auto m = std::get<MKV5::CustomMotor *>(binding.motor);
-		if (std::holds_alternative<ControllerInputs::Button>(
-		        binding.buttons)) {
-			auto &btns =
-			    std::get<ControllerInputs::Button>(binding.buttons);
-			// we have a single button
-			if (binding.toggle) {
-				auto onpress = [m, binding]() {
-					if (m->getMovement()) {
-						m->move(DRIVE_STOP);
-					} else {
-						m->move(DRIVE_FORWARD,
-						        binding.speed);
-					}
-				};
-				btns.OnButtonPress(onpress);
-			} else {
-				auto onpress = [m, binding]() {
-					m->move(DRIVE_FORWARD, binding.speed);
-				};
-				auto onrelease = [m, binding]() {
-					m->move(DRIVE_STOP, binding.speed);
-				};
-				btns.OnButtonPress(onpress);
-				btns.OnButtonRelease(onrelease);
-			}
-		} else {
-			if (std::holds_alternative<
-			        std::pair<ControllerInputs::Button,
-			                  ControllerInputs::Button>>(
-			        binding.buttons)) {
-				auto &btns = std::get<
-				    std::pair<ControllerInputs::Button,
-				              ControllerInputs::Button>>(
-				    binding.buttons);
-				// we have two buttons
-				// toggle doesnt work on this so
-				auto onforwardpress = [m, binding]() {
-					m->move(DRIVE_FORWARD, binding.speed);
-				};
-				auto onbackwardspress = [m, binding]() {
-					m->move(DRIVE_REVERSE, binding.speed);
-				};
-				auto onrelease = [m, binding]() {
-					m->move(DRIVE_STOP, binding.speed);
-				};
-				btns.first.OnButtonPress(onforwardpress);
-				btns.second.OnButtonPress(onbackwardspress);
-				btns.first.OnButtonRelease(onrelease);
-				btns.second.OnButtonRelease(onrelease);
-			}
-		}
-	} else {
-		auto &mg = std::get<MotorGroup *>(binding.motor);
-		// use mg
-	}
+void ControlScheme::registerMotor(ControllerInputs::ControlBinding &binding) {
+	    bindings.push_back(binding);
 }
+void ControlScheme::processBindings() {
+    for (auto &binding : bindings) {
+
+        // Determine motor target
+        MKV5::CustomMotor* m = nullptr;
+        MotorGroup* mg = nullptr;
+
+        if (std::holds_alternative<MKV5::CustomMotor*>(binding.motor))
+            m = std::get<MKV5::CustomMotor*>(binding.motor);
+        else
+            mg = std::get<MotorGroup*>(binding.motor);
+
+        // Helper lambdas so logic is clean
+        auto startForward = [&](int speed){
+            if (m) {
+                m->setVelocity(speed);
+                m->move(Enums::Direction::FORWARD);
+            } else {
+                mg->setVelocity(speed);
+                mg->startMove(Enums::Direction::FORWARD);
+            }
+        };
+
+        auto startReverse = [&](int speed){
+            if (m) {
+                m->setVelocity(speed);
+                m->move(Enums::Direction::REVERSE);
+            } else {
+                mg->setVelocity(speed);
+                mg->startMove(Enums::Direction::REVERSE);
+            }
+        };
+
+        auto stopMotor = [&](){
+            if (m) {
+                m->move(Enums::Direction::STOP);
+            } else {
+                mg->startMove(Enums::Direction::STOP);
+            }
+        };
+
+        // ----------------------
+        // SINGLE BUTTON BINDING
+        // ----------------------
+
+        if (std::holds_alternative<ControllerInputs::Button*>(binding.buttons)) {
+            auto* btn = std::get<ControllerInputs::Button*>(binding.buttons);
+
+            if (btn->pressed) {
+                if (binding.toggle) {
+                    // Toggle activates ONLY on rising edge
+                    if (!binding._toggleState) {
+                        binding._toggleState = true;
+
+                        // If motor currently moving → stop
+                        if (m) {
+                            stopMotor();
+                        } else if (mg) {
+                            stopMotor();
+                        } 
+                        // Otherwise → start forward
+                        else {
+                            startForward(binding.speed);
+                        }
+                    }
+                } else {
+                    // Non-toggle (hold-to-drive)
+                    startForward(binding.speed);
+                }
+            }
+            else {
+                // Button released
+                if (!binding.toggle) {
+                    stopMotor();
+                }
+                binding._toggleState = false; // reset rising-edge latch
+            }
+        }
+
+        // ----------------------
+        // TWO BUTTON BINDING
+        // ----------------------
+
+        else if (std::holds_alternative<std::pair<ControllerInputs::Button*,ControllerInputs::Button*>>(binding.buttons)) {
+            auto& pair = std::get<std::pair<ControllerInputs::Button*,ControllerInputs::Button*>>(binding.buttons);
+
+            if (pair.first->pressed) {
+                startForward(binding.speed);
+				std::cout <<"first"<<std::endl;
+            } 
+            if (pair.second->pressed) {
+				std::cout<<"second"<<std::endl;
+                startReverse(binding.speed);
+            } 
+			if (!pair.second->pressed && !pair.first->pressed) {
+				stopMotor();
+			}
+        }
+    }
+}
+
+
 void ControlScheme::doControllerInputs() {
 	switch (configuration.CONTROL_SCHEME) {
 
@@ -138,14 +185,8 @@ void ControlScheme::doControllerInputs() {
 void ControlScheme::update() {
 	controller.update(); // For the EmulatedController
 	// Read joystick raw values through the pointer members and apply curve
-
+	processBindings();
 	doControllerInputs();
-	if (fr % 120 == 0) {
-		std::cout << LeftJoystick->X << "," << LeftJoystickX << std::endl;
-		pros::screen::erase();
-		pros::screen::print(pros::E_TEXT_LARGE_CENTER, 0,
-		                    std::to_string(leftVelocity).c_str());
-	}
 	if (fabs(leftVelocity) > 0 || fabs(rightVelocity) > 0) {
 		leftVelocity =
 		    minmax(static_cast<int>(leftVelocity), -127, 127);

@@ -17,9 +17,6 @@ void autonomous() {
 }
 
 void opcontrol() {
-	while (true) {
-		mainControl.update();
-		pros::delay(20);
-	}
+    controllerTick();
 
 }

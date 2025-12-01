@@ -7,6 +7,7 @@ namespace MKV5 {
 class ControlScheme {
       public:
 	MKV5::ControllerSettings configuration;
+	std::vector<ControllerInputs::ControlBinding> bindings;
 
       private:
 	int current_action;
@@ -47,12 +48,13 @@ class ControlScheme {
 	    Creates a binding for a motor. Useful for keybinding to a button.
 	    @param binding a ControlBinding
 	*/
-	void registerMotor(ControllerInputs::ControlBinding binding);
+	void registerMotor(ControllerInputs::ControlBinding &binding);
 
       public:
 	/*
 	    Processes controls. This is what you want to call.
 	*/
 	void update();
+	void processBindings();
 };
 } // namespace MKV5
