@@ -1,8 +1,6 @@
 #include "custom/controls.hpp"
 #include "custom/emulated_controller.hpp"
 #include "custom/enums.hpp"
-#include "pros/screen.h"
-#include "pros/screen.hpp"
 #include <string>
 #include <variant>
 
@@ -209,7 +207,6 @@ void ControlScheme::doControllerInputs() {
 void ControlScheme::update() {
 	controller.update(); // For the EmulatedController
 	// Read joystick raw values through the pointer members and apply curve
-	processBindings();
 	doControllerInputs();
 	if (fabs(leftVelocity) > 0 || fabs(rightVelocity) > 0) {
 		leftVelocity =

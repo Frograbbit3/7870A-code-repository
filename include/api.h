@@ -74,7 +74,6 @@
 #include "pros/optical.hpp"
 #include "pros/rotation.hpp"
 #include "pros/rtos.hpp"
-#include "pros/screen.hpp"
 #include "pros/vision.hpp"
 
 #endif

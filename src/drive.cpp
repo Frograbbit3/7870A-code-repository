@@ -1,7 +1,11 @@
+#include "custom/enums.hpp"
 #include "main.h"
 #include "init.hpp"
 #include "pros/misc.h"
 #include "pros/misc.hpp"
+#include "pros/rtos.hpp"
+#include "pros/screen.hpp"
+#include <cmath>
 #include <cstring>
 void drawLogo() {
     static const char* imageColors[] = {
@@ -47,10 +51,38 @@ void drawLogo() {
         }
     }
 }
+bool tank_mode = false;
 void controllerTick() {
+   // mainControl.processBindings();
 	while (true) {
+        drawLogo();
+        continue;
 		mainControl.update();
-			drawLogo();
+        if (control.buttons.L1.pressed || control.buttons.L2.pressed) {
+            flywheel.setVelocity((control.buttons.L2.pressed-control.buttons.L1.pressed) * 127);
+            flywheel.move(MKV5::Enums::Direction::FORWARD);
+        }else{
+            flywheel.move(MKV5::Enums::Direction::STOP);
+        }
+        if (control.buttons.R1.pressed || control.buttons.R2.pressed) {
+            secondFlywheel.setVelocity((control.buttons.R2.pressed-control.buttons.R1.pressed) * 127);
+            secondFlywheel.move(MKV5::Enums::Direction::FORWARD);
+        }else{
+            secondFlywheel.move(MKV5::Enums::Direction::STOP);
+        }
+        matchLoader.setState(control.buttons.A.pressed);
+        if (control.buttons.B.pressed) {
+            tank_mode = !tank_mode;
+            while (control.buttons.B.pressed) {
+                mainControl.update();
+                pros::delay(20);
+            }
+        }
+        if (tank_mode) {
+            mainControl.configuration.CONTROL_SCHEME = TANK_DRIVE;
+        } else {
+            mainControl.configuration.CONTROL_SCHEME = CHEESE_DRIVE;
+        }
 		pros::delay(10);
 	}
 }

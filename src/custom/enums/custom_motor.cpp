@@ -1,4 +1,5 @@
 #include "custom/enums.hpp"
+#include "pros/abstract_motor.hpp"
 #include "pros/motors.hpp"
 #include <variant>
 namespace MKV5
@@ -9,6 +10,7 @@ namespace MKV5
     {
         motor.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
         motor.set_gearing(pros::E_MOTOR_GEAR_200);
+        motor.set_brake_mode(pros::MotorBrake::coast);
     }
 
     // getters

@@ -12,6 +12,7 @@ extern MKV5::ControlScheme mainControl;
 extern MKV5::CustomMotor flywheel;
 extern MKV5::CustomMotor secondFlywheel;
 extern pros::Imu gyro;
+extern MKV5::Piston matchLoader;
 
 
 #ifdef USE_EASY_MOVEMENT

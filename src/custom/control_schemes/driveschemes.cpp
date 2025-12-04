@@ -1,4 +1,5 @@
 #include "custom/controls.hpp"
+#include "custom/mathlib.h"
 namespace MKV5 {
 
     void ControlScheme::tankDrive()
@@ -27,8 +28,8 @@ namespace MKV5 {
     };
     void ControlScheme::cheeseDrive()
     {
-        double ithrottle = (LeftJoystick->Y * configuration.maxForwardSpeed) / 127.0;
-        double iturn = (RightJoystick->X * configuration.maxTurnSpeed) / 127.0;
+        double ithrottle = (JoystickCurve(LeftJoystick->Y) * configuration.maxForwardSpeed) / 127.0;
+        double iturn = (JoystickCurve(RightJoystick->X) * configuration.maxTurnSpeed) / -127.0;
         double linearCmd = ithrottle;
         bool turnInPlace = false;
 
