@@ -53,7 +53,7 @@ namespace MKV5
             @param distance A float containing a distance.
             @param dist The unit for the distance.
         */
-        void moveDistance(float distance, MKV5::Enums::Distance dist);
+        void moveDistance(float distance, MKV5::Enums::Distance dist, MKV5::Enums::Direction dir);
 
         /*
             Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity.

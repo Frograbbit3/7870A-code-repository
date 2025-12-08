@@ -8,7 +8,13 @@
 void autonomousTick() {
     pros::c::adi_port_set_config(2, pros::E_ADI_DIGITAL_OUT);
     pros::c::adi_digital_write(2, false);
-    drivetrain->moveDistance(40, MKV5::Enums::Distance::INCHES);
+    flywheel->move(DRIVE_FORWARD, 127);
+    drivetrain->moveDistance(39, MKV5::Enums::Distance::INCHES,DRIVE_FORWARD);
+    drivetrain->rotateTo(100);
+    drivetrain->moveDistance(30, DIST_INCHES,DRIVE_REVERSE);
+    drivetrain->moveDistance(1,DIST_INCHES, DRIVE_FORWARD);
+    secondFlywheel->move(DRIVE_FORWARD, -127);
+
    // drivetrain->setVelocity(100, 100);
     //drivetrain->startDrive(DRIVE_FORWARD);
     

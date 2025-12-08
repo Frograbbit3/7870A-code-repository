@@ -12,7 +12,7 @@ namespace MKV5
     {
         rightMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
     }
-    void Drivetrain::moveDistance(float distance, MKV5::Enums::Distance dist)
+    void Drivetrain::moveDistance(float distance, MKV5::Enums::Distance dist, MKV5::Enums::Direction dir)
     {
         #ifdef DO_DISTANCE_TRACKING
         double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0; // Convert diameter to radius
@@ -47,13 +47,13 @@ namespace MKV5
         double inchesPerSecond = rps * distancePerRotation;
 
         double secondsToDrive=  distance / inchesPerSecond;
-        double maxSpeed =0.3f;
-        secondsToDrive *= 1.18;
+        double maxSpeed =0.25f;
+        secondsToDrive *= 1.18; //approx friction
         secondsToDrive /= maxSpeed;
 
         setVelocity(127*maxSpeed, 127*maxSpeed);
         uint32_t start =pros::millis();
-        startDrive(DRIVE_FORWARD);
+        startDrive(dir);
         std::cout << "STARTING AUTODRIVE WITH LEGNTH OF " << secondsToDrive << std::endl;
         while ((pros::millis() - start) < (secondsToDrive * 1000)) {
             pros::delay(10);
