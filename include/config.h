@@ -14,3 +14,5 @@
 //#define USE_EASY_MOVEMENT
 
 
+// use the cooler movement (aka actual distance tracking)
+//#define DO_DISTANCE_TRACKING

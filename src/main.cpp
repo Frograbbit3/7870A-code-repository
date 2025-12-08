@@ -6,17 +6,18 @@ void autonomousTick();
 void controllerTick();
 
 void disabled() {
-    mainControl.configuration.enabled = false;
+    mainControl->configuration.enabled = false;
 }
 void competition_initialize() {}
 
 void autonomous() {
-    mainControl.configuration.enabled = false;
-    drivetrain.doCalibration();
+
+   // mainControl->configuration.enabled = false;
     autonomousTick();
 }
 
 void opcontrol() {
-    controllerTick();
-
+ //   mainControl->configuration.enabled = true;
+   // controllerTick();
+    autonomousTick();
 }

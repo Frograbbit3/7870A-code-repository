@@ -60,9 +60,9 @@ bool MotorGroup::isMoving() {
 	return false;
 }
 
-void MotorGroup::moveRelative(double angle) {
+void MotorGroup::moveRelative(double angle, int vl) {
 	for (CustomMotor &mtr : group) {
-		mtr.moveRelative(DRIVE_FORWARD, angle);
+		mtr.moveRelative(DRIVE_FORWARD, angle, vl);
 	}
 }
 

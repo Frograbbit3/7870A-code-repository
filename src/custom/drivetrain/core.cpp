@@ -9,13 +9,15 @@ namespace MKV5
     {
         if (imu != nullptr)
         {
-            imu->reset(false);
+            //imu->reset(false);
         }
         leftMotors.doCalibration();
         rightMotors.doCalibration();
+        if (imu != nullptr) {
         while (imu->is_calibrating())
         {
             pros::delay(20);
+        }
         }
     }
 }

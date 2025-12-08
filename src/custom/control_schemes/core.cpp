@@ -177,7 +177,7 @@ void ControlScheme::doControllerInputs() {
 		leftVelocity = static_cast<int>(
 		    LeftJoystick->Y * (configuration.maxForwardSpeed));
 		rightVelocity = static_cast<int>(
-		    RightJoystick->Y * -(configuration.maxForwardSpeed));
+		    RightJoystick->Y * (configuration.maxForwardSpeed));
 		break;
 
 	case MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_GTA: {

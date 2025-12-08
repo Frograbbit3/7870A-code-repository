@@ -123,7 +123,7 @@ namespace MKV5
                           std::optional<int32_t> voltage = std::nullopt);
         /*Moves the motor to an offset based off the current pos. Pass in a voltage if you want to choose the speed.*/
         void moveRelative(Enums::Direction direction, double position,
-                          std::optional<int32_t> voltage = std::nullopt);
+                          int32_t voltage);
         /*Stops the motor.*/
         void brake();
 
@@ -138,7 +138,7 @@ namespace MKV5
     struct ControllerSettings
     {
         Enums::ControllerDriveTypes CONTROL_SCHEME = MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_ARCADE;
-        float maxTurnSpeed = -0.6f;
+        float maxTurnSpeed = -0.8f;
         float maxForwardSpeed = 0.8f;
         bool enabled = true;
         bool useJoystickCurve=false;

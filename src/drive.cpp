@@ -1,6 +1,7 @@
 #include "custom/enums.hpp"
 #include "main.h"
 #include "init.hpp"
+#include "pros/adi.h"
 #include "pros/misc.h"
 #include "pros/misc.hpp"
 #include "pros/rtos.hpp"
@@ -52,37 +53,49 @@ void drawLogo() {
     }
 }
 bool tank_mode = false;
+bool state = false;
 void controllerTick() {
+    int f= 0;
    // mainControl.processBindings();
+    pros::c::adi_port_set_config(2, pros::E_ADI_DIGITAL_OUT);
+    int debounce = 0;
 	while (true) {
-        drawLogo();
-        continue;
-		mainControl.update();
-        if (control.buttons.L1.pressed || control.buttons.L2.pressed) {
-            flywheel.setVelocity((control.buttons.L2.pressed-control.buttons.L1.pressed) * 127);
-            flywheel.move(MKV5::Enums::Direction::FORWARD);
+		mainControl->update();
+        if (control->buttons.L1.pressed || control->buttons.L2.pressed) {
+            flywheel->setVelocity((control->buttons.L2.pressed-control->buttons.L1.pressed) * 127);
+            flywheel->move(MKV5::Enums::Direction::FORWARD);
         }else{
-            flywheel.move(MKV5::Enums::Direction::STOP);
+            flywheel->move(MKV5::Enums::Direction::STOP);
         }
-        if (control.buttons.R1.pressed || control.buttons.R2.pressed) {
-            secondFlywheel.setVelocity((control.buttons.R2.pressed-control.buttons.R1.pressed) * 127);
-            secondFlywheel.move(MKV5::Enums::Direction::FORWARD);
+        if (control->buttons.R1.pressed || control->buttons.R2.pressed) {
+            secondFlywheel->setVelocity((control->buttons.R2.pressed-control->buttons.R1.pressed) * 127);
+            secondFlywheel->move(MKV5::Enums::Direction::FORWARD);
         }else{
-            secondFlywheel.move(MKV5::Enums::Direction::STOP);
+            secondFlywheel->move(MKV5::Enums::Direction::STOP);
         }
-        matchLoader.setState(control.buttons.A.pressed);
-        if (control.buttons.B.pressed) {
+
+        if (control->buttons.A.pressed && debounce < 1) {
+            state = !state;
+            control->vibrate(".");
+            debounce = 90;
+            pros::c::adi_digital_write(2, state);
+        }
+        debounce--;
+
+        if (control->buttons.B.pressed) {
             tank_mode = !tank_mode;
-            while (control.buttons.B.pressed) {
-                mainControl.update();
+            control->vibrate("-");
+            while (control->buttons.B.pressed) {
+                mainControl->update();
                 pros::delay(20);
             }
         }
         if (tank_mode) {
-            mainControl.configuration.CONTROL_SCHEME = TANK_DRIVE;
+            mainControl->configuration.CONTROL_SCHEME = TANK_DRIVE;
         } else {
-            mainControl.configuration.CONTROL_SCHEME = CHEESE_DRIVE;
+            mainControl->configuration.CONTROL_SCHEME = CHEESE_DRIVE;
         }
 		pros::delay(10);
+        f++;
 	}
 }

@@ -27,7 +27,7 @@ namespace MKV5
             Moves the motor `angle` degrees from where it is.
             @param angle The amount of degrees to turn.
         */
-        void moveRelative(double angle);
+        void moveRelative(double angle, int vl);
         /*
             Starts moving indefinately until stopped with `stopMove`.
             @param dir The direction to move.

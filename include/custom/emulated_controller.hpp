@@ -11,6 +11,10 @@ namespace MKV5 {
 
 class EmulatedController;
 namespace ControllerInputs {
+	struct ControllerScreen {
+		void clear();
+		void clear_line(uint8_t line);
+	};
 
 struct Joystick {
 	pros::controller_analog_e_t stickX;

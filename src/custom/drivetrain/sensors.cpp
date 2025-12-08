@@ -40,7 +40,8 @@ namespace MKV5
         if (imu != nullptr)
         {
             double gyroAngle = imu->get_heading();
-            return (headingDegrees + gyroAngle) / 2;
+            
+            return (gyroAngle);
         }
 
         return headingDegrees;

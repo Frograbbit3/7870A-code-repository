@@ -1,38 +1,31 @@
 #include "init.hpp"
 #include "custom/controls.hpp"
+#include "custom/drivetrain.hpp"
 #include "custom/emulated_controller.hpp"
 #include "custom/enums.hpp"
+#include "pros/imu.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
+#include <cstddef>
 #include <utility>
 
 //players
-pros::Imu gyro(11);
-MKV5::Drivetrain drivetrain({-4,-7, -20}, {5, 21,10}, 12.75f, &gyro);
 
-MKV5::EmulatedController control(pros::E_CONTROLLER_MASTER);
-MKV5::ControlScheme mainControl(CHEESE_DRIVE, drivetrain, control);
-MKV5::CustomMotor flywheel(3);
-MKV5::CustomMotor secondFlywheel(2);
-MKV5::Piston matchLoader(1, true);
-
-
+pros::Imu *gyro = nullptr;
+MKV5::Drivetrain* drivetrain = nullptr;
+MKV5::EmulatedController *control = nullptr;
+MKV5::ControlScheme *mainControl = nullptr;
+MKV5::CustomMotor* flywheel;
+MKV5::CustomMotor* secondFlywheel;
+MKV5::Piston* matchLoader;
 void initialize() {
-    MKV5::ControllerInputs::ControlBinding fly{
-        .motor = &flywheel,
-        .buttons = std::pair{
-            &control.buttons.L1,
-            &control.buttons.L2
-        },
-    };//Register the flywheel hooked up to the R1 and L1 buttons
-    MKV5::ControllerInputs::ControlBinding outtake {
-        .motor = &secondFlywheel,
-        .buttons = std::pair{
-            &control.buttons.R1,
-            &control.buttons.R2
-        }
-    };
-    
-    
+    gyro  = new pros::Imu(4);
+    drivetrain  = new MKV5::Drivetrain({-9,-7, -20}, {5, 21,10}, 12.75f, gyro);
+
+    control= new MKV5::EmulatedController(pros::E_CONTROLLER_MASTER);
+    mainControl = new MKV5::ControlScheme (CHEESE_DRIVE, *drivetrain, *control);
+    flywheel = new MKV5::CustomMotor(3);
+    secondFlywheel = new MKV5::CustomMotor(2);
+    matchLoader = new MKV5::Piston(1, true);
 
 }

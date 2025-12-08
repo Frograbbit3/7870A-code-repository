@@ -1,5 +1,7 @@
 #include "custom/drivetrain.hpp"
 #include "config.h"
+#include "custom/enums.hpp"
+#include "pros/rtos.hpp"
 namespace MKV5
 {
     void Drivetrain::setLeftVelocity(int velocity)
@@ -12,6 +14,7 @@ namespace MKV5
     }
     void Drivetrain::moveDistance(float distance, MKV5::Enums::Distance dist)
     {
+        #ifdef DO_DISTANCE_TRACKING
         double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0; // Convert diameter to radius
         double rotations = 0;
         switch (dist)
@@ -28,10 +31,37 @@ namespace MKV5
             break;
         }
 
-        leftMotors.moveRelative(rotations);
-        rightMotors.moveRelative(rotations);
-        antiDrift();
+        rotations*=360.0f;
+        std::cout << "DISTANCE:" << rotations << std::endl;
+        leftMotors.moveRelative(rotations,25);
+        rightMotors.moveRelative(rotations,25);
+        #else
+        //approximate a time value for it
+        double rpm = 450.0f; 
+        double rps = rpm / 60.0f; //7.5 rps
+        double wheelRadius = 1.625f;
+
+        //actual math
+        double distancePerRotation = (2 * M_PI * wheelRadius); // in inches
+        //inches and rps
+        double inchesPerSecond = rps * distancePerRotation;
+
+        double secondsToDrive=  distance / inchesPerSecond;
+        double maxSpeed =0.3f;
+        secondsToDrive *= 1.18;
+        secondsToDrive /= maxSpeed;
+
+        setVelocity(127*maxSpeed, 127*maxSpeed);
+        uint32_t start =pros::millis();
+        startDrive(DRIVE_FORWARD);
+        std::cout << "STARTING AUTODRIVE WITH LEGNTH OF " << secondsToDrive << std::endl;
+        while ((pros::millis() - start) < (secondsToDrive * 1000)) {
+            pros::delay(10);
+        }
+        std::cout << "ENDING AUTODRIVE" << std::endl;
         stopDrive();
+        //TODO: Seconds / per inch
+        #endif
         
     }
     void Drivetrain::setVelocity(int leftVelocity, int rightVelocity)
@@ -43,31 +73,30 @@ namespace MKV5
     {
         double difference = getHeading() - heading;
         Enums::Direction dir;
-        const int MAX_VELOCITY = 127;
-        const int MIN_VELOCITY = 20;
-        const int TIMEOUT = 5000;
+        const int MAX_VELOCITY = 25;
+        const int MIN_VELOCITY = 5;
+        const int TIMEOUT = 50000;
         int elapsedTime = 0;
-
+                    dir = Enums::Direction::FORWARD;
+            leftMotors.startMove(Enums::Direction::FORWARD);
+            rightMotors.startMove(Enums::Direction::REVERSE);
         while (fabs(difference) > ROTATION_OFFSET_LIMIT && elapsedTime < TIMEOUT)
         {
+            
             difference = getHeading() - heading;
-            if (difference < 0)
-            {
-                dir = Enums::Direction::REVERSE;
-            }
-            else
-            {
-                dir = Enums::Direction::FORWARD;
-            }
+            
             double percent = fabs(difference) / 360.0;
             double vel = percent * MAX_VELOCITY;
 
             vel = minmax<double>(vel, MIN_VELOCITY, MAX_VELOCITY);
-            setVelocity(vel, -vel);
-            startDrive(dir);
+            leftMotors.setVelocity(127);
+            rightMotors.setVelocity(127);
 
-            pros::delay(5);
-            elapsedTime += 5;
+            if (elapsedTime % 200 == 0) {
+                std::cout << "heading:" << getHeading() << std::endl;
+            }
+            pros::delay(25);
+            elapsedTime += 25;
         }
         stopDrive();
     }

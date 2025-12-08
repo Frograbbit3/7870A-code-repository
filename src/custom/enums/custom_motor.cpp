@@ -180,16 +180,22 @@ namespace MKV5
     }
 
     void CustomMotor::moveRelative(Enums::Direction direction, double position,
-                                   std::optional<int32_t> voltage)
+                                   int32_t voltage)
     {
-        int8_t mult = (direction == Enums::Direction::FORWARD) ? 1 : (direction == Enums::Direction::REVERSE) ? -1
-                                                                                                : 0;
+        motor.move_relative(position, 50);
+        double target = motor.get_position() + position;
 
-        int32_t out = voltage.has_value()
-                          ? (*voltage) * mult
-                          : velocity * mult;
+        // Block until close enough
+        while (true) {
+            double current = motor.get_position();
+            
+            // Tunable threshold
+            if (fabs(target - current) < 5) {
+                break;
+            }
 
-        motor.move_relative(position, out);
+            pros::delay(10);
+        }
     }
 
     void CustomMotor::brake()

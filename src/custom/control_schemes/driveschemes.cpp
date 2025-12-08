@@ -4,8 +4,8 @@ namespace MKV5 {
 
     void ControlScheme::tankDrive()
     {
-        leftVelocity = static_cast<int>(LeftJoystickY * (configuration.maxForwardSpeed));
-        rightVelocity = static_cast<int>(RightJoystickY * -(configuration.maxForwardSpeed));
+        leftVelocity = static_cast<int>(LeftJoystick->Y * (configuration.maxForwardSpeed));
+        rightVelocity = static_cast<int>(RightJoystick->Y * (configuration.maxForwardSpeed));
     };
     void ControlScheme::arcadeDrive()
     {
