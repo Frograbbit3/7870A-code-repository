@@ -18,6 +18,6 @@ void autonomous() {
 
 void opcontrol() {
  //   mainControl->configuration.enabled = true;
-   // controllerTick();
-    autonomousTick();
+    controllerTick();
+    //autonomousTick();
 }

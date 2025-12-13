@@ -47,7 +47,7 @@ namespace MKV5
         double inchesPerSecond = rps * distancePerRotation;
 
         double secondsToDrive=  distance / inchesPerSecond;
-        double maxSpeed =0.25f;
+        double maxSpeed = 0.25f;
         secondsToDrive *= 1.18; //approx friction
         secondsToDrive /= maxSpeed;
 
