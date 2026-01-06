@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['button_0',['Button',['../d2/de6/structMKV5_1_1ControllerInputs_1_1Button.html',1,'MKV5::ControllerInputs']]]
+  ['angle_0',['Angle',['../d2/dc6/structMKV5_1_1Units_1_1Angle.html',1,'MKV5::Units']]]
 ];
