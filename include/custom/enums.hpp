@@ -19,6 +19,89 @@ inline void print(T m) { std::cout << m << std::endl; }
 #define VELOCITY_VOLTS MKV5::Enums::VelocityUnit::VOLTS
 namespace MKV5
 {
+    namespace Units {
+        struct Distance {
+            double meters;
+
+            // accessors
+            constexpr double m() const {
+                return meters;
+            }
+
+            constexpr double mm() const {
+                return meters * 1000.0;
+            }
+
+            constexpr double inches() const {
+                return meters / 0.0254;
+            }
+        };
+
+        constexpr Distance operator"" _mm(unsigned long long v) {
+            return Distance{ static_cast<double>(v) / 1000.0 };
+        }
+
+        constexpr Distance operator"" _mm(long double v) {
+            return Distance{ static_cast<double>(v) / 1000.0 };
+        }
+
+        constexpr Distance operator"" _in(unsigned long long v) {
+            return Distance{ static_cast<double>(v) * 0.0254 };
+        }
+
+        constexpr Distance operator"" _in(long double v) {
+            return Distance{ static_cast<double>(v) * 0.0254 };
+        }
+        constexpr Distance operator-(Distance v) {
+             return Distance{ -v.meters };
+        }
+        struct Angle {
+            double degrees;
+
+            // accessors
+            constexpr double rad() const {
+                return (M_PI/180) * degrees;
+            }
+
+            constexpr double dg() const {
+                return degrees;
+            }
+
+        };
+
+        constexpr Angle operator""_dg(unsigned long long v) {
+            return Angle{ static_cast<double>(v) };
+        }
+
+        constexpr Angle operator""_rad(unsigned long long v) {
+            return Angle{ static_cast<double>(v) * (180 / M_PI)};
+        }
+
+        constexpr Angle operator-(Angle v) {
+             return Angle{ -v.degrees };
+        }
+
+
+
+
+        constexpr uint32_t operator""_s(unsigned long long v) {
+            return v*1000;
+        }
+
+        constexpr uint32_t operator""_ms(unsigned long long v) {
+            return v;
+        }
+        constexpr uint32_t operator""_s(long double v) {
+            return v*1000;
+        }
+
+        constexpr uint32_t operator""_ms(long double v) {
+            return v;
+        }
+
+
+
+    }
     namespace Enums
     {
         enum class VelocityUnit
@@ -34,7 +117,7 @@ namespace MKV5
             REVERSE = -1,
             STOP = 0
         };
-        enum class Distance
+        enum class DistanceUnit
         {
             INCHES = 1,
             MM = 0,

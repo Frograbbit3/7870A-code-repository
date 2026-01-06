@@ -53,7 +53,7 @@ namespace MKV5
             @param distance A float containing a distance.
             @param dist The unit for the distance.
         */
-        void moveDistance(float distance, MKV5::Enums::Distance dist, MKV5::Enums::Direction dir);
+        void moveDistance(MKV5::Units::Distance distance);
 
         /*
             Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity.
@@ -67,7 +67,7 @@ namespace MKV5
             @param heading A double of the degree you want to turn two. Accuracy is ~2dg by default.
             @example
         */
-        void rotateTo(double heading);
+        void rotateTo(MKV5::Units::Angle heading);
 
         /*
             Stops the robot.

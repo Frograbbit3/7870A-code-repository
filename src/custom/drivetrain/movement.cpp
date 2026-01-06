@@ -12,8 +12,17 @@ namespace MKV5
     {
         rightMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
     }
-    void Drivetrain::moveDistance(float distance, MKV5::Enums::Distance dist, MKV5::Enums::Direction dir)
+    void Drivetrain::moveDistance(MKV5::Units::Distance distance)
     {
+        MKV5::Enums::DistanceUnit dist = MKV5::Enums::DistanceUnit::INCHES;
+        MKV5::Enums::Direction dir;
+        if (distance.inches() < 0) {
+            dir = MKV5::Enums::Direction::REVERSE;
+        }else if (distance.inches() > 0) {
+            dir = MKV5::Enums::Direction::FORWARD;
+        }else {
+            dir = MKV5::Enums::Direction::STOP;
+        }
         #ifdef DO_DISTANCE_TRACKING
         double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0; // Convert diameter to radius
         double rotations = 0;
@@ -46,7 +55,7 @@ namespace MKV5
         //inches and rps
         double inchesPerSecond = rps * distancePerRotation;
 
-        double secondsToDrive=  distance / inchesPerSecond;
+        double secondsToDrive=  distance.inches() / inchesPerSecond;
         double maxSpeed = 0.25f;
         secondsToDrive *= 1.18; //approx friction
         secondsToDrive /= maxSpeed;
@@ -69,9 +78,9 @@ namespace MKV5
         setLeftVelocity(leftVelocity);
         setRightVelocity(rightVelocity);
     }
-    void Drivetrain::rotateTo(double heading)
+    void Drivetrain::rotateTo(MKV5::Units::Angle heading)
     {
-        double difference = getHeading() - heading;
+        double difference = getHeading() - heading.dg();
         Enums::Direction dir;
         const int MAX_VELOCITY = 25;
         const int MIN_VELOCITY = 5;
@@ -83,7 +92,7 @@ namespace MKV5
         while (fabs(difference) > ROTATION_OFFSET_LIMIT && elapsedTime < TIMEOUT)
         {
             
-            difference = getHeading() - heading;
+            difference = getHeading() - heading.dg();
             
             double percent = fabs(difference) / 360.0;
             double vel = percent * MAX_VELOCITY;

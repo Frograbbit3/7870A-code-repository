@@ -4,7 +4,7 @@
 
 
 #define piston(v) pros::c::adi_digital_write(2, v)
-#define wait(time) pros::delay(time*1000)
+#define wait(time) pros::delay(time)
 #define inttake(val) secondFlywheel->move(DRIVE_FORWARD, -127 * val);
 void autonomousTick() {
     pros::c::adi_port_set_config(2, pros::E_ADI_DIGITAL_OUT);
@@ -13,22 +13,22 @@ void autonomousTick() {
     //start outtake
     flywheel->move(DRIVE_FORWARD, 127);
     //move to the right goal
-    drivetrain->moveDistance(34, MKV5::Enums::Distance::INCHES,DRIVE_FORWARD);
+    drivetrain->moveDistance(34_in);
     //face goal
-    drivetrain->rotateTo(90);
-    drivetrain->moveDistance(30, DIST_INCHES,DRIVE_REVERSE);
+    drivetrain->rotateTo(90_dg);
+    drivetrain->moveDistance(30_in);
     //prevents hitting so aggressively
-    drivetrain->moveDistance(0.5,DIST_INCHES, DRIVE_FORWARD);
+    drivetrain->moveDistance(-0.5_in);
     inttake(true);
 
     //start going for match loader
     piston(true);
-    drivetrain->moveDistance(50, DIST_INCHES, DRIVE_FORWARD);
+    drivetrain->moveDistance(50_in);
     secondFlywheel->move(DRIVE_FORWARD, -127);
-    wait(1.5);
+    wait(1.5_ms);
     inttake(false);
     //go dispense
-    drivetrain->moveDistance(50, DIST_INCHES, DRIVE_REVERSE);
+    drivetrain->moveDistance(50_in);
     inttake(true);
 
    // drivetrain->setVelocity(100, 100);
