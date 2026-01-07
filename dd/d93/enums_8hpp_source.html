@@ -243,62 +243,61 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>                      std::optional&lt;int32_t&gt; voltage = std::nullopt);</div>
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    <span class="comment">/*Moves the motor to an offset based off the current pos. Pass in a</span></div>
 <div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="comment">     * voltage if you want to choose the speed.*/</span></div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    <span class="keywordtype">void</span> moveRelative(Units::DirectionUnit direction, <span class="keywordtype">double</span> position,</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>                      int32_t voltage);</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    <span class="comment">/*Just a cleaner API for purely moving; DOES NOT FACTOR VOLTAGE INTO</span></div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span><span class="comment">     * IT!*/</span></div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    <span class="keywordtype">void</span> spin(Units::DirectionUnit direction);</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <span class="comment">/*Stops the motor.*/</span></div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    <span class="keywordtype">void</span> brake();</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span> </div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="comment">/*OTHER*/</span></div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span> </div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    <span class="comment">/*Resets the motor position to 0dg.*/</span></div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    <span class="keywordtype">void</span> calibrate();</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>};</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    <span class="keywordtype">void</span> moveRelative(Units::DirectionUnit direction, <span class="keywordtype">double</span> position);</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    <span class="comment">/*Just a cleaner API for purely moving; DOES NOT FACTOR VOLTAGE INTO</span></div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="comment">     * IT!*/</span></div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="keywordtype">void</span> spin(Units::DirectionUnit direction);</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    <span class="comment">/*Stops the motor.*/</span></div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <span class="keywordtype">void</span> brake();</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <span class="comment">/*OTHER*/</span></div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span> </div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    <span class="comment">/*Resets the motor position to 0dg.*/</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    <span class="keywordtype">void</span> calibrate();</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>};</div>
 </div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="comment">/*Helper function to get the diameter of a wheel. Defaults to 4.0f. Returns in</span></div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="comment"> * inches.*/</span></div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="keywordtype">double</span> getWheelDiameter(Units::WheelUnit type);</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
-<div class="foldopen" id="foldopen00175" data-start="{" data-end="};">
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno"><a class="line" href="../../d4/d56/structMKV5_1_1ControllerSettings.html">  175</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../d4/d56/structMKV5_1_1ControllerSettings.html">ControllerSettings</a> {</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    Units::ControllerDriveTypeUnit CONTROL_SCHEME =</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>        Units::ControllerDriveTypeUnit::DRIVE_MODE_ARCADE;</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <span class="keywordtype">float</span> maxTurnSpeed = -0.8f;</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <span class="keywordtype">float</span> maxForwardSpeed = 0.8f;</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    <span class="keywordtype">bool</span> enabled = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    <span class="keywordtype">bool</span> useJoystickCurve = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>};</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="comment">/*Helper function to get the diameter of a wheel. Defaults to 4.0f. Returns in</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="comment"> * inches.*/</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="keywordtype">double</span> getWheelDiameter(Units::WheelUnit type);</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span> </div>
+<div class="foldopen" id="foldopen00174" data-start="{" data-end="};">
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno"><a class="line" href="../../d4/d56/structMKV5_1_1ControllerSettings.html">  174</a></span><span class="keyword">struct </span><a class="code hl_struct" href="../../d4/d56/structMKV5_1_1ControllerSettings.html">ControllerSettings</a> {</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    Units::ControllerDriveTypeUnit CONTROL_SCHEME =</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        Units::ControllerDriveTypeUnit::DRIVE_MODE_ARCADE;</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    <span class="keywordtype">float</span> maxTurnSpeed = -0.8f;</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <span class="keywordtype">float</span> maxForwardSpeed = 0.8f;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <span class="keywordtype">bool</span> enabled = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    <span class="keywordtype">bool</span> useJoystickCurve = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>};</div>
 </div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>} <span class="comment">// namespace MKV5</span></div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="comment">// Drive modes</span></div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> TANK_DRIVE = MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_TANK;</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> ARCADE_DRIVE =MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_ARCADE;</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> GTA_DRIVE = MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_GTA;</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> CHEESE_DRIVE = MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_CHEESE;</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="comment">// Directions</span></div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="preprocessor">#ifdef SHORTHAND_DIRECTIONALS</span></div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> FORWARD = MKV5::Units::DirectionUnit::FORWARD;</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> REVERSE = MKV5::Units::DirectionUnit::REVERSE;</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> STOP = MKV5::Units::DirectionUnit::STOP;</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span> </div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="comment">// This was wrong before (SPIN_FORWARD = STOP??), but keeping semantics</span></div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> SPIN_FORWARD = MKV5::Units::DirectionUnit::FORWARD;</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> SPIN_REVERSE = MKV5::Units::DirectionUnit::REVERSE;</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="comment">// drivetrain</span></div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="keyword">constexpr</span> <span class="keywordtype">float</span> DRIVE_SLEW = 0.02f;</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span><span class="keyword">constexpr</span> <span class="keywordtype">double</span> CD_NEG_INERTIA_SCALAR = 4.0;</div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span><span class="keyword">constexpr</span> <span class="keywordtype">double</span> CD_SENSITIVITY = 1.0;</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span> </div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="comment">// distances</span></div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> DIST_MM = MKV5::Units::DistanceUnit::MM;</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> DIST_INCHES = MKV5::Units::DistanceUnit::INCHES;</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> DIST_ROTATION = MKV5::Units::DistanceUnit::ROTATION;</div>
-<div class="ttc" id="astructMKV5_1_1ControllerSettings_html"><div class="ttname"><a href="../../d4/d56/structMKV5_1_1ControllerSettings.html">MKV5::ControllerSettings</a></div><div class="ttdef"><b>Definition</b> enums.hpp:175</div></div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>} <span class="comment">// namespace MKV5</span></div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span> </div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="comment">// Drive modes</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> TANK_DRIVE = MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_TANK;</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> ARCADE_DRIVE =MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_ARCADE;</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> GTA_DRIVE = MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_GTA;</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> CHEESE_DRIVE = MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_CHEESE;</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="comment">// Directions</span></div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="preprocessor">#ifdef SHORTHAND_DIRECTIONALS</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> FORWARD = MKV5::Units::DirectionUnit::FORWARD;</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> REVERSE = MKV5::Units::DirectionUnit::REVERSE;</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> STOP = MKV5::Units::DirectionUnit::STOP;</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="comment">// This was wrong before (SPIN_FORWARD = STOP??), but keeping semantics</span></div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> SPIN_FORWARD = MKV5::Units::DirectionUnit::FORWARD;</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> SPIN_REVERSE = MKV5::Units::DirectionUnit::REVERSE;</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span><span class="comment">// drivetrain</span></div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span><span class="keyword">constexpr</span> <span class="keywordtype">float</span> DRIVE_SLEW = 0.02f;</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span><span class="keyword">constexpr</span> <span class="keywordtype">double</span> CD_NEG_INERTIA_SCALAR = 4.0;</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span><span class="keyword">constexpr</span> <span class="keywordtype">double</span> CD_SENSITIVITY = 1.0;</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span> </div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="comment">// distances</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> DIST_MM = MKV5::Units::DistanceUnit::MM;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> DIST_INCHES = MKV5::Units::DistanceUnit::INCHES;</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="keyword">constexpr</span> <span class="keyword">auto</span> DIST_ROTATION = MKV5::Units::DistanceUnit::ROTATION;</div>
+<div class="ttc" id="astructMKV5_1_1ControllerSettings_html"><div class="ttname"><a href="../../d4/d56/structMKV5_1_1ControllerSettings.html">MKV5::ControllerSettings</a></div><div class="ttdef"><b>Definition</b> enums.hpp:174</div></div>
 <div class="ttc" id="astructMKV5_1_1CustomMotor_html"><div class="ttname"><a href="../../d5/d4c/structMKV5_1_1CustomMotor.html">MKV5::CustomMotor</a></div><div class="ttdef"><b>Definition</b> enums.hpp:88</div></div>
 <div class="ttc" id="astructMKV5_1_1Units_1_1Angle_html"><div class="ttname"><a href="../../d2/dc6/structMKV5_1_1Units_1_1Angle.html">MKV5::Units::Angle</a></div><div class="ttdef"><b>Definition</b> enums.hpp:45</div></div>
 <div class="ttc" id="astructMKV5_1_1Units_1_1Distance_html"><div class="ttname"><a href="../../d7/de3/structMKV5_1_1Units_1_1Distance.html">MKV5::Units::Distance</a></div><div class="ttdef"><b>Definition</b> enums.hpp:18</div></div>
