@@ -93,7 +93,7 @@ pros::MotorBrake&#160;</td><td class="memItemRight" valign="bottom"><b>getBrakeM
 pros::MotorEncoderUnits&#160;</td><td class="memItemRight" valign="bottom"><b>getEncoding</b> ()</td></tr>
 <tr class="separator:a0e6cf811917d176b2c64847e3dcbdcee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1a77e65952058d20d03f74da6a356b6" id="r_ad1a77e65952058d20d03f74da6a356b6"><td class="memItemLeft" align="right" valign="top"><a id="ad1a77e65952058d20d03f74da6a356b6" name="ad1a77e65952058d20d03f74da6a356b6"></a>
-Enums::WheelType&#160;</td><td class="memItemRight" valign="bottom"><b>getWheelType</b> ()</td></tr>
+Units::WheelUnit&#160;</td><td class="memItemRight" valign="bottom"><b>getWheelType</b> ()</td></tr>
 <tr class="separator:ad1a77e65952058d20d03f74da6a356b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a2a3d3fcd7cad3229c01631aab6de4c" id="r_a5a2a3d3fcd7cad3229c01631aab6de4c"><td class="memItemLeft" align="right" valign="top"><a id="a5a2a3d3fcd7cad3229c01631aab6de4c" name="a5a2a3d3fcd7cad3229c01631aab6de4c"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>getMovement</b> ()</td></tr>
@@ -116,9 +116,9 @@ int32_t&#160;</td><td class="memItemRight" valign="bottom"><b>getVoltageLimit</b
 <tr class="memitem:a47495203d683101155dbfa31f2bb7372" id="r_a47495203d683101155dbfa31f2bb7372"><td class="memItemLeft" align="right" valign="top"><a id="a47495203d683101155dbfa31f2bb7372" name="a47495203d683101155dbfa31f2bb7372"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>getReversed</b> ()</td></tr>
 <tr class="separator:a47495203d683101155dbfa31f2bb7372"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a451049f2598fcfd5a07132bf34c45673" id="r_a451049f2598fcfd5a07132bf34c45673"><td class="memItemLeft" align="right" valign="top"><a id="a451049f2598fcfd5a07132bf34c45673" name="a451049f2598fcfd5a07132bf34c45673"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>getVelocity</b> (Enums::VelocityUnit unit=VELOCITY_RAW)</td></tr>
-<tr class="separator:a451049f2598fcfd5a07132bf34c45673"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa992591e16cdac5ff565e1afc904943" id="r_aaa992591e16cdac5ff565e1afc904943"><td class="memItemLeft" align="right" valign="top"><a id="aaa992591e16cdac5ff565e1afc904943" name="aaa992591e16cdac5ff565e1afc904943"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>getVelocity</b> (Units::VelocityUnit unit=Units::VelocityUnit::RAW)</td></tr>
+<tr class="separator:aaa992591e16cdac5ff565e1afc904943"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67a8c6ebfb184ff815f74032cb37256b" id="r_a67a8c6ebfb184ff815f74032cb37256b"><td class="memItemLeft" align="right" valign="top"><a id="a67a8c6ebfb184ff815f74032cb37256b" name="a67a8c6ebfb184ff815f74032cb37256b"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>getTargetPosition</b> ()</td></tr>
 <tr class="separator:a67a8c6ebfb184ff815f74032cb37256b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,30 +137,30 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setGearing</b> (pros:
 <tr class="memitem:ad1a28243f4e10f79997074551abe4e82" id="r_ad1a28243f4e10f79997074551abe4e82"><td class="memItemLeft" align="right" valign="top"><a id="ad1a28243f4e10f79997074551abe4e82" name="ad1a28243f4e10f79997074551abe4e82"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setReversed</b> (bool reversed)</td></tr>
 <tr class="separator:ad1a28243f4e10f79997074551abe4e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a469ba57829cfa67f297be8624965eb8c" id="r_a469ba57829cfa67f297be8624965eb8c"><td class="memItemLeft" align="right" valign="top"><a id="a469ba57829cfa67f297be8624965eb8c" name="a469ba57829cfa67f297be8624965eb8c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setWheelType</b> (Enums::WheelType whl)</td></tr>
-<tr class="separator:a469ba57829cfa67f297be8624965eb8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a388775338bac1236f62e89202809f0d1" id="r_a388775338bac1236f62e89202809f0d1"><td class="memItemLeft" align="right" valign="top"><a id="a388775338bac1236f62e89202809f0d1" name="a388775338bac1236f62e89202809f0d1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setWheelType</b> (Units::WheelUnit whl)</td></tr>
+<tr class="separator:a388775338bac1236f62e89202809f0d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6102be420f7ef7b65200b8391afe2431" id="r_a6102be420f7ef7b65200b8391afe2431"><td class="memItemLeft" align="right" valign="top"><a id="a6102be420f7ef7b65200b8391afe2431" name="a6102be420f7ef7b65200b8391afe2431"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setZero</b> (std::optional&lt; double &gt; position=std::nullopt)</td></tr>
 <tr class="separator:a6102be420f7ef7b65200b8391afe2431"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a00a9ca5d7a831be4e321efdb1137061b" id="r_a00a9ca5d7a831be4e321efdb1137061b"><td class="memItemLeft" align="right" valign="top"><a id="a00a9ca5d7a831be4e321efdb1137061b" name="a00a9ca5d7a831be4e321efdb1137061b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setVelocity</b> (float vel, Enums::VelocityUnit unit=VELOCITY_RAW)</td></tr>
-<tr class="separator:a00a9ca5d7a831be4e321efdb1137061b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a032e038d923a9dedf678533c891577c7" id="r_a032e038d923a9dedf678533c891577c7"><td class="memItemLeft" align="right" valign="top"><a id="a032e038d923a9dedf678533c891577c7" name="a032e038d923a9dedf678533c891577c7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setVelocity</b> (float vel, Units::VelocityUnit unit=Units::VelocityUnit::RAW)</td></tr>
+<tr class="separator:a032e038d923a9dedf678533c891577c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c4d168f2ed9bd9152645b4268d64a72" id="r_a5c4d168f2ed9bd9152645b4268d64a72"><td class="memItemLeft" align="right" valign="top"><a id="a5c4d168f2ed9bd9152645b4268d64a72" name="a5c4d168f2ed9bd9152645b4268d64a72"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setEncoding</b> (pros::MotorEncoderUnits unit)</td></tr>
 <tr class="separator:a5c4d168f2ed9bd9152645b4268d64a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8aef7a2555c69927a2f4677e2234cb92" id="r_a8aef7a2555c69927a2f4677e2234cb92"><td class="memItemLeft" align="right" valign="top"><a id="a8aef7a2555c69927a2f4677e2234cb92" name="a8aef7a2555c69927a2f4677e2234cb92"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>move</b> (Enums::Direction dir, std::optional&lt; int32_t &gt; voltage=std::nullopt)</td></tr>
-<tr class="separator:a8aef7a2555c69927a2f4677e2234cb92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0aa5cf87abc091e5c20e4b072e677adb" id="r_a0aa5cf87abc091e5c20e4b072e677adb"><td class="memItemLeft" align="right" valign="top"><a id="a0aa5cf87abc091e5c20e4b072e677adb" name="a0aa5cf87abc091e5c20e4b072e677adb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>moveAbsolute</b> (Enums::Direction direction, double position, std::optional&lt; int32_t &gt; voltage=std::nullopt)</td></tr>
-<tr class="separator:a0aa5cf87abc091e5c20e4b072e677adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad381ea6573df6867c3d408311f0056fb" id="r_ad381ea6573df6867c3d408311f0056fb"><td class="memItemLeft" align="right" valign="top"><a id="ad381ea6573df6867c3d408311f0056fb" name="ad381ea6573df6867c3d408311f0056fb"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>moveRelative</b> (Enums::Direction direction, double position, int32_t voltage)</td></tr>
-<tr class="separator:ad381ea6573df6867c3d408311f0056fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0db4ed18dacf24d6f400fb680bc9468" id="r_ac0db4ed18dacf24d6f400fb680bc9468"><td class="memItemLeft" align="right" valign="top"><a id="ac0db4ed18dacf24d6f400fb680bc9468" name="ac0db4ed18dacf24d6f400fb680bc9468"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>spin</b> (Enums::Direction direction)</td></tr>
-<tr class="separator:ac0db4ed18dacf24d6f400fb680bc9468"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15ad552ad4bdcdb48e571328726aef39" id="r_a15ad552ad4bdcdb48e571328726aef39"><td class="memItemLeft" align="right" valign="top"><a id="a15ad552ad4bdcdb48e571328726aef39" name="a15ad552ad4bdcdb48e571328726aef39"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>move</b> (Units::DirectionUnit dir, std::optional&lt; int32_t &gt; voltage=std::nullopt)</td></tr>
+<tr class="separator:a15ad552ad4bdcdb48e571328726aef39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a2cef8e6f08c919ea1bf681e412f61b" id="r_a0a2cef8e6f08c919ea1bf681e412f61b"><td class="memItemLeft" align="right" valign="top"><a id="a0a2cef8e6f08c919ea1bf681e412f61b" name="a0a2cef8e6f08c919ea1bf681e412f61b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>moveAbsolute</b> (Units::DirectionUnit direction, double position, std::optional&lt; int32_t &gt; voltage=std::nullopt)</td></tr>
+<tr class="separator:a0a2cef8e6f08c919ea1bf681e412f61b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5893f10c39846e15e01cfc5f6ba2fc78" id="r_a5893f10c39846e15e01cfc5f6ba2fc78"><td class="memItemLeft" align="right" valign="top"><a id="a5893f10c39846e15e01cfc5f6ba2fc78" name="a5893f10c39846e15e01cfc5f6ba2fc78"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>moveRelative</b> (Units::DirectionUnit direction, double position, int32_t voltage)</td></tr>
+<tr class="separator:a5893f10c39846e15e01cfc5f6ba2fc78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd217b2c1260aa0ea900b7ff50ca06c8" id="r_acd217b2c1260aa0ea900b7ff50ca06c8"><td class="memItemLeft" align="right" valign="top"><a id="acd217b2c1260aa0ea900b7ff50ca06c8" name="acd217b2c1260aa0ea900b7ff50ca06c8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>spin</b> (Units::DirectionUnit direction)</td></tr>
+<tr class="separator:acd217b2c1260aa0ea900b7ff50ca06c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41bdb9b6c8944a002c73f1da3f33b514" id="r_a41bdb9b6c8944a002c73f1da3f33b514"><td class="memItemLeft" align="right" valign="top"><a id="a41bdb9b6c8944a002c73f1da3f33b514" name="a41bdb9b6c8944a002c73f1da3f33b514"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>brake</b> ()</td></tr>
 <tr class="separator:a41bdb9b6c8944a002c73f1da3f33b514"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -173,9 +173,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a841056b6214cc3dc4b9f3575968f6861" id="r_a841056b6214cc3dc4b9f3575968f6861"><td class="memItemLeft" align="right" valign="top"><a id="a841056b6214cc3dc4b9f3575968f6861" name="a841056b6214cc3dc4b9f3575968f6861"></a>
 pros::Motor&#160;</td><td class="memItemRight" valign="bottom"><b>motor</b></td></tr>
 <tr class="separator:a841056b6214cc3dc4b9f3575968f6861"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58348eb20f6c2a5129b9020a4b2b298a" id="r_a58348eb20f6c2a5129b9020a4b2b298a"><td class="memItemLeft" align="right" valign="top"><a id="a58348eb20f6c2a5129b9020a4b2b298a" name="a58348eb20f6c2a5129b9020a4b2b298a"></a>
-Enums::WheelType *&#160;</td><td class="memItemRight" valign="bottom"><b>wheel</b> = nullptr</td></tr>
-<tr class="separator:a58348eb20f6c2a5129b9020a4b2b298a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad022a3edebb2e61b21b8e5ce3713fb24" id="r_ad022a3edebb2e61b21b8e5ce3713fb24"><td class="memItemLeft" align="right" valign="top"><a id="ad022a3edebb2e61b21b8e5ce3713fb24" name="ad022a3edebb2e61b21b8e5ce3713fb24"></a>
+Units::WheelUnit *&#160;</td><td class="memItemRight" valign="bottom"><b>wheel</b> = nullptr</td></tr>
+<tr class="separator:ad022a3edebb2e61b21b8e5ce3713fb24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following files:<ul>
 <li>include/custom/<a class="el" href="../../dd/d93/enums_8hpp_source.html">enums.hpp</a></li>
