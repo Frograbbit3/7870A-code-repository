@@ -13,10 +13,11 @@ bool tank_mode = false;
 bool state = false;
 void controllerTick() {
     int f= 0;
-    mainControl->processBindings();
     int debounce = 0;
 	while (true) {
 		mainControl->update();
+        mainControl->processBindings();
+        /*
         if (control->buttons.L1.pressed || control->buttons.L2.pressed) {
             flywheel->setVelocity((control->buttons.L2.pressed-control->buttons.L1.pressed) * 127);
             flywheel->move(FORWARD);
@@ -29,12 +30,12 @@ void controllerTick() {
         }else{
             secondFlywheel->brake();
         }
+        */
 
         if (control->buttons.A.pressed && debounce < 1) {
-            state = !state;
             control->vibrate(".");
             debounce = 90;
-            pros::c::adi_digital_write(2, state);
+            matchLoader->toggleState();
         }
         debounce--;
 
