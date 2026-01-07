@@ -197,11 +197,14 @@ namespace MKV5
             pros::delay(10);
         }
     }
-
+    void CustomMotor::spin(Enums::Direction direction) {
+        move(direction, 127);
+    }
     void CustomMotor::brake()
     {
         motor.brake();
     }
+    
 
     // misc
     void CustomMotor::calibrate()

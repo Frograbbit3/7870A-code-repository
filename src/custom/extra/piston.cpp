@@ -13,4 +13,10 @@ void Piston::setState(bool s) {
 	state = s;
 	pros::c::adi_digital_write(port, state);
 };
+void Piston::enable() {
+	Piston::setState(true);
+}
+void Piston::disable() {
+	Piston::setState(false);
+}
 } // namespace MKV5

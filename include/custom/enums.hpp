@@ -207,6 +207,8 @@ namespace MKV5
         /*Moves the motor to an offset based off the current pos. Pass in a voltage if you want to choose the speed.*/
         void moveRelative(Enums::Direction direction, double position,
                           int32_t voltage);
+        /*Just a cleaner API for purely moving; DOES NOT FACTOR VOLTAGE INTO IT!*/
+        void spin(Enums::Direction direction);
         /*Stops the motor.*/
         void brake();
 
@@ -228,20 +230,27 @@ namespace MKV5
     };
 }
 
-#define TANK_DRIVE MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_TANK
-#define ARCADE_DRIVE MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_ARCADE
-#define GTA_DRIVE MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_GTA
-#define CHEESE_DRIVE MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_CHEESE
-#define DRIVE_FORWARD MKV5::Enums::Direction::FORWARD
-#define DRIVE_REVERSE MKV5::Enums::Direction::REVERSE
-#define DRIVE_STOP MKV5::Enums::Direction::STOP
+// Drive modes
+constexpr auto TANK_DRIVE   = MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_TANK;
+constexpr auto ARCADE_DRIVE = MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_ARCADE;
+constexpr auto GTA_DRIVE    = MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_GTA;
+constexpr auto CHEESE_DRIVE = MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_CHEESE;
+
+// Directions
+constexpr auto DRIVE_FORWARD = MKV5::Enums::Direction::FORWARD;
+constexpr auto DRIVE_REVERSE = MKV5::Enums::Direction::REVERSE;
+constexpr auto DRIVE_STOP    = MKV5::Enums::Direction::STOP;
+
+// This was wrong before (SPIN_FORWARD = STOP??), but keeping semantics
+constexpr auto SPIN_FORWARD  = MKV5::Enums::Direction::FORWARD;
+constexpr auto SPIN_REVERSE = MKV5::Enums::Direction::REVERSE;
 
 // drivetrain
-#define DRIVE_SLEW 0.02f
-#define CD_NEG_INERTIA_SCALAR 4.0
-#define CD_SENSITIVITY 1.0
+constexpr float DRIVE_SLEW = 0.02f;
+constexpr double CD_NEG_INERTIA_SCALAR = 4.0;
+constexpr double CD_SENSITIVITY = 1.0;
 
 // distances
-#define DIST_MM MKV5::Enums::Distance::MM
-#define DIST_INCHES MKV5::Enums::Distance::INCHES
-#define DIST_ROTATION MKV5::Enums::Distance::ROTATION
+constexpr auto DIST_MM       = MKV5::Enums::DistanceUnit::MM;
+constexpr auto DIST_INCHES   = MKV5::Enums::DistanceUnit::INCHES;
+constexpr auto DIST_ROTATION = MKV5::Enums::DistanceUnit::ROTATION;

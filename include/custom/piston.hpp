@@ -28,5 +28,15 @@ namespace MKV5 {
             */
             bool toggleState();
             
+
+            /*
+                Enables the piston.
+            */
+           void enable();
+
+           /*
+                Disables the piston.
+           */
+          void disable();
     };
 }

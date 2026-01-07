@@ -2,16 +2,12 @@
 #include "init.hpp"
 #include "pros/rtos.hpp"
 
+using pros::delay;
 
-#define piston(v) pros::c::adi_digital_write(2, v)
-#define wait(time) pros::delay(time)
-#define inttake(val) secondFlywheel->move(DRIVE_FORWARD, -127 * val);
 void autonomousTick() {
-    pros::c::adi_port_set_config(2, pros::E_ADI_DIGITAL_OUT);
-    pros::c::adi_digital_write(2, false);
     
     //start outtake
-    flywheel->move(DRIVE_FORWARD, 127);
+    flywheel->spin(SPIN_FORWARD);
     //move to the right goal
     drivetrain->moveDistance(34_in);
     //face goal
@@ -19,17 +15,17 @@ void autonomousTick() {
     drivetrain->moveDistance(30_in);
     //prevents hitting so aggressively
     drivetrain->moveDistance(-0.5_in);
-    inttake(true);
+    secondFlywheel->spin(SPIN_FORWARD);
 
     //start going for match loader
-    piston(true);
+    matchLoader->enable();
     drivetrain->moveDistance(50_in);
-    secondFlywheel->move(DRIVE_FORWARD, -127);
-    wait(1.5_ms);
-    inttake(false);
+    secondFlywheel->spin(SPIN_FORWARD);
+    delay(1.5_ms);
+    secondFlywheel->spin(SPIN_REVERSE);
     //go dispense
     drivetrain->moveDistance(50_in);
-    inttake(true);
+    secondFlywheel->spin(SPIN_FORWARD);
 
    // drivetrain->setVelocity(100, 100);
     //drivetrain->startDrive(DRIVE_FORWARD);
