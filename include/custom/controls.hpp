@@ -40,7 +40,7 @@ class ControlScheme {
 	void doControllerInputs();
 
       public:
-	ControlScheme(MKV5::Enums::ControllerDriveTypes typ,
+	ControlScheme(MKV5::Units::ControllerDriveTypeUnit typ,
 	              MKV5::Drivetrain &driveRef,
 	              EmulatedController &controllerRef);
 

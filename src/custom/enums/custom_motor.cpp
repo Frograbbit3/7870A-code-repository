@@ -179,10 +179,9 @@ namespace MKV5
         motor.move_absolute(position, out);
     }
 
-    void CustomMotor::moveRelative(Enums::Direction direction, double position,
-                                   int32_t voltage)
+    void CustomMotor::moveRelative(Enums::Direction direction, double position)
     {
-        motor.move_relative(position, 50);
+        motor.move_relative(position, velocity);
         double target = motor.get_position() + position;
 
         // Block until close enough

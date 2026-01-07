@@ -18,3 +18,7 @@
 #define DO_DISTANCE_TRACKING
 
 
+//allows global keywords like FOWARD
+#define SHORTHAND_DIRECTIONALS
+
+

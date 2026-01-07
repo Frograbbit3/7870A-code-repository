@@ -32,7 +32,7 @@ namespace MKV5
             Starts moving indefinately until stopped with `stopMove`.
             @param dir The direction to move.
         */
-        void startMove(MKV5::Enums::Direction dir);
+        void startMove(MKV5::Units::DirectionUnit dir);
         /*
             Stops all the motors.
         */

@@ -79,6 +79,6 @@ namespace MKV5
             Moves the robot in a direction.
             @param direction Direction to move.
         */
-        void startDrive(MKV5::Enums::Direction direction);
+        void startDrive(MKV5::Units::DirectionUnit direction);
     };
 }
