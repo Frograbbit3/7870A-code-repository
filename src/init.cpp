@@ -20,7 +20,7 @@ MKV5::CustomMotor* secondFlywheel;
 MKV5::Piston* matchLoader;
 void initialize() {
     gyro  = new pros::Imu(4);
-    drivetrain  = new MKV5::Drivetrain({-9,-7, -20}, {5, 21,10}, 12.75f, gyro);
+    drivetrain  = new MKV5::Drivetrain({-9,-7, -20}, {5, 21,10}, 12.75f, 3/5, gyro);
 
     control= new MKV5::EmulatedController(pros::E_CONTROLLER_MASTER);
     mainControl = new MKV5::ControlScheme (CHEESE_DRIVE, *drivetrain, *control);

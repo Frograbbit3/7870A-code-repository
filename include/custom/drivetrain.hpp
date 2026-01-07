@@ -16,6 +16,7 @@ namespace MKV5
         std::vector<int8_t> leftSide;
         std::vector<int8_t> rightSide;
         pros::Imu *imu;
+        double gearRatio;
         void antiDrift();
 
     public:
@@ -28,8 +29,9 @@ namespace MKV5
             @param rightSide A list of right motor ports.
             @param trc A double with the distance between the left & right wheels in inches.
             @param imu A gyroscope for more accurate rotation.
+            @param gearRatio a fraction / decimal ratio used primarily for rotation and driveDistance. Pass 1 in if you don't have a gear ratio.
         */
-        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide, double trc, std::optional<pros::Imu *> i);
+        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide, double trc, double gearRatio, std::optional<pros::Imu *> i);
 
         /*
             Sets the left side velocity.
