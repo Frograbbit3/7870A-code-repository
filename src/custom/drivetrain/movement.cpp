@@ -74,16 +74,36 @@ void Drivetrain::setVelocity(int leftVelocity, int rightVelocity) {
 	setLeftVelocity(leftVelocity);
 	setRightVelocity(rightVelocity);
 }
-void Drivetrain::rotateTo(MKV5::Units::Angle heading) {
+void Drivetrain::rotateTo(MKV5::Units::Angle heading, MKV5::Units::RotationUnit direction) {
 	double difference = getHeading() - heading.dg();
+	double rot = std::fmod(heading.dg() - getHeading() + 540.0, 360.0) - 180.0;
 	Units::DirectionUnit dir;
 	const int MAX_VELOCITY = 25;
 	const int MIN_VELOCITY = 5;
 	const int TIMEOUT = 50000;
 	int elapsedTime = 0;
-	dir = Units::DirectionUnit::FORWARD;
-	leftMotors.startMove(Units::DirectionUnit::FORWARD);
-	rightMotors.startMove(Units::DirectionUnit::REVERSE);
+
+
+	switch (direction) {
+		case MKV5::Units::RotationUnit::CLOCKWISE:
+			leftMotors.startMove(Units::DirectionUnit::FORWARD);
+			rightMotors.startMove(Units::DirectionUnit::REVERSE);
+			break;
+		case MKV5::Units::RotationUnit::COUNTER_CLOCK:
+			leftMotors.startMove(Units::DirectionUnit::REVERSE);
+			rightMotors.startMove(Units::DirectionUnit::FORWARD);
+			break;
+		default:
+			if (rot > 0) {
+				leftMotors.startMove(Units::DirectionUnit::FORWARD);
+				rightMotors.startMove(Units::DirectionUnit::REVERSE);
+			}else{
+				leftMotors.startMove(Units::DirectionUnit::REVERSE);
+				rightMotors.startMove(Units::DirectionUnit::FORWARD);
+			}
+			break;
+	}
+
 	while (fabs(difference) > ROTATION_OFFSET_LIMIT &&
 	       elapsedTime < TIMEOUT) {
 

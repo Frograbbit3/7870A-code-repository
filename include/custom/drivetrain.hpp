@@ -69,7 +69,7 @@ namespace MKV5
             @param heading A double of the degree you want to turn two. Accuracy is ~2dg by default.
             @example
         */
-        void rotateTo(MKV5::Units::Angle heading);
+        void rotateTo(MKV5::Units::Angle heading, MKV5::Units::RotationUnit direction = MKV5::Units::RotationUnit::AUTO);
 
         /*
             Stops the robot.

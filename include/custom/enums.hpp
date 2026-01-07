@@ -15,6 +15,12 @@ template <typename T> inline void print(T m) { std::cout << m << std::endl; }
 #define __VERSION 1.3b
 namespace MKV5 {
 namespace Units {
+
+enum class RotationUnit {
+	CLOCKWISE = 1,
+	COUNTER_CLOCK = 2,
+	AUTO = 3
+};
 struct Distance {
 	double meters;
 
@@ -158,7 +164,7 @@ struct CustomMotor {
 	void moveRelative(Units::DirectionUnit direction, double position);
 	/*Just a cleaner API for purely moving; DOES NOT FACTOR VOLTAGE INTO
 	 * IT!*/
-	void spin(Units::DirectionUnit direction);
+	void spin(Units::DirectionUnit direction = Units::DirectionUnit::FORWARD);
 	/*Stops the motor.*/
 	void brake();
 
@@ -196,6 +202,14 @@ constexpr auto STOP = MKV5::Units::DirectionUnit::STOP;
 // This was wrong before (SPIN_FORWARD = STOP??), but keeping semantics
 constexpr auto SPIN_FORWARD = MKV5::Units::DirectionUnit::FORWARD;
 constexpr auto SPIN_REVERSE = MKV5::Units::DirectionUnit::REVERSE;
+
+//distances, outdated now but ill keep it
+constexpr auto DIST_MM = MKV5::Units::DistanceUnit::MM;
+constexpr auto DIST_INCHES = MKV5::Units::DistanceUnit::INCHES;
+constexpr auto DIST_ROTATION = MKV5::Units::DistanceUnit::ROTATION;
+
+constexpr auto COUNTER_CLOCKWISE = MKV5::Units::RotationUnit::COUNTER_CLOCK;
+constexpr auto CLOCKWISE = MKV5::Units::RotationUnit::CLOCKWISE;
 #endif
 // drivetrain
 constexpr float DRIVE_SLEW = 0.02f;
@@ -203,6 +217,3 @@ constexpr double CD_NEG_INERTIA_SCALAR = 4.0;
 constexpr double CD_SENSITIVITY = 1.0;
 
 // distances
-constexpr auto DIST_MM = MKV5::Units::DistanceUnit::MM;
-constexpr auto DIST_INCHES = MKV5::Units::DistanceUnit::INCHES;
-constexpr auto DIST_ROTATION = MKV5::Units::DistanceUnit::ROTATION;

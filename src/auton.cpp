@@ -7,24 +7,24 @@ using pros::delay;
 void autonomousTick() {
     
     //start outtake
-    flywheel->spin(SPIN_FORWARD);
+    flywheel->spin();
     //move to the right goal
-    drivetrain->moveDistance(34_in);
+    drivetrain->moveDistance(34_in, FORWARD);
     //face goal
     drivetrain->rotateTo(90_dg);
-    drivetrain->moveDistance(30_in);
+    drivetrain->moveDistance(30_in, FORWARD);
     //prevents hitting so aggressively
-    drivetrain->moveDistance(-0.5_in);
+    drivetrain->moveDistance(0.5_in, REVERSE);
     secondFlywheel->spin(SPIN_FORWARD);
 
     //start going for match loader
     matchLoader->enable();
-    drivetrain->moveDistance(50_in);
+    drivetrain->moveDistance(50_in, FORWARD);
     secondFlywheel->spin(SPIN_FORWARD);
     delay(1.5_s);
     secondFlywheel->spin(SPIN_REVERSE);
     //go dispense
-    drivetrain->moveDistance(50_in);
+    drivetrain->moveDistance(50_in, FORWARD);
     secondFlywheel->spin(SPIN_FORWARD);
 
    // drivetrain->setVelocity(100, 100);
