@@ -2,6 +2,7 @@
 #include "custom/drivetrain.hpp"
 #include "custom/enums.hpp"
 #include "pros/rtos.hpp"
+#include <optional>
 
 namespace MKV5 {
 void Drivetrain::setLeftVelocity(int velocity) {
@@ -10,16 +11,23 @@ void Drivetrain::setLeftVelocity(int velocity) {
 void Drivetrain::setRightVelocity(int velocity) {
 	rightMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
 }
-void Drivetrain::moveDistance(MKV5::Units::Distance distance) {
+void Drivetrain::moveDistance(
+    MKV5::Units::Distance distance,
+    std::optional<MKV5::Units::DirectionUnit> direction) {
 	MKV5::Units::DistanceUnit dist = MKV5::Units::DistanceUnit::INCHES;
 	MKV5::Units::DirectionUnit dir;
 
-	if (distance.inches() < 0) {
-		dir = MKV5::Units::DirectionUnit::REVERSE;
-	} else if (distance.inches() > 0) {
-		dir = MKV5::Units::DirectionUnit::FORWARD;
-	} else {
-		dir = MKV5::Units::DirectionUnit::STOP;
+	if (!direction.has_value()) {
+		if (distance.inches() < 0) {
+			dir = MKV5::Units::DirectionUnit::REVERSE;
+		} else if (distance.inches() > 0) {
+			dir = MKV5::Units::DirectionUnit::FORWARD;
+		} else {
+			dir = MKV5::Units::DirectionUnit::STOP;
+		}
+	}
+	else{
+		dir = direction.value();
 	}
 
 #ifdef DO_DISTANCE_TRACKING

@@ -55,7 +55,7 @@ namespace MKV5
             @param distance A float containing a distance.
             @param dist The unit for the distance.
         */
-        void moveDistance(MKV5::Units::Distance distance);
+        void moveDistance(MKV5::Units::Distance distance, std::optional<MKV5::Units::DirectionUnit> direction =  std::nullopt);
 
         /*
             Sets the velocity of both sides. An easier way of calling .setLeftVelocity and .setRightVelocity.

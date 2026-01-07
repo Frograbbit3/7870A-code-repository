@@ -35,4 +35,24 @@ void initialize() {
         pros::delay(15);
     }
 
+    //an attempt to register the motors
+    MKV5::ControllerInputs::ControlBinding binding{
+        .motor = flywheel,
+        .buttons = std::pair{&control->buttons.L1, &control->buttons.L2},
+        .speed = 127,
+        .toggle = false
+    };
+    MKV5::ControllerInputs::ControlBinding binding2{
+        .motor = secondFlywheel,
+        .buttons = std::pair{&control->buttons.R1, &control->buttons.R2},
+        .speed = 127,
+        .toggle = false
+    };
+
+    mainControl->registerMotor(
+        binding
+    );
+    
+    mainControl->registerMotor(binding2);
+
 }

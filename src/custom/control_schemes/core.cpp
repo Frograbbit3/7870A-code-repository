@@ -1,6 +1,7 @@
 #include "custom/controls.hpp"
 #include "custom/emulated_controller.hpp"
 #include "custom/enums.hpp"
+#include "custom/modded.hpp"
 #include <string>
 #include <variant>
 
@@ -35,123 +36,120 @@ void ControlScheme::registerMotor(ControllerInputs::ControlBinding &binding) {
 }
 void ControlScheme::processBindings() {
 	for (auto &binding : bindings) {
-
-		// Determine motor target
-		MKV5::CustomMotor *m = nullptr;
-		MotorGroup *mg = nullptr;
-		MKV5::Piston *v = nullptr;
-        std::function<void(int)> startForward;
-        std::function<void(int)> startReverse;
-        std::function<void()> stopMotor;
 		if (std::holds_alternative<MKV5::CustomMotor *>(
 		        binding.motor)) {
-			m = std::get<MKV5::CustomMotor *>(binding.motor);
+			auto m = std::get<MKV5::CustomMotor *>(binding.motor);
 
-			auto startForward = [&](int speed) {
-				m->setVelocity(speed);
-				m->move(Units::DirectionUnit::FORWARD);
-			};
+			if (std::holds_alternative<ControllerInputs::Button *>(
+			        binding.buttons)) {
+				auto b = std::get<ControllerInputs::Button *>(
+				    binding.buttons);
+				b->update();
 
-			auto startReverse = [&](int speed) {
-				m->setVelocity(speed);
-				m->move(Units::DirectionUnit::REVERSE);
-			};
-			auto stopMotor = [&]() {
-				m->move(Units::DirectionUnit::STOP);
-			};
-		}
-
-		else if (std::holds_alternative<MKV5::Piston *>(
-		             binding.motor)) {
-			v = std::get<MKV5::Piston *>(binding.motor);
-
-			auto startForward = [&](int speed) { v->setState(true); };
-
-			auto startReverse = [&](int speed) { v->setState(false); };
-			auto stopMotor = [&]() { v->setState(false); };
-		} else {
-			mg = std::get<MotorGroup *>(binding.motor);
-			// Helper lambdas so logic is clean
-			auto startForward = [&](int speed) {
-				mg->setVelocity(speed);
-				mg->startMove(Units::DirectionUnit::FORWARD);
-			};
-
-			auto startReverse = [&](int speed) {
-				mg->setVelocity(speed);
-				mg->startMove(Units::DirectionUnit::REVERSE);
-			};
-
-			auto stopMotor = [&]() {
-				mg->startMove(Units::DirectionUnit::STOP);
-			};
-		}
-
-		// ----------------------
-		// SINGLE BUTTON BINDING
-		// ----------------------
-
-		if (std::holds_alternative<ControllerInputs::Button *>(
-		        binding.buttons)) {
-			auto *btn = std::get<ControllerInputs::Button *>(
-			    binding.buttons);
-
-			if (btn->pressed) {
-				if (binding.toggle) {
-					// Toggle activates ONLY on rising edge
-					if (!binding._toggleState) {
-						binding._toggleState = true;
-
-						// If motor currently moving →
-						// stop
-						if (m) {
-							stopMotor();
-						} else if (mg) {
-							stopMotor();
-						}
-						// Otherwise → start forward
-						else {
-							startForward(
-							    binding.speed);
-						}
-					}
+				if (b->pressed) {
+					m->setVelocity(binding.speed);
+					m->spin(Units::DirectionUnit::FORWARD);
 				} else {
-					// Non-toggle (hold-to-drive)
-					startForward(binding.speed);
+					m->brake();
 				}
-			} else {
-				// Button released
-				if (!binding.toggle) {
-					stopMotor();
+			}
+
+			if (std::holds_alternative<
+			        std::pair<ControllerInputs::Button *,
+			                  ControllerInputs::Button *>>(
+			        binding.buttons)) {
+				auto [f, r] = std::get<
+				    std::pair<ControllerInputs::Button *,
+				              ControllerInputs::Button *>>(
+				    binding.buttons);
+				f->update();
+				r->update();
+
+				bool fp = f->pressed;
+				bool rp = r->pressed;
+
+				if (fp ^ rp) {
+					m->setVelocity(binding.speed);
+					m->spin(
+					    fp ? Units::DirectionUnit::FORWARD
+					       : Units::DirectionUnit::REVERSE);
+				} else {
+					m->brake();
 				}
-				binding._toggleState =
-				    false; // reset rising-edge latch
 			}
 		}
 
-		// ----------------------
-		// TWO BUTTON BINDING
-		// ----------------------
+		if (std::holds_alternative<MKV5::Piston *>(binding.motor)) {
+			auto v = std::get<MKV5::Piston *>(binding.motor);
 
-		else if (std::holds_alternative<
-		             std::pair<ControllerInputs::Button *,
-		                       ControllerInputs::Button *>>(
-		             binding.buttons)) {
-			auto &pair =
-			    std::get<std::pair<ControllerInputs::Button *,
-			                       ControllerInputs::Button *>>(
-			        binding.buttons);
+			if (std::holds_alternative<ControllerInputs::Button *>(
+			        binding.buttons)) {
+				auto b = std::get<ControllerInputs::Button *>(
+				    binding.buttons);
+				b->update();
+				v->setState(b->pressed);
+			}
 
-			if (pair.first->pressed) {
-				startForward(binding.speed);
-				std::cout << "first" << std::endl;
+			if (std::holds_alternative<
+			        std::pair<ControllerInputs::Button *,
+			                  ControllerInputs::Button *>>(
+			        binding.buttons)) {
+				auto [f, r] = std::get<
+				    std::pair<ControllerInputs::Button *,
+				              ControllerInputs::Button *>>(
+				    binding.buttons);
+				f->update();
+				r->update();
+
+				bool fp = f->pressed;
+				bool rp = r->pressed;
+
+				if (fp ^ rp) {
+					v->setState(fp);
+				}
 			}
-			if (pair.second->pressed) {
-				std::cout << "second" << std::endl;
-				startReverse(binding.speed);
+		}
+
+		if (std::holds_alternative<MKV5::MotorGroup *>(binding.motor)) {
+			auto mg = std::get<MKV5::MotorGroup *>(binding.motor);
+
+			if (std::holds_alternative<ControllerInputs::Button *>(
+			        binding.buttons)) {
+				auto b = std::get<ControllerInputs::Button *>(
+				    binding.buttons);
+				b->update();
+
+				if (b->pressed) {
+					mg->setVelocity(binding.speed);
+					mg->startMove(
+					    Units::DirectionUnit::FORWARD);
+				} else {
+					mg->stopMove();
+				}
 			}
-			if (!pair.second->pressed && !pair.first->pressed) {
-				stopMotor();
+
+			if (std::holds_alternative<
+			        std::pair<ControllerInputs::Button *,
+			                  ControllerInputs::Button *>>(
+			        binding.buttons)) {
+				auto [f, r] = std::get<
+				    std::pair<ControllerInputs::Button *,
+				              ControllerInputs::Button *>>(
+				    binding.buttons);
+				f->update();
+				r->update();
+
+				bool fp = f->pressed;
+				bool rp = r->pressed;
+
+				if (fp ^ rp) {
+					mg->setVelocity(binding.speed);
+					mg->startMove(
+					    fp ? Units::DirectionUnit::FORWARD
+					       : Units::DirectionUnit::REVERSE);
+				} else {
+					mg->stopMove();
+				}
 			}
 		}
 	}

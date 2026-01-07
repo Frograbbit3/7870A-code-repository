@@ -13,8 +13,7 @@ bool tank_mode = false;
 bool state = false;
 void controllerTick() {
     int f= 0;
-   // mainControl.processBindings();
-    pros::c::adi_port_set_config(2, pros::E_ADI_DIGITAL_OUT);
+    mainControl->processBindings();
     int debounce = 0;
 	while (true) {
 		mainControl->update();
@@ -47,11 +46,10 @@ void controllerTick() {
                 pros::delay(20);
             }
         }
-        if (tank_mode) {
+        mainControl->configuration.CONTROL_SCHEME = CHEESE_DRIVE;
+        if (tank_mode)
             mainControl->configuration.CONTROL_SCHEME = TANK_DRIVE;
-        } else {
-            mainControl->configuration.CONTROL_SCHEME = CHEESE_DRIVE;
-        }
+    
 		pros::delay(10);
         f++;
 	}
