@@ -22,7 +22,7 @@ MKV5::Piston* matchLoader;
 void initialize() {
     pros::delay(500); //wait for kernel
     gyro  = new pros::Imu(4);
-    drivetrain  = new MKV5::Drivetrain({-9,-7, -20}, {5, 21,10}, 12.75f, 3/5, gyro);
+    drivetrain  = new MKV5::Drivetrain({9,7, 20}, {-5, -21,-10}, 12.75f, 3/5, gyro);
 
     control= new MKV5::EmulatedController(pros::E_CONTROLLER_MASTER);
     mainControl = new MKV5::ControlScheme (CHEESE_DRIVE, *drivetrain, *control);
@@ -30,10 +30,6 @@ void initialize() {
     secondFlywheel = new MKV5::CustomMotor(2);
     matchLoader = new MKV5::Piston(1, true);
     pros::delay(500); //finish devices up
-    gyro->reset();
-    while (gyro->is_calibrating()) {
-        pros::delay(15);
-    }
 
     //an attempt to register the motors
     MKV5::ControllerInputs::ControlBinding binding{

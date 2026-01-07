@@ -1,6 +1,7 @@
 #include "custom/drivetrain.hpp"
 #include "config.h"
 #include <algorithm>
+#include <cstdlib>
 namespace MKV5
 {
 void Drivetrain::antiDrift() {
@@ -36,9 +37,11 @@ void Drivetrain::antiDrift() {
         leftVel  = minmax(leftVel,  -127.0, 127.0);
         rightVel = minmax(rightVel, -127.0, 127.0);
 
-        leftMotors.setVelocity(leftVel);
-        rightMotors.setVelocity(rightVel);
+        if (abs(leftVel) > 10 && abs(rightVel) > 10) {
+            leftMotors.setVelocity(leftVel);
+            rightMotors.setVelocity(rightVel);
 
+        }
         pros::delay(10);
     }
 }

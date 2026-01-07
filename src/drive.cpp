@@ -47,6 +47,7 @@ void controllerTick() {
                 pros::delay(20);
             }
         }
+        
         mainControl->configuration.CONTROL_SCHEME = CHEESE_DRIVE;
         if (tank_mode)
             mainControl->configuration.CONTROL_SCHEME = TANK_DRIVE;

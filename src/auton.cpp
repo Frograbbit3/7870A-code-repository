@@ -6,10 +6,13 @@
 using pros::delay;
 
 void autonomousTick() {
-    
+    std::cout << "I... AM RUNNING!" << std::endl;
+    drivetrain->setVelocity(50, 50);
     //start outtake
+    std::cout << "spin" << std::endl;
     flywheel->spin();
     //move to the right goal
+    std::cout << "moving distance" << std::endl;
     drivetrain->moveDistance(34_in, FORWARD);
     //face goal
     drivetrain->rotateTo(90_dg);
