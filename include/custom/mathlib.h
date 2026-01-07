@@ -2,7 +2,7 @@
 #include <algorithm>
 #define CD_TURN_NONLINEARITY 0.65
 #include "math.h"
-
+constexpr double D_PI = M_PI * 2; //idk why this is here
 
 template<typename T>
 /*A helper function that literally just sets a number if its too big or too low.*/

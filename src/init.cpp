@@ -6,6 +6,7 @@
 #include "pros/imu.hpp"
 #include "pros/misc.h"
 #include "pros/motors.hpp"
+#include "pros/rtos.hpp"
 #include <cstddef>
 #include <utility>
 
@@ -19,6 +20,7 @@ MKV5::CustomMotor* flywheel;
 MKV5::CustomMotor* secondFlywheel;
 MKV5::Piston* matchLoader;
 void initialize() {
+    pros::delay(500); //wait for kernel
     gyro  = new pros::Imu(4);
     drivetrain  = new MKV5::Drivetrain({-9,-7, -20}, {5, 21,10}, 12.75f, 3/5, gyro);
 
@@ -27,5 +29,10 @@ void initialize() {
     flywheel = new MKV5::CustomMotor(3);
     secondFlywheel = new MKV5::CustomMotor(2);
     matchLoader = new MKV5::Piston(1, true);
+    pros::delay(500); //finish devices up
+    gyro->reset();
+    while (gyro->is_calibrating()) {
+        pros::delay(15);
+    }
 
 }

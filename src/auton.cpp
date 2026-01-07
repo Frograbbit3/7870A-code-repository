@@ -21,7 +21,7 @@ void autonomousTick() {
     matchLoader->enable();
     drivetrain->moveDistance(50_in);
     secondFlywheel->spin(SPIN_FORWARD);
-    delay(1.5_ms);
+    delay(1.5_s);
     secondFlywheel->spin(SPIN_REVERSE);
     //go dispense
     drivetrain->moveDistance(50_in);

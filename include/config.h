@@ -18,4 +18,3 @@
 #define DO_DISTANCE_TRACKING
 
 
-constexpr double D_PI = M_PI * 2; //idk why this is here
