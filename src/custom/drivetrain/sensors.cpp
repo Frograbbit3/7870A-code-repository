@@ -1,4 +1,5 @@
 #include "custom/drivetrain.hpp"
+#include "config.h"
 namespace MKV5
 {
     void Drivetrain::antiDrift()
@@ -7,8 +8,8 @@ namespace MKV5
         while (leftMotors.isMoving() || rightMotors.isMoving())
         {
             double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0;
-            double leftDistance = leftMotors.getRotation() * 2 * pi * wheelRad;
-            double rightDistance = rightMotors.getRotation() * 2 * pi * wheelRad;
+            double leftDistance = leftMotors.getRotation() * D_PI * wheelRad;
+            double rightDistance = rightMotors.getRotation() * D_PI * wheelRad;
             double drift = leftDistance - rightDistance;
 
             double correction = drift * 0.5;         // Tune this factor for your robot

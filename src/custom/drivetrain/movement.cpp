@@ -2,7 +2,7 @@
 #include "custom/drivetrain.hpp"
 #include "custom/enums.hpp"
 #include "pros/rtos.hpp"
-constexpr double D_PI = M_PI * 2;
+
 namespace MKV5 {
 void Drivetrain::setLeftVelocity(int velocity) {
 	leftMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
