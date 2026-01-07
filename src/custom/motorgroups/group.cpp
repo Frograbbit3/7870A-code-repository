@@ -11,21 +11,18 @@ MotorGroup::MotorGroup(const std::vector<int8_t> &ports_) : ports(ports_) {
 void MotorGroup::setVelocity(int vel) {
 	velocity = minmax(vel, -127, 127);
 	for (CustomMotor &mtr : group) {
-		mtr.setVelocity(velocity, VELOCITY_RAW);
+		mtr.setVelocity(velocity, Units::VelocityUnit::RAW);
 	}
 }
 
-void MotorGroup::startMove(Enums::Direction dir) {
+void MotorGroup::startMove(Units::DirectionUnit dir) {
 	for (CustomMotor &mtr : group) {
 		switch (dir) {
-		case DRIVE_FORWARD:
-			mtr.move(DRIVE_FORWARD);
-			break;
-		case DRIVE_REVERSE:
-			mtr.move(DRIVE_REVERSE);
-			break;
-		case DRIVE_STOP:
+		case Units::DirectionUnit::STOP:
 			stopMove();
+			break;
+		default:
+			mtr.move(dir);
 			break;
 		}
 	}
@@ -60,9 +57,9 @@ bool MotorGroup::isMoving() {
 	return false;
 }
 
-void MotorGroup::moveRelative(double angle, int vl) {
+void MotorGroup::moveRelative(double angle) {
 	for (CustomMotor &mtr : group) {
-		mtr.moveRelative(DRIVE_FORWARD, angle, vl);
+		mtr.moveRelative(Units::DirectionUnit::FORWARD, angle);
 	}
 }
 

@@ -11,15 +11,15 @@ void Drivetrain::setRightVelocity(int velocity) {
 	rightMotors.setVelocity(minmax(static_cast<int>(velocity), -127, 127));
 }
 void Drivetrain::moveDistance(MKV5::Units::Distance distance) {
-	MKV5::Enums::DistanceUnit dist = MKV5::Enums::DistanceUnit::INCHES;
-	MKV5::Enums::Direction dir;
+	MKV5::Units::DistanceUnit dist = MKV5::Units::DistanceUnit::INCHES;
+	MKV5::Units::DirectionUnit dir;
 
 	if (distance.inches() < 0) {
-		dir = MKV5::Enums::Direction::REVERSE;
+		dir = MKV5::Units::DirectionUnit::REVERSE;
 	} else if (distance.inches() > 0) {
-		dir = MKV5::Enums::Direction::FORWARD;
+		dir = MKV5::Units::DirectionUnit::FORWARD;
 	} else {
-		dir = MKV5::Enums::Direction::STOP;
+		dir = MKV5::Units::DirectionUnit::STOP;
 	}
 
 #ifdef DO_DISTANCE_TRACKING
@@ -29,8 +29,10 @@ void Drivetrain::moveDistance(MKV5::Units::Distance distance) {
 	double motorRotations = (rotations * gearRatio) * 360.0f;
 
 	std::cout << "DISTANCE:" << rotations << std::endl;
-	leftMotors.moveRelative(motorRotations, 55);
-	rightMotors.moveRelative(motorRotations, 55);
+	leftMotors.setVelocity(55);
+	rightMotors.setVelocity(55);
+	leftMotors.moveRelative(motorRotations);
+	rightMotors.moveRelative(motorRotations);
 #else
 	// approximate a time value for it
 	double rpm = 450.0f;
@@ -66,14 +68,14 @@ void Drivetrain::setVelocity(int leftVelocity, int rightVelocity) {
 }
 void Drivetrain::rotateTo(MKV5::Units::Angle heading) {
 	double difference = getHeading() - heading.dg();
-	Enums::Direction dir;
+	Units::DirectionUnit dir;
 	const int MAX_VELOCITY = 25;
 	const int MIN_VELOCITY = 5;
 	const int TIMEOUT = 50000;
 	int elapsedTime = 0;
-	dir = Enums::Direction::FORWARD;
-	leftMotors.startMove(Enums::Direction::FORWARD);
-	rightMotors.startMove(Enums::Direction::REVERSE);
+	dir = Units::DirectionUnit::FORWARD;
+	leftMotors.startMove(Units::DirectionUnit::FORWARD);
+	rightMotors.startMove(Units::DirectionUnit::REVERSE);
 	while (fabs(difference) > ROTATION_OFFSET_LIMIT &&
 	       elapsedTime < TIMEOUT) {
 
@@ -98,7 +100,7 @@ void Drivetrain::stopDrive() {
 	leftMotors.stopMove();
 	rightMotors.stopMove();
 }
-void Drivetrain::startDrive(Enums::Direction direction) {
+void Drivetrain::startDrive(Units::DirectionUnit direction) {
 	leftMotors.startMove(direction);
 	rightMotors.startMove(direction);
 }

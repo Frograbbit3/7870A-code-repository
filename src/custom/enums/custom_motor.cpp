@@ -24,11 +24,11 @@ namespace MKV5
         return motor.get_encoder_units();
     }
 
-    Enums::WheelType CustomMotor::getWheelType()
+    Units::WheelUnit CustomMotor::getWheelType()
     {
         if (wheel)
             return *wheel;
-        return Enums::WheelType::WHEEL_400;
+        return Units::WheelUnit::WHEEL_400;
     }
 
     bool CustomMotor::getMovement()
@@ -66,17 +66,17 @@ namespace MKV5
         return motor.is_reversed();
     }
 
-    double CustomMotor::getVelocity(Enums::VelocityUnit unit)
+    double CustomMotor::getVelocity(Units::VelocityUnit unit)
     {
         switch (unit)
         {
-        case VELOCITY_RAW:
+        case Units::VelocityUnit::RAW:
             return velocity;
-        case VELOCITY_mV:
+        case Units::VelocityUnit::mV:
             return (velocity / 12.7) * 1000.0;
-        case VELOCITY_VOLTS:
+        case Units::VelocityUnit::VOLTS:
             return (velocity / 127.0) * 12.0;
-        case VELOCITY_PERCENT:
+        case Units::VelocityUnit::PERCENT:
             return (velocity / 127.0) * 100.0;
         default:
             return 0.0;
@@ -114,7 +114,7 @@ namespace MKV5
         motor.set_reversed(reversed);
     }
 
-    void CustomMotor::setWheelType(Enums::WheelType whl)
+    void CustomMotor::setWheelType(Units::WheelUnit whl)
     {
         wheel = &whl;
     }
@@ -127,20 +127,20 @@ namespace MKV5
             motor.tare_position();
     }
 
-    void CustomMotor::setVelocity(float vel, Enums::VelocityUnit unit)
+    void CustomMotor::setVelocity(float vel, Units::VelocityUnit unit)
     {
         switch (unit)
         {
-        case VELOCITY_RAW:
+        case Units::VelocityUnit::RAW:
             velocity = minmax<double>(vel, -127.0f, 127.0f);
             break;
-        case VELOCITY_mV:
+        case Units::VelocityUnit::mV:
             velocity = minmax<double>((vel / 1000.0f) * 12.7f, -127.0f, 127.0f);
             break;
-        case VELOCITY_VOLTS:
+        case Units::VelocityUnit::VOLTS:
             velocity = minmax<double>((vel / 12.0f) * 127.0f, -127.0f, 127.0f);
             break;
-        case VELOCITY_PERCENT:
+        case Units::VelocityUnit::PERCENT:
             velocity = minmax<double>((vel / 100.0f) * 127.0f, -127.0f, 127.0f);
             break;
         default:
@@ -154,9 +154,9 @@ namespace MKV5
     }
 
     // movement
-    void CustomMotor::move(Enums::Direction dir, std::optional<int32_t> voltage)
+    void CustomMotor::move(Units::DirectionUnit dir, std::optional<int32_t> voltage)
     {
-        int mult = (dir == Enums::Direction::FORWARD) ? 1 : (dir == Enums::Direction::REVERSE) ? -1
+        int mult = (dir == Units::DirectionUnit::FORWARD) ? 1 : (dir == Units::DirectionUnit::REVERSE) ? -1
                                                                                  : 0;
 
         int32_t out = voltage.has_value()
@@ -166,10 +166,10 @@ namespace MKV5
         motor.move(out);
     }
 
-    void CustomMotor::moveAbsolute(Enums::Direction direction, double position,
+    void CustomMotor::moveAbsolute(Units::DirectionUnit direction, double position,
                                    std::optional<int32_t> voltage)
     {
-        int8_t mult = (direction == Enums::Direction::FORWARD) ? 1 : (direction == Enums::Direction::REVERSE) ? -1
+        int8_t mult = (direction == Units::DirectionUnit::FORWARD) ? 1 : (direction == Units::DirectionUnit::REVERSE) ? -1
                                                                                                 : 0;
 
         int32_t out = voltage.has_value()
@@ -179,7 +179,7 @@ namespace MKV5
         motor.move_absolute(position, out);
     }
 
-    void CustomMotor::moveRelative(Enums::Direction direction, double position)
+    void CustomMotor::moveRelative(Units::DirectionUnit direction, double position)
     {
         motor.move_relative(position, velocity);
         double target = motor.get_position() + position;
@@ -196,7 +196,7 @@ namespace MKV5
             pros::delay(10);
         }
     }
-    void CustomMotor::spin(Enums::Direction direction) {
+    void CustomMotor::spin(Units::DirectionUnit direction) {
         move(direction, 127);
     }
     void CustomMotor::brake()

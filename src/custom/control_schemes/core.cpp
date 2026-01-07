@@ -5,7 +5,7 @@
 #include <variant>
 
 namespace MKV5 {
-ControlScheme::ControlScheme(Enums::ControllerDriveTypes typ,
+ControlScheme::ControlScheme(Units::ControllerDriveTypeUnit typ,
                              Drivetrain &driveRef,
                              EmulatedController &controllerRef)
     : drive(driveRef), controller(controllerRef) {
@@ -49,15 +49,15 @@ void ControlScheme::processBindings() {
 
 			auto startForward = [&](int speed) {
 				m->setVelocity(speed);
-				m->move(Enums::Direction::FORWARD);
+				m->move(Units::DirectionUnit::FORWARD);
 			};
 
 			auto startReverse = [&](int speed) {
 				m->setVelocity(speed);
-				m->move(Enums::Direction::REVERSE);
+				m->move(Units::DirectionUnit::REVERSE);
 			};
 			auto stopMotor = [&]() {
-				m->move(Enums::Direction::STOP);
+				m->move(Units::DirectionUnit::STOP);
 			};
 		}
 
@@ -74,16 +74,16 @@ void ControlScheme::processBindings() {
 			// Helper lambdas so logic is clean
 			auto startForward = [&](int speed) {
 				mg->setVelocity(speed);
-				mg->startMove(Enums::Direction::FORWARD);
+				mg->startMove(Units::DirectionUnit::FORWARD);
 			};
 
 			auto startReverse = [&](int speed) {
 				mg->setVelocity(speed);
-				mg->startMove(Enums::Direction::REVERSE);
+				mg->startMove(Units::DirectionUnit::REVERSE);
 			};
 
 			auto stopMotor = [&]() {
-				mg->startMove(Enums::Direction::STOP);
+				mg->startMove(Units::DirectionUnit::STOP);
 			};
 		}
 
@@ -160,7 +160,7 @@ void ControlScheme::processBindings() {
 void ControlScheme::doControllerInputs() {
 	switch (configuration.CONTROL_SCHEME) {
 
-	case MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_ARCADE:
+	case MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_ARCADE:
 		leftVelocity =
 		    static_cast<int>(LeftJoystick->Y *
 		                     -(configuration.maxTurnSpeed)) -
@@ -173,14 +173,14 @@ void ControlScheme::doControllerInputs() {
 		                     (configuration.maxForwardSpeed));
 		break;
 
-	case MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_TANK:
+	case MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_TANK:
 		leftVelocity = static_cast<int>(
 		    LeftJoystick->Y * (configuration.maxForwardSpeed));
 		rightVelocity = static_cast<int>(
 		    RightJoystick->Y * (configuration.maxForwardSpeed));
 		break;
 
-	case MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_GTA: {
+	case MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_GTA: {
 		int forward = (controller.buttons.R2.pressed ? 1 : 0) -
 		              (controller.buttons.L2.pressed ? 1 : 0);
 		int turn = static_cast<int>(LeftJoystick->X);
@@ -194,7 +194,7 @@ void ControlScheme::doControllerInputs() {
 		break;
 	}
 
-	case MKV5::Enums::ControllerDriveTypes::DRIVE_MODE_CHEESE: {
+	case MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_CHEESE: {
 		cheeseDrive();
 		break;
 	}
@@ -214,7 +214,7 @@ void ControlScheme::update() {
 		rightVelocity =
 		    minmax(static_cast<int>(rightVelocity), -127, 127);
 		drive.setVelocity(leftVelocity, rightVelocity);
-		drive.startDrive(DRIVE_FORWARD);
+		drive.startDrive(Units::DirectionUnit::FORWARD);
 	} else {
 		drive.stopDrive();
 	}

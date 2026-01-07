@@ -155,8 +155,7 @@ struct CustomMotor {
 	                  std::optional<int32_t> voltage = std::nullopt);
 	/*Moves the motor to an offset based off the current pos. Pass in a
 	 * voltage if you want to choose the speed.*/
-	void moveRelative(Units::DirectionUnit direction, double position,
-	                  int32_t voltage);
+	void moveRelative(Units::DirectionUnit direction, double position);
 	/*Just a cleaner API for purely moving; DOES NOT FACTOR VOLTAGE INTO
 	 * IT!*/
 	void spin(Units::DirectionUnit direction);
