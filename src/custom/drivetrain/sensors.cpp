@@ -1,50 +1,70 @@
 #include "custom/drivetrain.hpp"
 #include "config.h"
+#include <algorithm>
 namespace MKV5
 {
-    void Drivetrain::antiDrift()
-    {
-        
-        while (leftMotors.isMoving() || rightMotors.isMoving())
-        {
-            double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0;
-            double leftDistance = leftMotors.getRotation() * D_PI * wheelRad;
-            double rightDistance = rightMotors.getRotation() * D_PI * wheelRad;
-            double drift = leftDistance - rightDistance;
+void Drivetrain::antiDrift() {
+    double lastLeft = leftMotors.getRotation();
+    double lastRight = rightMotors.getRotation();
 
-            double correction = drift * 0.5;         // Tune this factor for your robot
-            double leftVelocity = 100 - correction;  // Base velocity minus correction
-            double rightVelocity = 100 + correction; // Base velocity plus correction
+    const double kP = 0.4;
+    const double deadband = 0.01;
 
-            leftVelocity = minmax<double>(leftVelocity, -127, 127);
-            rightVelocity = minmax<double>(rightVelocity, -127, 127);
+    while (leftMotors.isMoving() && rightMotors.isMoving()) {
+        double leftNow = leftMotors.getRotation();
+        double rightNow = rightMotors.getRotation();
 
-            leftMotors.setVelocity(leftVelocity);
-            rightMotors.setVelocity(rightVelocity);
+        double dLeft = leftNow - lastLeft;
+        double dRight = rightNow - lastRight;
+
+        lastLeft = leftNow;
+        lastRight = rightNow;
+
+        double drift = dLeft - dRight;
+
+        if (std::abs(drift) < deadband) {
             pros::delay(10);
+            continue;
         }
+
+        double correction = drift * kP;
+
+        double leftVel = 100 - correction;
+        double rightVel = 100 + correction;
+
+
+        leftVel  = minmax(leftVel,  -127.0, 127.0);
+        rightVel = minmax(rightVel, -127.0, 127.0);
+
+        leftMotors.setVelocity(leftVel);
+        rightMotors.setVelocity(rightVel);
+
+        pros::delay(10);
     }
+}
+
 
     double Drivetrain::getHeading()
     {
-        double leftRotations = leftMotors.getRotation();
-        double rightRotations = rightMotors.getRotation();
-        double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0;
 
-        double leftDistance = leftRotations * 2 * pi * wheelRad;
-        double rightDistance = rightRotations * 2 * pi * wheelRad;
 
-        double deltaDistance = rightDistance - leftDistance;
-        double headingRadians = deltaDistance / trackWidth;
-        double headingDegrees = headingRadians * (180.0 / pi);
-
-        if (imu != nullptr)
+        if (imu != nullptr) //use the imu if it's there
         {
             double gyroAngle = imu->get_heading();
             
             return (gyroAngle);
         }
 
+        double leftRotations = leftMotors.getRotation();
+        double rightRotations = rightMotors.getRotation();
+        double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) / 2.0;
+
+        double leftDistance = leftRotations * D_PI * wheelRad;
+        double rightDistance = rightRotations * D_PI * wheelRad;
+
+        double deltaDistance = rightDistance - leftDistance;
+        double headingRadians = deltaDistance / trackWidth;
+        double headingDegrees = headingRadians * (180.0 / pi);
         return headingDegrees;
     }
 

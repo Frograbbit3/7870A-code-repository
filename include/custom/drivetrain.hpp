@@ -67,10 +67,17 @@ namespace MKV5
         /*
             Attempts to turn to a heading. Uses gyro.
             @param heading A double of the degree you want to turn two. Accuracy is ~2dg by default.
+            @param direction Allows manual override of a direction.
             @example
         */
         void rotateTo(MKV5::Units::Angle heading, MKV5::Units::RotationUnit direction = MKV5::Units::RotationUnit::AUTO);
 
+        /*
+            Turns a certain amount of degrees relative to the current heading.
+            @param heading The angle to turn
+            @param direction Allows manual override of a direction.
+        */
+        void turn(MKV5::Units::Angle heading, MKV5::Units::RotationUnit direction = MKV5::Units::RotationUnit::AUTO);
         /*
             Stops the robot.
         */

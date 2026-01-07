@@ -1,5 +1,6 @@
 #include "custom/enums.hpp"
 #include "init.hpp"
+#include "pros/rtos.h"
 #include "pros/rtos.hpp"
 
 using pros::delay;
@@ -12,19 +13,19 @@ void autonomousTick() {
     drivetrain->moveDistance(34_in, FORWARD);
     //face goal
     drivetrain->rotateTo(90_dg);
-    drivetrain->moveDistance(30_in, FORWARD);
+    drivetrain->moveDistance(30_in, REVERSE);
     //prevents hitting so aggressively
-    drivetrain->moveDistance(0.5_in, REVERSE);
+    drivetrain->moveDistance(0.5_in, FORWARD);
     secondFlywheel->spin(SPIN_FORWARD);
+    delay(2_s); //give it time to unload
+    secondFlywheel->brake();
 
     //start going for match loader
     matchLoader->enable();
     drivetrain->moveDistance(50_in, FORWARD);
-    secondFlywheel->spin(SPIN_FORWARD);
-    delay(1.5_s);
-    secondFlywheel->spin(SPIN_REVERSE);
+    flywheel->spin(SPIN_FORWARD);
     //go dispense
-    drivetrain->moveDistance(50_in, FORWARD);
+    drivetrain->moveDistance(50_in, REVERSE);
     secondFlywheel->spin(SPIN_FORWARD);
 
    // drivetrain->setVelocity(100, 100);

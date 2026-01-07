@@ -36,11 +36,35 @@ void Drivetrain::moveDistance(
 	double rotations = distance.inches() / (D_PI * wheelRad);
 	double motorRotations = (rotations * gearRatio) * 360.0f;
 
-	std::cout << "DISTANCE:" << rotations << std::endl;
-	leftMotors.setVelocity(55);
-	rightMotors.setVelocity(55);
-	leftMotors.moveRelative(motorRotations);
-	rightMotors.moveRelative(motorRotations);
+	leftMotors.setVelocity(leftMotors.velocity);
+	rightMotors.setVelocity(rightMotors.velocity);
+	double aimL = leftMotors.getRotation() + motorRotations;
+	double aimR = rightMotors.getRotation() + motorRotations;
+
+	while (true) {
+		double errL = aimL - leftMotors.getRotation();
+		double errR = aimR - rightMotors.getRotation();
+
+		if (std::abs(errL) <= 5 && std::abs(errR) <= 5)
+			break;
+
+		if (std::abs(errL) > 5)
+			leftMotors.startMove(direction.value());
+		else
+			leftMotors.stopMove();
+
+		if (std::abs(errR) > 5)
+			rightMotors.startMove(direction.value());
+		else
+			rightMotors.stopMove();
+
+		antiDrift();
+		pros::delay(10);
+	}
+
+	leftMotors.stopMove();
+	rightMotors.stopMove();
+
 #else
 	// approximate a time value for it
 	double rpm = 450.0f;
@@ -73,6 +97,12 @@ void Drivetrain::moveDistance(
 void Drivetrain::setVelocity(int leftVelocity, int rightVelocity) {
 	setLeftVelocity(leftVelocity);
 	setRightVelocity(rightVelocity);
+}
+void Drivetrain::turn(MKV5::Units::Angle heading, MKV5::Units::RotationUnit direction) {
+	double h = std::fmod(getHeading() + heading.dg(), 360.0);
+	if (h < 0) h += 360.0;
+
+	rotateTo(MKV5::Units::Angle{h}, direction);
 }
 void Drivetrain::rotateTo(MKV5::Units::Angle heading, MKV5::Units::RotationUnit direction) {
 	double difference = getHeading() - heading.dg();
