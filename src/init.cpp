@@ -22,8 +22,8 @@ MKV5::Piston* matchLoader;
 void initialize() {
     pros::delay(500); //wait for kernel
     gyro  = new pros::Imu(4);
-    drivetrain  = new MKV5::Drivetrain({9,7, 20}, {-5, -21,-10}, 12.75f, 3/5, gyro);
-
+    drivetrain  = new MKV5::Drivetrain({9,7, 20}, {-5, -21,-10}, 12.75_in, 3.0/5.0, gyro);
+    
     control= new MKV5::EmulatedController(pros::E_CONTROLLER_MASTER);
     mainControl = new MKV5::ControlScheme (CHEESE_DRIVE, *drivetrain, *control);
     flywheel = new MKV5::CustomMotor(3);

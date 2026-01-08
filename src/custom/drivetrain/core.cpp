@@ -1,7 +1,8 @@
 #include "custom/drivetrain.hpp"
+#include "custom/enums.hpp"
 namespace MKV5
 {
-    Drivetrain::Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide, double trc, double gearRatio, std::optional<pros::Imu *> i) : leftMotors(leftSide), rightMotors(rightSide), trackWidth(trc), imu(i.value_or(nullptr)), gearRatio(gearRatio)
+    Drivetrain::Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide, Units::Distance trc, double gearRatio, std::optional<pros::Imu *> i) : leftMotors(leftSide), rightMotors(rightSide), trackWidth(trc.inches()), imu(i.value_or(nullptr)), gearRatio(gearRatio)
     {
         doCalibration();
     }

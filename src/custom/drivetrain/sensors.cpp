@@ -1,5 +1,6 @@
 #include "custom/drivetrain.hpp"
 #include "config.h"
+#include "custom/enums.hpp"
 #include "init.hpp"
 #include "pros/imu.h"
 #include "pros/rtos.hpp"
@@ -104,4 +105,7 @@ void Drivetrain::antiDrift() {
             return false;
         return true;
     }
+    void Drivetrain::resetHeading(Units::Angle heading) {
+        gyro->set_heading(heading.dg());
+    };
 }

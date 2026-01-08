@@ -1,6 +1,7 @@
 #include "config.h"
 #include "custom/drivetrain.hpp"
 #include "custom/enums.hpp"
+#include "pros/abstract_motor.hpp"
 #include "pros/rtos.hpp"
 #include <optional>
 
@@ -150,10 +151,13 @@ void Drivetrain::turn(MKV5::Units::Angle heading, MKV5::Units::RotationUnit dire
     stopDrive();
 }
 
-void Drivetrain::stopDrive() {
+void Drivetrain::stopDrive(pros::MotorBrake brakeType) {
+	leftMotors.setBrakingType(brakeType);
+	rightMotors.setBrakingType(brakeType);
 	leftMotors.stopMove();
 	rightMotors.stopMove();
 }
+
 void Drivetrain::startDrive(Units::DirectionUnit direction) {
 	leftMotors.startMove(direction);
 	rightMotors.startMove(direction);

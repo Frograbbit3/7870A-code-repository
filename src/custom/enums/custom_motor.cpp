@@ -33,7 +33,7 @@ namespace MKV5
 
     bool CustomMotor::getMovement()
     {
-        return abs(motor.get_actual_velocity()) < 1;
+        return abs(motor.get_actual_velocity()) > 1;
     }
 
     int32_t CustomMotor::getPosition()

@@ -29,6 +29,8 @@ struct Distance {
 
 	constexpr double mm() const { return meters * 1000.0; }
 
+	constexpr double cm() const { return meters * 100.0; }
+
 	constexpr double inches() const { return meters / 0.0254; }
 };
 
@@ -38,6 +40,14 @@ constexpr Distance operator""_mm(unsigned long long v) {
 
 constexpr Distance operator""_mm(long double v) {
 	return Distance{static_cast<double>(v) / 1000.0};
+}
+
+constexpr Distance operator""_cm(unsigned long long v) {
+	return Distance{static_cast<double>(v) / 100.0};
+}
+
+constexpr Distance operator""_cm(long double v) {
+	return Distance{static_cast<double>(v) / 100.0};
 }
 
 constexpr Distance operator""_in(unsigned long long v) {

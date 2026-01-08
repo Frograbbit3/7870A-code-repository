@@ -1,7 +1,8 @@
 #pragma once
 #include "custom/enums.hpp"
 #include "modded.hpp"
-#define pi M_PI
+#include "pros/abstract_motor.hpp"
+constexpr double pi = M_PI;
 
 namespace MKV5
 {
@@ -32,7 +33,7 @@ namespace MKV5
             @param imu A gyroscope for more accurate rotation.
             @param gearRatio a fraction / decimal ratio used primarily for rotation and driveDistance. Pass 1 in if you don't have a gear ratio.
         */
-        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide, double trc, double gearRatio, std::optional<pros::Imu *> i);
+        Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide, Units::Distance trc, double gearRatio, std::optional<pros::Imu *> i);
 
         /*
             Sets the left side velocity.
@@ -82,7 +83,7 @@ namespace MKV5
         /*
             Stops the robot.
         */
-        void stopDrive();
+        void stopDrive(pros::MotorBrake brakeType = pros::MotorBrake::brake);
         /*
             Moves the robot in a direction.
             @param direction Direction to move.
@@ -99,5 +100,10 @@ namespace MKV5
             @return A bool on if it failed or not.
         */
         bool waitForStationary(int timeout = 50);
+        /*
+            Resets the drivetrain / gyro heading.
+            @param heading the new heading
+        */
+        void resetHeading(Units::Angle heading = {0});
     };
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "enums.hpp"
+#include "pros/abstract_motor.hpp"
 
 #define time pros::millis()
 
@@ -55,5 +56,10 @@ namespace MKV5
             @warning Don't need to call this, handled by drivetrain.
         */
         void update();
+        /*
+            Applies a brake type to all motors.
+            @param type The brake type.
+        */
+        void setBrakingType(pros::MotorBrake type);
     };
 }

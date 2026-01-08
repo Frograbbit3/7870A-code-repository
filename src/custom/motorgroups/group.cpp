@@ -71,4 +71,10 @@ void MotorGroup::update() {
 		stopped = 0;
 	}
 }
+
+ void MotorGroup::setBrakingType(pros::MotorBrake type) {
+	for (CustomMotor &mtr : group) {
+		mtr.setBrakeMode(type);
+	}
+ }
 } // namespace MKV5
