@@ -2,8 +2,9 @@
 #include "custom/enums.hpp"
 #include "modded.hpp"
 #include "pros/abstract_motor.hpp"
+#include <limits>
 constexpr double pi = M_PI;
-
+constexpr long long M_MAX = std::numeric_limits<long long>::max();
 namespace MKV5
 {
     class Drivetrain
@@ -12,6 +13,7 @@ namespace MKV5
         MotorGroup leftMotors;
         MotorGroup rightMotors;
         double trackWidth;
+        int isDriving = 0;
 
     private:
         std::vector<int8_t> leftSide;
@@ -20,6 +22,9 @@ namespace MKV5
         double gearRatio;
         void antiDrift();
         double stationaryRate;
+        long long timeout = M_MAX;//effeci
+
+    static void _drivetrain_tick(void* drive);
 
     public:
         /*Resets all motors & calibrates the gyro.*/
@@ -105,5 +110,10 @@ namespace MKV5
             @param heading the new heading
         */
         void resetHeading(Units::Angle heading = {0});
+        /*
+            Sets the max amount of time any one drive call can last.
+            @param timeout Passing 0 or a negative into this call will remove the timeout.
+        */
+        void setTimeout(int timeout);
     };
 }

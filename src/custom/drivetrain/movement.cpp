@@ -30,7 +30,7 @@ void Drivetrain::moveDistance(
 	else{
 		dir = direction.value();
 	}
-
+	uint32_t start = pros::millis();
 #ifdef DO_DISTANCE_TRACKING
 	double wheelRad = getWheelDiameter(leftMotors.group[0].getWheelType()) /
 	                  2.0; // Convert diameter to radius
@@ -49,6 +49,11 @@ void Drivetrain::moveDistance(
 	while (true) {
 		double errL = aimL - leftMotors.getRotation();
 		double errR = aimR - rightMotors.getRotation();
+
+		//timeout
+		if (pros::millis() - start > timeout)
+			break;
+		
 
 		if (std::abs(errL) <= 5 && std::abs(errR) <= 5)
 			break;
@@ -115,6 +120,7 @@ void Drivetrain::turn(MKV5::Units::Angle heading, MKV5::Units::RotationUnit dire
     const int TIMEOUT = 5000;
 
     int elapsedTime = 0;
+	int start = pros::millis();
 
     while (elapsedTime < TIMEOUT) {
         // Signed shortest-path error in degrees (-180 .. 180)
@@ -123,6 +129,9 @@ void Drivetrain::turn(MKV5::Units::Angle heading, MKV5::Units::RotationUnit dire
 
         if (std::fabs(error) <= ROTATION_OFFSET_LIMIT)
             break;
+		if (pros::millis() - start > timeout)
+			break;
+		
 
         // Scale velocity based on error magnitude
         double percent = std::fabs(error) / 180.0;
@@ -161,5 +170,6 @@ void Drivetrain::stopDrive(pros::MotorBrake brakeType) {
 void Drivetrain::startDrive(Units::DirectionUnit direction) {
 	leftMotors.startMove(direction);
 	rightMotors.startMove(direction);
+	isDriving = pros::millis();
 }
 } // namespace MKV5

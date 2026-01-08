@@ -35,8 +35,8 @@ extern "C" {
         Source: https://github.com/purduesigbots/forkner-public/blob/62e1328b7902715035357622d81e4a35cb15ff2f/src/libforkner/drive.cpp#L363
     */
         inline float JoystickCurve(float iturn) {
-            const double nl  = CD_TURN_NONLINEARITY;
-            const double k   = M_PI * 0.5 * nl;
+            constexpr double nl  = CD_TURN_NONLINEARITY;
+            constexpr double k   = M_PI * 0.5 * nl;
             const double den = std::sin(k);
 
             double x = std::clamp(iturn / 127.0, -1.0, 1.0);

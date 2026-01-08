@@ -94,6 +94,7 @@ void Drivetrain::antiDrift() {
         if (pros::millis() - stationaryRate > MAX_TIME)
             return true;
 
+    
         return false;
     }
     bool Drivetrain::waitForStationary(int timeout) {
@@ -108,4 +109,12 @@ void Drivetrain::antiDrift() {
     void Drivetrain::resetHeading(Units::Angle heading) {
         gyro->set_heading(heading.dg());
     };
+    
+    void Drivetrain::setTimeout(int tim) {
+        if (tim <= 0) {
+            timeout = M_MAX;
+            return;
+        }
+        timeout = static_cast<long long>(tim);
+    }
 }
