@@ -36,10 +36,14 @@ void Drivetrain::moveDistance(
 	double rotations = distance.inches() / (D_PI * wheelRad);
 	double motorRotations = (rotations * gearRatio) * 360.0f;
 
+	//reset the positions as to help with accuracy
+	leftMotors.doCalibration();
+	rightMotors.doCalibration();
+	pros::delay(25); //just to be safe
 	leftMotors.setVelocity(leftMotors.velocity);
 	rightMotors.setVelocity(rightMotors.velocity);
-	double aimL = leftMotors.getRotation() + motorRotations;
-	double aimR = rightMotors.getRotation() + motorRotations;
+	double aimL = motorRotations;
+	double aimR = motorRotations;
 
 	while (true) {
 		double errL = aimL - leftMotors.getRotation();

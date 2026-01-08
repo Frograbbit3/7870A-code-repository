@@ -18,6 +18,7 @@ namespace MKV5
         pros::Imu *imu;
         double gearRatio;
         void antiDrift();
+        double stationaryRate;
 
     public:
         /*Resets all motors & calibrates the gyro.*/
@@ -87,5 +88,16 @@ namespace MKV5
             @param direction Direction to move.
         */
         void startDrive(MKV5::Units::DirectionUnit direction);
+        /*
+            Checks if the robot is currently moving based on the gyro.
+            @return Returns true if no gyro is installed
+        */
+        bool isStationary();
+        /*
+            Waits until isStationary returns true.Immediately continues if a gyro is not found.
+            @param timeout The amount of time to wait before continuing regardless
+            @return A bool on if it failed or not.
+        */
+        bool waitForStationary(int timeout = 50);
     };
 }

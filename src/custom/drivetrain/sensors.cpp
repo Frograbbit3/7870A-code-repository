@@ -1,5 +1,8 @@
 #include "custom/drivetrain.hpp"
 #include "config.h"
+#include "init.hpp"
+#include "pros/imu.h"
+#include "pros/rtos.hpp"
 #include <algorithm>
 #include <cstdlib>
 namespace MKV5
@@ -70,5 +73,35 @@ void Drivetrain::antiDrift() {
         double headingDegrees = headingRadians * (180.0 / pi);
         return headingDegrees;
     }
+    bool Drivetrain::isStationary() {
+        constexpr double MAX_OFFSET = 0.25;
+        constexpr double MAX_TIME = 50; //in ms
 
+        if (gyro == nullptr)
+            return false;
+
+
+        pros::imu_gyro_s_t rate = gyro->get_gyro_rate();
+        double timeEllapsed = 0;
+
+        
+        if ((abs(rate.x) > MAX_OFFSET || abs(rate.y) > MAX_OFFSET || abs(rate.z) > MAX_OFFSET)) {
+            stationaryRate = pros::millis();
+            return false;
+        }
+        
+        if (pros::millis() - stationaryRate > MAX_TIME)
+            return true;
+
+        return false;
+    }
+    bool Drivetrain::waitForStationary(int timeout) {
+        uint32_t start = pros::millis();
+        while (!isStationary() && (pros::millis() - start) < timeout) {
+            pros::delay(10);
+        } 
+        if (pros::millis() - start >= timeout)
+            return false;
+        return true;
+    }
 }

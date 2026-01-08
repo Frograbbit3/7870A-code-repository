@@ -6,6 +6,10 @@
 using pros::delay;
 
 void autonomousTick() {
+
+    drivetrain->waitForStationary(25_ms);
+
+
     std::cout << "I... AM RUNNING!" << std::endl;
     drivetrain->setVelocity(50, 50);
     //start outtake
