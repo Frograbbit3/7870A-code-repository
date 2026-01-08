@@ -96,9 +96,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:affbbafb935e41e14931a15810b84db2f" id="r_affbbafb935e41e14931a15810b84db2f"><td class="memItemLeft" align="right" valign="top"><a id="affbbafb935e41e14931a15810b84db2f" name="affbbafb935e41e14931a15810b84db2f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>doCalibration</b> ()</td></tr>
 <tr class="separator:affbbafb935e41e14931a15810b84db2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a122ce96af2b121dcbd2fd170f9ecd4" id="r_a1a122ce96af2b121dcbd2fd170f9ecd4"><td class="memItemLeft" align="right" valign="top"><a id="a1a122ce96af2b121dcbd2fd170f9ecd4" name="a1a122ce96af2b121dcbd2fd170f9ecd4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Drivetrain</b> (const std::vector&lt; int8_t &gt; &amp;leftSide, const std::vector&lt; int8_t &gt; &amp;rightSide, double trc, double gearRatio, std::optional&lt; pros::Imu * &gt; i)</td></tr>
-<tr class="separator:a1a122ce96af2b121dcbd2fd170f9ecd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bb54f56d9b3b875850ac19c0b6456e6" id="r_a0bb54f56d9b3b875850ac19c0b6456e6"><td class="memItemLeft" align="right" valign="top"><a id="a0bb54f56d9b3b875850ac19c0b6456e6" name="a0bb54f56d9b3b875850ac19c0b6456e6"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Drivetrain</b> (const std::vector&lt; int8_t &gt; &amp;leftSide, const std::vector&lt; int8_t &gt; &amp;rightSide, <a class="el" href="../../d7/de3/structMKV5_1_1Units_1_1Distance.html">Units::Distance</a> trc, double gearRatio, std::optional&lt; pros::Imu * &gt; i)</td></tr>
+<tr class="separator:a0bb54f56d9b3b875850ac19c0b6456e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0bbb9567827fe858e4984023ad68d5c" id="r_aa0bbb9567827fe858e4984023ad68d5c"><td class="memItemLeft" align="right" valign="top"><a id="aa0bbb9567827fe858e4984023ad68d5c" name="aa0bbb9567827fe858e4984023ad68d5c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setLeftVelocity</b> (int velocity)</td></tr>
 <tr class="separator:aa0bbb9567827fe858e4984023ad68d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -120,9 +120,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>rotateTo</b> (<a clas
 <tr class="memitem:abd367e2062ccf813773af9a878772531" id="r_abd367e2062ccf813773af9a878772531"><td class="memItemLeft" align="right" valign="top"><a id="abd367e2062ccf813773af9a878772531" name="abd367e2062ccf813773af9a878772531"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>turn</b> (<a class="el" href="../../d2/dc6/structMKV5_1_1Units_1_1Angle.html">MKV5::Units::Angle</a> heading, MKV5::Units::RotationUnit direction=MKV5::Units::RotationUnit::AUTO)</td></tr>
 <tr class="separator:abd367e2062ccf813773af9a878772531"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba3b74fac29758c4f427af9cde3b83ca" id="r_aba3b74fac29758c4f427af9cde3b83ca"><td class="memItemLeft" align="right" valign="top"><a id="aba3b74fac29758c4f427af9cde3b83ca" name="aba3b74fac29758c4f427af9cde3b83ca"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stopDrive</b> ()</td></tr>
-<tr class="separator:aba3b74fac29758c4f427af9cde3b83ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf60863240b0f70a6f791e53a74beb27" id="r_aaf60863240b0f70a6f791e53a74beb27"><td class="memItemLeft" align="right" valign="top"><a id="aaf60863240b0f70a6f791e53a74beb27" name="aaf60863240b0f70a6f791e53a74beb27"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>stopDrive</b> (pros::MotorBrake brakeType=pros::MotorBrake::brake)</td></tr>
+<tr class="separator:aaf60863240b0f70a6f791e53a74beb27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67aafd93afe59c9a9804ac83f261afb2" id="r_a67aafd93afe59c9a9804ac83f261afb2"><td class="memItemLeft" align="right" valign="top"><a id="a67aafd93afe59c9a9804ac83f261afb2" name="a67aafd93afe59c9a9804ac83f261afb2"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>startDrive</b> (MKV5::Units::DirectionUnit direction)</td></tr>
 <tr class="separator:a67aafd93afe59c9a9804ac83f261afb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -132,6 +132,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isStationary</b> ()</
 <tr class="memitem:a643dd83e21ad9d3fc375a65dfc87294f" id="r_a643dd83e21ad9d3fc375a65dfc87294f"><td class="memItemLeft" align="right" valign="top"><a id="a643dd83e21ad9d3fc375a65dfc87294f" name="a643dd83e21ad9d3fc375a65dfc87294f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>waitForStationary</b> (int timeout=50)</td></tr>
 <tr class="separator:a643dd83e21ad9d3fc375a65dfc87294f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b748e2a9e371caa396aae6cd0011c6d" id="r_a1b748e2a9e371caa396aae6cd0011c6d"><td class="memItemLeft" align="right" valign="top"><a id="a1b748e2a9e371caa396aae6cd0011c6d" name="a1b748e2a9e371caa396aae6cd0011c6d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>resetHeading</b> (<a class="el" href="../../d2/dc6/structMKV5_1_1Units_1_1Angle.html">Units::Angle</a> heading={0})</td></tr>
+<tr class="separator:a1b748e2a9e371caa396aae6cd0011c6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
