@@ -118,8 +118,8 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="comment">        Source: https://github.com/purduesigbots/forkner-public/blob/62e1328b7902715035357622d81e4a35cb15ff2f/src/libforkner/drive.cpp#L363</span></div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="comment">    */</span></div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        <span class="keyword">inline</span> <span class="keywordtype">float</span> JoystickCurve(<span class="keywordtype">float</span> iturn) {</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            <span class="keyword">const</span> <span class="keywordtype">double</span> nl  = CD_TURN_NONLINEARITY;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>            <span class="keyword">const</span> <span class="keywordtype">double</span> k   = M_PI * 0.5 * nl;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            <span class="keyword">constexpr</span> <span class="keywordtype">double</span> nl  = CD_TURN_NONLINEARITY;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>            <span class="keyword">constexpr</span> <span class="keywordtype">double</span> k   = M_PI * 0.5 * nl;</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>            <span class="keyword">const</span> <span class="keywordtype">double</span> den = std::sin(k);</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>            <span class="keywordtype">double</span> x = std::clamp(iturn / 127.0, -1.0, 1.0);</div>
