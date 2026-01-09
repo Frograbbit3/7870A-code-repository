@@ -2,22 +2,19 @@
 #include "init.hpp"
 #include "pros/rtos.h"
 #include "pros/rtos.hpp"
+#include <cstdio>
 
 using pros::delay;
 void autonomousTick() {
 
     drivetrain->waitForStationary(75_ms);
 
-
-    std::cout << "I... AM RUNNING!" << std::endl;
     drivetrain->setVelocity(50, 50);
 
     //start outtake
-    std::cout << "spin" << std::endl;
     flywheel->spin();
 
     //move to the right goal
-    std::cout << "moving distance" << std::endl;
     drivetrain->moveDistance(34_in, FORWARD);
 
     //face goal

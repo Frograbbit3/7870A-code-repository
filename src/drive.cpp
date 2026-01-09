@@ -5,8 +5,9 @@
 #include "pros/misc.h"
 #include "pros/misc.hpp"
 #include "pros/rtos.hpp"
-#include "pros/screen.hpp"
 #include <cmath>
+#include <cstdint>
+#include <cstdlib>
 #include <cstring>
 
 bool tank_mode = false;
@@ -17,6 +18,7 @@ void controllerTick() {
 	while (true) {
 		mainControl->update();
         mainControl->processBindings();
+        
         /*
         if (control->buttons.L1.pressed || control->buttons.L2.pressed) {
             flywheel->setVelocity((control->buttons.L2.pressed-control->buttons.L1.pressed) * 127);

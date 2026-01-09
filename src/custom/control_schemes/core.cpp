@@ -2,7 +2,6 @@
 #include "custom/emulated_controller.hpp"
 #include "custom/enums.hpp"
 #include "custom/modded.hpp"
-#include <string>
 #include <variant>
 
 namespace MKV5 {
@@ -15,6 +14,7 @@ ControlScheme::ControlScheme(Units::ControllerDriveTypeUnit typ,
 	RightJoystick = &controller.joysticks.Right;
 }
 void ControlScheme::_updateAccumulators() {
+
 	if (negInertiaAccumlator > 1) {
 		negInertiaAccumlator -= 1;
 	} else if (negInertiaAccumlator < -1) {
