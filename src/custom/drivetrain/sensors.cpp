@@ -5,7 +5,9 @@
 #include "pros/imu.h"
 #include "pros/rtos.hpp"
 #include <algorithm>
+#include <cstdint>
 #include <cstdlib>
+#include <vector>
 namespace MKV5
 {
 void Drivetrain::antiDrift() {
@@ -117,4 +119,23 @@ void Drivetrain::antiDrift() {
         }
         timeout = static_cast<long long>(tim);
     }
+
+    std::vector<uint8_t> Drivetrain::getOverheatingMotors() {
+        std::vector<uint8_t> mtrs;
+        for (MKV5::CustomMotor &mtr: leftMotors.group) {
+            if (mtr.isOverheating()) {
+                mtrs.push_back(mtr.getPort());
+            }
+        }
+        for (MKV5::CustomMotor &mtr: rightMotors.group) {
+            if (mtr.isOverheating()) {
+                mtrs.push_back(mtr.getPort());
+            }
+        }
+        return mtrs;
+    }
+
+    bool Drivetrain::isOverheating() {
+        return (getOverheatingMotors().size() > 0);
+    };
 }

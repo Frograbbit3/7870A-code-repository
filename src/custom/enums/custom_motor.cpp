@@ -65,7 +65,9 @@ namespace MKV5
     {
         return motor.is_reversed();
     }
-
+    bool CustomMotor::isOverheating() {
+        return motor.is_over_temp();
+    }
     double CustomMotor::getVelocity(Units::VelocityUnit unit)
     {
         switch (unit)

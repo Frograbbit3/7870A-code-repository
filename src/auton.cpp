@@ -26,8 +26,9 @@ void autonomousTick() {
 
     //prevents hitting so aggressively
     drivetrain->moveDistance(0.5_in, FORWARD);
-    secondFlywheel->spin(SPIN_FORWARD);
     
+    secondFlywheel->spin(SPIN_FORWARD);
+
     delay(2_s); //give it time to unload
     secondFlywheel->brake();
 

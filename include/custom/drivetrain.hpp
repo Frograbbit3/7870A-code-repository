@@ -3,6 +3,7 @@
 #include "modded.hpp"
 #include "pros/abstract_motor.hpp"
 #include <limits>
+#include <vector>
 constexpr double pi = M_PI;
 constexpr long long M_MAX = std::numeric_limits<long long>::max();
 namespace MKV5
@@ -115,5 +116,15 @@ namespace MKV5
             @param timeout Passing 0 or a negative into this call will remove the timeout.
         */
         void setTimeout(int timeout);
+
+        /*
+            Gets the port of motors flagged as overheating.
+            @returns an int from 0-<count of motors>
+        */
+        std::vector<uint8_t> getOverheatingMotors();
+        /*
+            Checks if the drivetrain is overheating. (If ANY motor is overheating, this will be true!)
+        */
+        bool isOverheating();
     };
 }

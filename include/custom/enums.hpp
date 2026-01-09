@@ -133,6 +133,8 @@ struct CustomMotor {
 	double getVelocity(Units::VelocityUnit unit = Units::VelocityUnit::RAW);
 	/*Gets the position the motor is *attempting* to turn to.*/
 	double getTargetPosition();
+	/*Checks if the motor is overheating.*/
+	bool isOverheating();
 	/*Set functions*/
 
 	/*Sets the motor's brake mode.*/
