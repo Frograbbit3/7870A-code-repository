@@ -14,7 +14,7 @@ void Drivetrain::setRightVelocity(int velocity) {
 }
 void Drivetrain::moveDistance(
     MKV5::Units::Distance distance,
-    std::optional<MKV5::Units::DirectionUnit> direction) {
+    std::optional<MKV5::Units::DirectionUnit> direction, bool block) {
 	MKV5::Units::DistanceUnit dist = MKV5::Units::DistanceUnit::INCHES;
 	MKV5::Units::DirectionUnit dir;
 
@@ -45,7 +45,9 @@ void Drivetrain::moveDistance(
 	rightMotors.setVelocity(rightMotors.velocity);
 	double aimL = motorRotations;
 	double aimR = motorRotations;
-
+	leftMotors.spinRelative(aimL,block);
+	rightMotors.spinRelative(aimR, block);
+	/*
 	while (true) {
 		double errL = aimL - leftMotors.getRotation();
 		double errR = aimR - rightMotors.getRotation();
@@ -74,6 +76,7 @@ void Drivetrain::moveDistance(
 
 	leftMotors.stop();
 	rightMotors.stop();
+	*/
 
 #else
 	// approximate a time value for it

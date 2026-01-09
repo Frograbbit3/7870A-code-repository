@@ -57,9 +57,9 @@ bool MotorGroup::isMoving() {
 	return false;
 }
 
-void MotorGroup::spinRelative(double angle) {
+void MotorGroup::spinRelative(double angle, bool block) {
 	for (CustomMotor &mtr : group) {
-		mtr.spinRelative(Units::DirectionUnit::FORWARD, angle);
+		mtr.spinRelative(Units::DirectionUnit::FORWARD, angle, block);
 	}
 }
 

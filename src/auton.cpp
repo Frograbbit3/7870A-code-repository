@@ -11,18 +11,23 @@ void autonomousTick() {
 
     std::cout << "I... AM RUNNING!" << std::endl;
     drivetrain->setVelocity(50, 50);
+
     //start outtake
     std::cout << "spin" << std::endl;
     flywheel->spin();
+
     //move to the right goal
     std::cout << "moving distance" << std::endl;
     drivetrain->moveDistance(34_in, FORWARD);
+
     //face goal
     drivetrain->rotateTo(90_dg);
     drivetrain->moveDistance(30_in, REVERSE);
+
     //prevents hitting so aggressively
     drivetrain->moveDistance(0.5_in, FORWARD);
     secondFlywheel->spin(SPIN_FORWARD);
+    
     delay(2_s); //give it time to unload
     secondFlywheel->brake();
 
