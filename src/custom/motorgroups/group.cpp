@@ -22,7 +22,7 @@ void MotorGroup::spin(Units::DirectionUnit dir) {
 			stop();
 			break;
 		default:
-			mtr.move(dir);
+			mtr.spin(dir);
 			break;
 		}
 	}
@@ -59,7 +59,7 @@ bool MotorGroup::isMoving() {
 
 void MotorGroup::spinRelative(double angle) {
 	for (CustomMotor &mtr : group) {
-		mtr.moveRelative(Units::DirectionUnit::FORWARD, angle);
+		mtr.spinRelative(Units::DirectionUnit::FORWARD, angle);
 	}
 }
 

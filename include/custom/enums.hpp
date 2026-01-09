@@ -161,19 +161,15 @@ struct CustomMotor {
 
 	/*Moves the motor forever until .brake is called. Pass in an argument if
 	 * you want to choose a voltage.*/
-	void move(Units::DirectionUnit dir,
+	void spin(Units::DirectionUnit dir = Units::DirectionUnit::FORWARD,
 	          std::optional<int32_t> voltage = std::nullopt);
 	/*Moves the motor to a specific position. Pass in a voltage if you want
 	 * to choose the speed.*/
-	void moveAbsolute(Units::DirectionUnit direction, double position,
+	void spinAbsolute(Units::DirectionUnit direction, double position,
 	                  std::optional<int32_t> voltage = std::nullopt);
 	/*Moves the motor to an offset based off the current pos. Pass in a
 	 * voltage if you want to choose the speed.*/
-	void moveRelative(Units::DirectionUnit direction, double position);
-	/*Just a cleaner API for purely moving; DOES NOT FACTOR VOLTAGE INTO
-	 * IT!*/
-	void
-	spin(Units::DirectionUnit direction = Units::DirectionUnit::FORWARD);
+	void spinRelative(Units::DirectionUnit direction, double position, bool block=true);
 	/*Stops the motor.*/
 	void brake();
 

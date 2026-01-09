@@ -154,7 +154,7 @@ namespace MKV5
     }
 
     // movement
-    void CustomMotor::move(Units::DirectionUnit dir, std::optional<int32_t> voltage)
+    void CustomMotor::spin(Units::DirectionUnit dir, std::optional<int32_t> voltage)
     {
         int mult = (dir == Units::DirectionUnit::FORWARD) ? 1 : (dir == Units::DirectionUnit::REVERSE) ? -1
                                                                                  : 0;
@@ -166,7 +166,7 @@ namespace MKV5
         motor.move(out);
     }
 
-    void CustomMotor::moveAbsolute(Units::DirectionUnit direction, double position,
+    void CustomMotor::spinAbsolute(Units::DirectionUnit direction, double position,
                                    std::optional<int32_t> voltage)
     {
         int8_t mult = (direction == Units::DirectionUnit::FORWARD) ? 1 : (direction == Units::DirectionUnit::REVERSE) ? -1
@@ -179,26 +179,27 @@ namespace MKV5
         motor.move_absolute(position, out);
     }
 
-    void CustomMotor::moveRelative(Units::DirectionUnit direction, double position)
+    void CustomMotor::spinRelative(Units::DirectionUnit direction, double position, bool block)
     {
         motor.move_relative(position, velocity);
         double target = motor.get_position() + position;
 
         // Block until close enough
-        while (true) {
-            double current = motor.get_position();
-            
-            // Tunable threshold
-            if (fabs(target - current) < 5) {
-                break;
-            }
+        if (block) {
+            while (true) {
+                double current = motor.get_position();
+                
+                // Tunable threshold
+                if (fabs(target - current) < 5) {
+                    break;
+                }
 
-            pros::delay(10);
+                pros::delay(10);
+            }
         }
+
     }
-    void CustomMotor::spin(Units::DirectionUnit direction) {
-        move(direction, 127);
-    }
+
     void CustomMotor::brake()
     {
         motor.brake();
