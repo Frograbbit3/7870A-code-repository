@@ -172,12 +172,12 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <span class="comment">/*</span></div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment">            Stops the robot.</span></div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="comment">        */</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        <span class="keywordtype">void</span> stopDrive(pros::MotorBrake brakeType = pros::MotorBrake::brake);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        <span class="keywordtype">void</span> stop(pros::MotorBrake brakeType = pros::MotorBrake::brake);</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        <span class="comment">/*</span></div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="comment">            Moves the robot in a direction.</span></div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="comment">            @param direction Direction to move.</span></div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="comment">        */</span></div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keywordtype">void</span> startDrive(MKV5::Units::DirectionUnit direction);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keywordtype">void</span> move(MKV5::Units::DirectionUnit direction);</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        <span class="comment">/*</span></div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="comment">            Checks if the robot is currently moving based on the gyro.</span></div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="comment">            @return Returns true if no gyro is installed</span></div>
@@ -204,8 +204,8 @@ $(document).ready(function() { init_codefold(1); });
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>}</div>
 <div class="ttc" id="aclassMKV5_1_1Drivetrain_html"><div class="ttname"><a href="../../d8/dee/classMKV5_1_1Drivetrain.html">MKV5::Drivetrain</a></div><div class="ttdef"><b>Definition</b> drivetrain.hpp:11</div></div>
 <div class="ttc" id="aclassMKV5_1_1MotorGroup_html"><div class="ttname"><a href="../../dd/d18/classMKV5_1_1MotorGroup.html">MKV5::MotorGroup</a></div><div class="ttdef"><b>Definition</b> modded.hpp:10</div></div>
-<div class="ttc" id="astructMKV5_1_1Units_1_1Angle_html"><div class="ttname"><a href="../../d2/dc6/structMKV5_1_1Units_1_1Angle.html">MKV5::Units::Angle</a></div><div class="ttdef"><b>Definition</b> enums.hpp:61</div></div>
-<div class="ttc" id="astructMKV5_1_1Units_1_1Distance_html"><div class="ttname"><a href="../../d7/de3/structMKV5_1_1Units_1_1Distance.html">MKV5::Units::Distance</a></div><div class="ttdef"><b>Definition</b> enums.hpp:24</div></div>
+<div class="ttc" id="astructMKV5_1_1Units_1_1Angle_html"><div class="ttname"><a href="../../d2/dc6/structMKV5_1_1Units_1_1Angle.html">MKV5::Units::Angle</a></div><div class="ttdef"><b>Definition</b> enums.hpp:57</div></div>
+<div class="ttc" id="astructMKV5_1_1Units_1_1Distance_html"><div class="ttname"><a href="../../d7/de3/structMKV5_1_1Units_1_1Distance.html">MKV5::Units::Distance</a></div><div class="ttdef"><b>Definition</b> enums.hpp:20</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
