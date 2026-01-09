@@ -121,10 +121,10 @@ void ControlScheme::processBindings() {
 
 				if (b->pressed) {
 					mg->setVelocity(binding.speed);
-					mg->startMove(
+					mg->spin(
 					    Units::DirectionUnit::FORWARD);
 				} else {
-					mg->stopMove();
+					mg->stop();
 				}
 			}
 
@@ -144,11 +144,11 @@ void ControlScheme::processBindings() {
 
 				if (fp ^ rp) {
 					mg->setVelocity(binding.speed);
-					mg->startMove(
+					mg->spin(
 					    fp ? Units::DirectionUnit::FORWARD
 					       : Units::DirectionUnit::REVERSE);
 				} else {
-					mg->stopMove();
+					mg->stop();
 				}
 			}
 		}
@@ -212,9 +212,9 @@ void ControlScheme::update() {
 		rightVelocity =
 		    minmax(static_cast<int>(rightVelocity), -127, 127);
 		drive.setVelocity(leftVelocity, rightVelocity);
-		drive.startDrive(Units::DirectionUnit::FORWARD);
+		drive.move(Units::DirectionUnit::FORWARD);
 	} else {
-		drive.stopDrive();
+		drive.stop();
 	}
 	fr++;
 }

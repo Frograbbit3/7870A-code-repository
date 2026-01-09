@@ -29,7 +29,7 @@ namespace MKV5
         while (true) {
             if (self->isDriving > 0) {
                 if (pros::millis() - self->isDriving > self->timeout) {
-                    self->stopDrive();
+                    self->stop();
                     self->isDriving = 0;
                 }
             }

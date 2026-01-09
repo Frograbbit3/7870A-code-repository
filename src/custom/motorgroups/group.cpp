@@ -15,11 +15,11 @@ void MotorGroup::setVelocity(int vel) {
 	}
 }
 
-void MotorGroup::startMove(Units::DirectionUnit dir) {
+void MotorGroup::spin(Units::DirectionUnit dir) {
 	for (CustomMotor &mtr : group) {
 		switch (dir) {
 		case Units::DirectionUnit::STOP:
-			stopMove();
+			stop();
 			break;
 		default:
 			mtr.move(dir);
@@ -27,7 +27,7 @@ void MotorGroup::startMove(Units::DirectionUnit dir) {
 		}
 	}
 }
-void MotorGroup::stopMove() {
+void MotorGroup::stop() {
 	for (CustomMotor &mtr : group) {
 		mtr.brake();
 		// stopped=time;
@@ -57,7 +57,7 @@ bool MotorGroup::isMoving() {
 	return false;
 }
 
-void MotorGroup::moveRelative(double angle) {
+void MotorGroup::spinRelative(double angle) {
 	for (CustomMotor &mtr : group) {
 		mtr.moveRelative(Units::DirectionUnit::FORWARD, angle);
 	}

@@ -88,12 +88,12 @@ namespace MKV5
         /*
             Stops the robot.
         */
-        void stopDrive(pros::MotorBrake brakeType = pros::MotorBrake::brake);
+        void stop(pros::MotorBrake brakeType = pros::MotorBrake::brake);
         /*
             Moves the robot in a direction.
             @param direction Direction to move.
         */
-        void startDrive(MKV5::Units::DirectionUnit direction);
+        void move(MKV5::Units::DirectionUnit direction);
         /*
             Checks if the robot is currently moving based on the gyro.
             @return Returns true if no gyro is installed

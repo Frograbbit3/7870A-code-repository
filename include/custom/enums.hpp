@@ -1,8 +1,8 @@
 #pragma once
 #include "api.h"
+#include "config.h"
 #include "mathlib.h"
 #include "pros/motors.h"
-#include "config.h"
 #include <iostream>
 #include <variant>
 inline double INCH_TO_MM(double inch) { return 25.4 * inch; }
@@ -16,11 +16,7 @@ template <typename T> inline void print(T m) { std::cout << m << std::endl; }
 namespace MKV5 {
 namespace Units {
 
-enum class RotationUnit {
-	CLOCKWISE = 1,
-	COUNTER_CLOCK = 2,
-	AUTO = 3
-};
+enum class RotationUnit { CLOCKWISE = 1, COUNTER_CLOCK = 2, AUTO = 3 };
 struct Distance {
 	double meters;
 
@@ -80,6 +76,7 @@ constexpr Angle operator-(Angle v) { return Angle{-v.degrees}; }
 constexpr uint32_t operator""_s(unsigned long long v) { return v * 1000; }
 
 constexpr uint32_t operator""_ms(unsigned long long v) { return v; }
+
 constexpr uint32_t operator""_s(long double v) { return v * 1000; }
 
 constexpr uint32_t operator""_ms(long double v) { return v; }
@@ -155,7 +152,8 @@ struct CustomMotor {
 	void setZero(std::optional<double> position = std::nullopt);
 	/*Sets the motors velocity. Defaults to a unit of RAW, meaning -127 ->
 	 * 127*/
-	void setVelocity(float vel, Units::VelocityUnit unit = Units::VelocityUnit::RAW);
+	void setVelocity(float vel,
+	                 Units::VelocityUnit unit = Units::VelocityUnit::RAW);
 
 	/*Sets the encoding of the motor. Defaults to DEGREES.*/
 	void setEncoding(pros::MotorEncoderUnits unit);
@@ -174,7 +172,8 @@ struct CustomMotor {
 	void moveRelative(Units::DirectionUnit direction, double position);
 	/*Just a cleaner API for purely moving; DOES NOT FACTOR VOLTAGE INTO
 	 * IT!*/
-	void spin(Units::DirectionUnit direction = Units::DirectionUnit::FORWARD);
+	void
+	spin(Units::DirectionUnit direction = Units::DirectionUnit::FORWARD);
 	/*Stops the motor.*/
 	void brake();
 
@@ -198,10 +197,13 @@ struct ControllerSettings {
 } // namespace MKV5
 
 // Drive modes
-constexpr auto TANK_DRIVE = MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_TANK;
-constexpr auto ARCADE_DRIVE =MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_ARCADE;
+constexpr auto TANK_DRIVE =
+    MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_TANK;
+constexpr auto ARCADE_DRIVE =
+    MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_ARCADE;
 constexpr auto GTA_DRIVE = MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_GTA;
-constexpr auto CHEESE_DRIVE = MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_CHEESE;
+constexpr auto CHEESE_DRIVE =
+    MKV5::Units::ControllerDriveTypeUnit::DRIVE_MODE_CHEESE;
 
 // Directions
 #ifdef SHORTHAND_DIRECTIONALS
@@ -213,7 +215,7 @@ constexpr auto STOP = MKV5::Units::DirectionUnit::STOP;
 constexpr auto SPIN_FORWARD = MKV5::Units::DirectionUnit::FORWARD;
 constexpr auto SPIN_REVERSE = MKV5::Units::DirectionUnit::REVERSE;
 
-//distances, outdated now but ill keep it
+// distances, outdated now but ill keep it
 constexpr auto DIST_MM = MKV5::Units::DistanceUnit::MM;
 constexpr auto DIST_INCHES = MKV5::Units::DistanceUnit::INCHES;
 constexpr auto DIST_ROTATION = MKV5::Units::DistanceUnit::ROTATION;

@@ -4,10 +4,9 @@
 #include "pros/rtos.hpp"
 
 using pros::delay;
-
 void autonomousTick() {
 
-    drivetrain->waitForStationary(25_ms);
+    drivetrain->waitForStationary(75_ms);
 
 
     std::cout << "I... AM RUNNING!" << std::endl;

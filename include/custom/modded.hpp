@@ -28,16 +28,16 @@ namespace MKV5
             Moves the motor `angle` degrees from where it is.
             @param angle The amount of degrees to turn.
         */
-        void moveRelative(double angle);
+        void spinRelative(double angle);
         /*
             Starts moving indefinately until stopped with `stopMove`.
             @param dir The direction to move.
         */
-        void startMove(MKV5::Units::DirectionUnit dir);
+        void spin(MKV5::Units::DirectionUnit dir);
         /*
             Stops all the motors.
         */
-        void stopMove();
+        void stop();
         /*
             Resets the motors' encoders. Does not block.
         */

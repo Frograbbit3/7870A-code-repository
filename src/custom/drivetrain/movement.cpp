@@ -59,21 +59,21 @@ void Drivetrain::moveDistance(
 			break;
 
 		if (std::abs(errL) > 5)
-			leftMotors.startMove(dir);
+			leftMotors.spin(dir);
 		else
-			leftMotors.stopMove();
+			leftMotors.stop();
 
 		if (std::abs(errR) > 5)
-			rightMotors.startMove(dir);
+			rightMotors.spin(dir);
 		else
-			rightMotors.stopMove();
+			rightMotors.stop();
 
 		//antiDrift();
 		pros::delay(10);
 	}
 
-	leftMotors.stopMove();
-	rightMotors.stopMove();
+	leftMotors.stop();
+	rightMotors.stop();
 
 #else
 	// approximate a time value for it
@@ -141,12 +141,12 @@ void Drivetrain::turn(MKV5::Units::Angle heading, MKV5::Units::RotationUnit dire
         // Decide direction dynamically
         if (direction == MKV5::Units::RotationUnit::CLOCKWISE ||
             (direction == MKV5::Units::RotationUnit::AUTO && error > 0)) {
-            leftMotors.startMove(MKV5::Units::DirectionUnit::FORWARD);
-            rightMotors.startMove(MKV5::Units::DirectionUnit::REVERSE);
+            leftMotors.spin(MKV5::Units::DirectionUnit::FORWARD);
+            rightMotors.spin(MKV5::Units::DirectionUnit::REVERSE);
         } else if (direction == MKV5::Units::RotationUnit::COUNTER_CLOCK ||
                    (direction == MKV5::Units::RotationUnit::AUTO && error < 0)) {
-            leftMotors.startMove(MKV5::Units::DirectionUnit::REVERSE);
-            rightMotors.startMove(MKV5::Units::DirectionUnit::FORWARD);
+            leftMotors.spin(MKV5::Units::DirectionUnit::REVERSE);
+            rightMotors.spin(MKV5::Units::DirectionUnit::FORWARD);
         }
 
         // Apply velocity
@@ -157,19 +157,19 @@ void Drivetrain::turn(MKV5::Units::Angle heading, MKV5::Units::RotationUnit dire
         elapsedTime += 25;
     }
 
-    stopDrive();
+    stop();
 }
 
-void Drivetrain::stopDrive(pros::MotorBrake brakeType) {
+void Drivetrain::stop(pros::MotorBrake brakeType) {
 	leftMotors.setBrakingType(brakeType);
 	rightMotors.setBrakingType(brakeType);
-	leftMotors.stopMove();
-	rightMotors.stopMove();
+	leftMotors.stop();
+	rightMotors.stop();
 }
 
-void Drivetrain::startDrive(Units::DirectionUnit direction) {
-	leftMotors.startMove(direction);
-	rightMotors.startMove(direction);
+void Drivetrain::move(Units::DirectionUnit direction) {
+	leftMotors.spin(direction);
+	rightMotors.spin(direction);
 	isDriving = pros::millis();
 }
 } // namespace MKV5
