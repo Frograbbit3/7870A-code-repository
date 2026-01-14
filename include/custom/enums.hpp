@@ -188,9 +188,9 @@ struct ControllerSettings {
 	Units::ControllerDriveTypeUnit CONTROL_SCHEME =
 	    Units::ControllerDriveTypeUnit::DRIVE_MODE_ARCADE;
 	float maxTurnSpeed = 0.8f;
-	float maxForwardSpeed = 0.8f;
+	float maxForwardSpeed = 1.0f;
 	bool enabled = true;
-	bool useJoystickCurve = false;
+	bool useJoystickCurve = true;
 };
 } // namespace MKV5
 

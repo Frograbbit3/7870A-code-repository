@@ -8,6 +8,7 @@ using pros::delay;
 void autonomousTick() {
 
     drivetrain->waitForStationary(75_ms);
+    drivetrain->setTimeout(5_s);
 
     drivetrain->setVelocity(50, 50);
 

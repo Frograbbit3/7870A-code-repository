@@ -31,6 +31,7 @@ class ControlScheme {
 	float LeftJoystickY;
 	float RightJoystickX;
 	float RightJoystickY;
+	float decreased_speed = 1.0f;
 
 	void _updateAccumulators();
 	void tankDrive();

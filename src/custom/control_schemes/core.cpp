@@ -206,11 +206,17 @@ void ControlScheme::update() {
 	controller.update(); // For the EmulatedController
 	// Read joystick raw values through the pointer members and apply curve
 	doControllerInputs();
+	if (drive.isOverheating()) {
+		decreased_speed = 0.8f;
+	}else{
+		decreased_speed = 1.0f;
+	}
+
 	if (fabs(leftVelocity) > 0 || fabs(rightVelocity) > 0) {
 		leftVelocity =
-		    minmax(static_cast<int>(leftVelocity), -127, 127);
+		    minmax(static_cast<int>(leftVelocity*decreased_speed), -127, 127);
 		rightVelocity =
-		    minmax(static_cast<int>(rightVelocity), -127, 127);
+		    minmax(static_cast<int>(rightVelocity*decreased_speed), -127, 127);
 		drive.setVelocity(leftVelocity, rightVelocity);
 		drive.move(Units::DirectionUnit::FORWARD);
 	} else {
