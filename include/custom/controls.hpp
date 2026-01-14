@@ -25,6 +25,7 @@ class ControlScheme {
 	double prevTurn;
 	int left;
 	int right;
+	long long frame;
 	double quickStopAccumlator = 0.0;
 	double negInertiaAccumlator = 0.0;
 	float LeftJoystickX;

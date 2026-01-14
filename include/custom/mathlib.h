@@ -1,4 +1,6 @@
 #pragma once
+#ifndef MATHLIB
+#define MATHLIB
 #include <algorithm>
 #define CD_TURN_NONLINEARITY 0.65
 #include "math.h"
@@ -48,7 +50,7 @@ inline float JoystickCurve(float iturn) {
 	return static_cast<float>(std::clamp(z, -1.0, 1.0) * 127.0);
 }
 
-float linear_slew(float current, float target,
+inline float linear_slew(float current, float target,
                   float accelRate = 0.1f,
                   float decelRate = 0.2f) {
     float delta = target - current;
@@ -63,3 +65,5 @@ float linear_slew(float current, float target,
 }
 
 }
+
+#endif

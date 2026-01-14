@@ -54,7 +54,7 @@ void controllerTick() {
         if (tank_mode)
             mainControl->configuration.CONTROL_SCHEME = TANK_DRIVE;
     
-		pros::delay(10);
+		pros::delay(2);
         f++;
 	}
 }

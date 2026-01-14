@@ -21,12 +21,17 @@ struct Joystick {
 	pros::controller_analog_e_t stickY;
 	float X = 0;
 	float Y = 0;
+	float targetX = 0;
+	float targetY = 0;
+	long long frame;
 	float deadzone = 0.15f;
 	bool process = true;
 	bool moving = false;
 	std::function<void(float, float)> OnMoveCallback = nullptr;
 	pros::Controller *control = nullptr;
-
+	private:
+	void _update_slew();
+	public:
 	Joystick() = default;
 	Joystick(pros::Controller *ctrl, pros::controller_analog_e_t stkX,
 	         pros::controller_analog_e_t stkY);

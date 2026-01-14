@@ -16,13 +16,16 @@ void Joystick::SetStick(float nx, float ny) {
 	if (OnMoveCallback != nullptr && moving) {
 		OnMoveCallback(nx - X, ny - Y);
 	}
-	X = linear_slew(X, fabs(nx) > deadzone ? nx : 0.0f);
-	Y = linear_slew(Y, fabs(ny) > deadzone ? ny : 0.0f);
+	targetX = fabs(nx) > deadzone ? nx : 0.0f;
+	targetY = fabs(ny) > deadzone ? ny : 0.0f;
 }
+
 void Joystick::update() {
 	if (!process || control == nullptr) {
 		return;
 	}
+	_update_slew();
+	if (frame == 0) {
 	if (static_cast<float>(control->get_analog(stickX)) != X ||
 	    static_cast<float>(control->get_analog(stickY)) != Y) {
 		SetStick(static_cast<float>(control->get_analog(stickX)),
@@ -31,7 +34,13 @@ void Joystick::update() {
 		SetStick(static_cast<float>(control->get_analog(stickX)),
 		         static_cast<float>(control->get_analog(stickY)));
 	}
+	}
+	frame=(frame+1)%5;
 }
+void Joystick::_update_slew() {
+	X = linear_slew(X, targetX);
+	Y = linear_slew(Y, targetY);
+};
 void Joystick::SetEnabled(bool enabled) { process = enabled; }
 void Joystick::OnMove(const std::function<void(float, float)> &func) {
 	OnMoveCallback = func;
