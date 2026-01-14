@@ -1,4 +1,5 @@
 #include "custom/emulated_controller.hpp"
+#include "custom/mathlib.h"
 
 namespace MKV5 {
 namespace ControllerInputs {
@@ -10,11 +11,13 @@ Joystick::Joystick(pros::Controller *ctrl, pros::controller_analog_e_t stkX,
 void Joystick::SetStick(float nx, float ny) {
 	moving = (fabs(nx) > deadzone ||
 	          fabs(ny) > deadzone); // FIXED: moving when OUTSIDE deadzone
+			
+
 	if (OnMoveCallback != nullptr && moving) {
 		OnMoveCallback(nx - X, ny - Y);
 	}
-	X = fabs(nx) > deadzone ? nx : 0.0f;
-	Y = fabs(ny) > deadzone ? ny : 0.0f;
+	X = linear_slew(X, fabs(nx) > deadzone ? nx : 0.0f);
+	Y = linear_slew(Y, fabs(ny) > deadzone ? ny : 0.0f);
 }
 void Joystick::update() {
 	if (!process || control == nullptr) {
