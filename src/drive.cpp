@@ -16,7 +16,10 @@ void controllerTick() {
     int f= 0;
     int debounce = 0;
 	while (true) {
-		mainControl->update();
+        if (f % 5 != 0) {
+		    mainControl->update();
+            continue;
+        }
         mainControl->processBindings();
         
         /*
