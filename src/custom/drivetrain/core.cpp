@@ -5,7 +5,6 @@ namespace MKV5
 {
     Drivetrain::Drivetrain(const std::vector<int8_t> &leftSide, const std::vector<int8_t> &rightSide, Units::Distance trc, double gearRatio, std::optional<pros::Imu *> i) : leftMotors(leftSide), rightMotors(rightSide), trackWidth(trc.inches()), imu(i.value_or(nullptr)), gearRatio(gearRatio)
     {
-        pros::Task task = pros::Task(_drivetrain_tick, (void*)this);
         
         doCalibration();
     }
@@ -24,16 +23,5 @@ namespace MKV5
         }
         }
     }
-    void Drivetrain::_drivetrain_tick(void* i) {
-        Drivetrain* self = (Drivetrain*)i; 
-        while (true) {
-            if (self->isDriving > 0) {
-                if (pros::millis() - self->isDriving > self->timeout) {
-                    self->stop();
-                    self->isDriving = 0;
-                }
-            }
-            pros::delay(20);
-        }
-    }
+    
 }

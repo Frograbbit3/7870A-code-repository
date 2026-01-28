@@ -16,29 +16,24 @@ void controllerTick() {
     int f= 0;
     int debounce = 0;
 	while (true) {
-        if (f % 5 != 0) {
-		    mainControl->update();
-            continue;
-        }
-        mainControl->processBindings();
-        
-        /*
+        mainControl->update();
+
+
         if (control->buttons.L1.pressed || control->buttons.L2.pressed) {
             flywheel->setVelocity((control->buttons.L2.pressed-control->buttons.L1.pressed) * 127);
-            flywheel->move(FORWARD);
+            flywheel->spin(FORWARD);
         }else{
             flywheel->brake();
         }
         if (control->buttons.R1.pressed || control->buttons.R2.pressed) {
             secondFlywheel->setVelocity((control->buttons.R2.pressed-control->buttons.R1.pressed) * 127);
-            secondFlywheel->move(FORWARD);
+            secondFlywheel->spin(FORWARD);
         }else{
             secondFlywheel->brake();
         }
-        */
 
         if (control->buttons.A.pressed && debounce < 1) {
-            control->vibrate(".");
+
             debounce = 90;
             matchLoader->toggleState();
         }
@@ -54,8 +49,7 @@ void controllerTick() {
         }
         
         mainControl->configuration.CONTROL_SCHEME = CHEESE_DRIVE;
-        if (tank_mode)
-            mainControl->configuration.CONTROL_SCHEME = TANK_DRIVE;
+
     
 		pros::delay(2);
         f++;

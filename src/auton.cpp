@@ -3,8 +3,9 @@
 #include "pros/rtos.h"
 #include "pros/rtos.hpp"
 #include <cstdio>
-
+#define waitfor(x) do {pros::delay(10);} while (!x);
 using pros::delay;
+
 void autonomousTick() {
 
     drivetrain->waitForStationary(75_ms);
@@ -23,13 +24,13 @@ void autonomousTick() {
     drivetrain->moveDistance(30_in, REVERSE);
 
     //prevents hitting so aggressively
-    drivetrain->moveDistance(0.5_in, FORWARD);
+    drivetrain->moveDistance(0.5_in, FORWARD); 
     
     secondFlywheel->spin(SPIN_FORWARD);
 
     delay(2_s); //give it time to unload
     secondFlywheel->brake();
-
+    
     //start going for match loader
     matchLoader->enable();
     drivetrain->moveDistance(50_in, FORWARD);

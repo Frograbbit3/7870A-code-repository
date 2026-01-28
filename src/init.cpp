@@ -25,30 +25,12 @@ void initialize() {
     drivetrain  = new MKV5::Drivetrain({9,7, 20}, {-5, -21,-10}, 12.75_in, 0.75, gyro);
     
     control= new MKV5::EmulatedController(pros::E_CONTROLLER_MASTER);
-    mainControl = new MKV5::ControlScheme (CHEESE_DRIVE, *drivetrain, *control);
+    mainControl = new MKV5::ControlScheme (ARCADE_DRIVE, *drivetrain, *control);
     flywheel = new MKV5::CustomMotor(3);
     secondFlywheel = new MKV5::CustomMotor(2);
-    matchLoader = new MKV5::Piston(1, true);
+    matchLoader = new MKV5::Piston(2, true);
     pros::delay(500); //finish devices up
 
     //an attempt to register the motors
-    MKV5::ControllerInputs::ControlBinding binding{
-        .motor = flywheel,
-        .buttons = std::pair{&control->buttons.L1, &control->buttons.L2},
-        .speed = 127,
-        .toggle = false
-    };
-    MKV5::ControllerInputs::ControlBinding binding2{
-        .motor = secondFlywheel,
-        .buttons = std::pair{&control->buttons.R1, &control->buttons.R2},
-        .speed = 127,
-        .toggle = false
-    };
-
-    mainControl->registerMotor(
-        binding
-    );
-    
-    mainControl->registerMotor(binding2);
 
 }
